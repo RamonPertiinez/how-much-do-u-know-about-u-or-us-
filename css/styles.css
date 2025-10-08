@@ -1,1 +1,104 @@
-.
+/* ===== FONTS ===== */
+
+/* Teva lletra (només per a moments especials, sempre en MAJÚSCULES) */
+@font-face{
+  font-family: "RamonHand";
+  src: url("../assets/fonts/Myfont-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base: Poppins (via <link> a Google Fonts al <head>) */
+
+/* ===== RESET BÀSIC ===== */
+:root{
+  --bg:#0f0f14; --card:#171722; --muted:#9aa3b2; --text:#eef2ff;
+  --accent:#9b87f5; --accent2:#22d3ee; --ok:#10b981; --err:#ef4444; --gold:#facc15;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:Poppins,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+  font-weight:400;
+}
+
+/* ===== CLASSES TIPOGRÀFIQUES ===== */
+.handwritten{
+  font-family:"RamonHand", Poppins, system-ui, sans-serif;
+  text-transform:uppercase;
+  letter-spacing: .8px;
+}
+.handSlot{ /* per si vols aplicar mà a alguns h2 des de JS en el futur */
+  font-family:Poppins,system-ui,sans-serif;
+}
+
+/* ===== LAYOUT ===== */
+.view{display:none;min-height:100dvh;padding:16px}
+.view.active{display:block}
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+  max-width:860px; margin:0 auto;
+}
+.title{font-size:clamp(28px,4vw,40px);margin:0 0 8px;font-weight:800}
+.subtitle{color:var(--muted);margin:0 0 16px}
+
+label{display:block;margin:12px 0;color:var(--muted);font-weight:600}
+input{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
+  background:#0b0b10;color:var(--text);font-family:Poppins,system-ui,sans-serif
+}
+
+.btn{
+  appearance:none;border:1px solid rgba(255,255,255,.2);background:transparent;color:var(--text);
+  padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s ease;font-weight:600;
+}
+.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.35)}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:none}
+.btn.ghost{opacity:.7}
+.btn.small{font-size:.9rem;padding:6px 10px}
+
+.msg{margin-top:10px;min-height:20px}
+.msg.ok{color:var(--ok)} .msg.err{color:var(--err)} .muted{color:var(--muted)}
+
+.hint{display:flex;gap:8px;align-items:center;opacity:.8;margin-top:12px}
+.hint img{width:18px;height:18px;opacity:.7}
+
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px auto 14px;max-width:1100px
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.4px}
+.progress{display:flex;align-items:center;gap:10px}
+.bar{width:160px;height:10px;border-radius:999px;background:#1f2230;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--ok))}
+.score{font-weight:700}
+
+.map-grid{--cols:2;display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:12px;max-width:1100px;margin:0 auto}
+@media(min-width:720px){.map-grid{--cols:4}}
+
+.tile{
+  background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px;min-height:110px;
+  display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.2s
+}
+.tile:hover{transform:translateY(-2px)}
+.tile h3{margin:0 0 6px;font-size:1.05rem;font-weight:600}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:.75rem;padding:4px 8px;background:#1d2030;border:1px solid rgba(255,255,255,.08);border-radius:20px}
+.tile.solved{outline:2px solid rgba(16,185,129,.35)}
+
+.play-card h2{margin-top:6px;font-weight:800}
+.play-card .actions{margin-top:16px}
+.option{display:block;margin:8px 0;padding:10px 12px;border-radius:10px;background:#151826;border:1px solid rgba(255,255,255,.08)}
+.option input{margin-right:8px}
+.audio-ctrl{width:100%;margin:10px 0}
+
+.final-wrap{max-width:820px;margin:0 auto;padding:20px;text-align:center}
+.final-card{margin:16px auto;padding:18px 20px;background:linear-gradient(180deg,rgba(250,204,21,.1),rgba(250,204,21,.05));border:1px solid rgba(250,204,21,.35);border-radius:20px}
+.final-card .roma{color:var(--gold);text-shadow:0 2px 8px rgba(250,204,21,.3)}
+
+.footer{display:flex;gap:10px;justify-content:center;margin:16px auto;max-width:1100px}
+.confetti{pointer-events:none}
+.content img{max-width:100%;border-radius:12px}
