@@ -5,9 +5,14 @@
   "theme": { "accent": "#9b87f5", "accent2": "#22d3ee" },
   "final": {
     "heading": "🎉 Sorpresa desbloquejada!",
-    "subheading": "Has superat les proves del meu cor. Ara prepara't per l'última pista...",
-    "body": "Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts a Roma. 💛",
+    "subheading": "Has superat les proves del meu cor.",
+    "body": "Al gener, porta la teva roba més elegant...",
     "audio": ""
+  },
+  "gateRiddle": {
+    "text": "Aquesta foto la vam fer durant el nostre viatge a Indonèsia. Escriu el nom de l'illa on està feta (nom comú, sense accents).",
+    "hint": "És l'illa on vam veure temples i un preciós sol ponent; comença per 'b'...",
+    "accept": ["bali", "bali 2022"],
+    "onCorrect": "revealPassword"
   }
 }
-
