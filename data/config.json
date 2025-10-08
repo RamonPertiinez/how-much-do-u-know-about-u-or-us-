@@ -5,11 +5,13 @@
   "theme": { "accent": "#9b87f5", "accent2": "#22d3ee" },
   "final": {
     "heading": "🎉 Sorpresa desbloquejada!",
-    "body": "Al gener, porta la teva roba més elegant...",
+    "subheading": "Has superat les proves del meu cor.",
+    "body": "Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts a Roma. 💛",
     "audio": ""
   },
-"gateRiddle": {
-  "hint": "Llegeix les majúscules encerclades… potser amaguen una pregunta 😉",
-  "accept": ["23062025", "23/06/2025", "23-06-2025", "23 de juny del 2025"],
-  "onCorrect": "revealPassword"
+  "gateRiddle": {
+    "hint": "Llegeix les majúscules encerclades… potser amaguen una pregunta 😉",
+    "accept": ["23062025", "23/06/2025", "23-06-2025", "23 de juny del 2025"],
+    "onCorrect": "revealPassword"
+  }
 }
