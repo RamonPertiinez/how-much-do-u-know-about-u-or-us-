@@ -200,7 +200,7 @@ function setupRiddleUI(){
   if(!state.config || !state.config.gateRiddle) return;
 
   const r = state.config.gateRiddle;
-  riddleText.textContent = r.text || 'Resol la pista:';
+  if (r.text) { riddleText.textContent = r.text; }
 
   // toggle mostrar pista
   btnShow.addEventListener('click', ()=>{
