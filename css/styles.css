@@ -24,6 +24,56 @@ body{
   font-weight:400;
 }
 
+/* === Gate background image === */
+.gate-bg {
+  position: relative;
+  min-height: 70vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* overlay fosc per llegibilitat */
+.gate-bg::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
+  z-index: 0;
+}
+
+/* Card dins la imatge (relatiu per sobre l'overlay) */
+.gate-card.on-image{
+  position: relative;
+  z-index: 2;
+  max-width:720px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02));
+  border-radius: 14px;
+  padding:18px;
+}
+
+/* Riddle box */
+.riddle {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.35);
+  color: var(--text);
+  border:1px solid rgba(255,255,255,0.05);
+}
+
+/* Small hint/pista */
+.hint-text { color: var(--muted); font-size:0.95rem; margin-top:8px; }
+
+/* Button to submit riddle answer */
+.btn.riddle-btn { margin-top:10px; display:inline-block; }
+
+
 /* ===== CLASSES TIPOGRÀFIQUES ===== */
 .handwritten{
   font-family:"RamonHand", Poppins, system-ui, sans-serif;
