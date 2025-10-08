@@ -1,6 +1,4 @@
 /* ===== FONTS ===== */
-
-/* Teva lletra (només per a moments especials, sempre en MAJÚSCULES) */
 @font-face{
   font-family: "RamonHand";
   src: url("../assets/fonts/Myfont-Regular.woff2") format("woff2");
@@ -9,9 +7,7 @@
   font-display: swap;
 }
 
-/* Base: Poppins (via <link> a Google Fonts al <head>) */
-
-/* ===== RESET BÀSIC ===== */
+/* ===== COLORS & RESET ===== */
 :root{
   --bg:#0f0f14; --card:#171722; --muted:#9aa3b2; --text:#eef2ff;
   --accent:#9b87f5; --accent2:#22d3ee; --ok:#10b981; --err:#ef4444; --gold:#facc15;
@@ -20,82 +16,17 @@
 html,body{height:100%}
 body{
   margin:0; background:var(--bg); color:var(--text);
-  font-family:Poppins,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-  font-weight:400;
+  font-family:Poppins,system-ui,Segoe UI,Roboto,Arial,sans-serif; font-weight:400;
 }
 
-/* === Gate background image === */
-.gate-bg {
-  position: relative;
-  min-height: 70vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 20px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-/* overlay fosc per llegibilitat */
-.gate-bg::before{
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.55));
-  z-index: 0;
-}
-
-/* Card dins la imatge (relatiu per sobre l'overlay) */
-.gate-card.on-image{
-  position: relative;
-  z-index: 2;
-  max-width:720px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02));
-  border-radius: 14px;
-  padding:18px;
-}
-
-/* Riddle box */
-.riddle {
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 10px;
-  background: rgba(0,0,0,0.35);
-  color: var(--text);
-  border:1px solid rgba(255,255,255,0.05);
-}
-
-/* Small hint/pista */
-.hint-text { color: var(--muted); font-size:0.95rem; margin-top:8px; }
-
-/* Button to submit riddle answer */
-.btn.riddle-btn { margin-top:10px; display:inline-block; }
-
-
-/* ===== CLASSES TIPOGRÀFIQUES ===== */
+/* ===== TIPOGRAFIA ===== */
 .handwritten{
   font-family:"RamonHand", Poppins, system-ui, sans-serif;
-  text-transform:uppercase;
-  letter-spacing: .8px;
+  text-transform:uppercase; letter-spacing:.8px;
 }
-.handSlot{ /* per si vols aplicar mà a alguns h2 des de JS en el futur */
-  font-family:Poppins,system-ui,sans-serif;
-}
+.handSlot{ font-family:Poppins,system-ui,sans-serif }
 
-/* Lletres de pista encerclades i en MAJÚSCULES */
-.clue{
-  font-family:"RamonHand", Poppins, system-ui, sans-serif;
-  text-transform: uppercase;
-  display:inline-flex; align-items:center; justify-content:center;
-  width:1.6em; height:1.6em; line-height:1.6em;
-  border:2px solid currentColor; border-radius:50%;
-  margin:0 .08em; font-weight:800;
-}
-
-
-/* ===== LAYOUT ===== */
+/* ===== LAYOUT COMÚ ===== */
 .view{display:none;min-height:100dvh;padding:16px}
 .view.active{display:block}
 .card{
@@ -115,7 +46,7 @@ input{
 
 .btn{
   appearance:none;border:1px solid rgba(255,255,255,.2);background:transparent;color:var(--text);
-  padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s ease;font-weight:600;
+  padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s ease;font-weight:600
 }
 .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.35)}
 .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:none}
@@ -128,9 +59,8 @@ input{
 .hint{display:flex;gap:8px;align-items:center;opacity:.8;margin-top:12px}
 .hint img{width:18px;height:18px;opacity:.7}
 
-.topbar{
-  display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px auto 14px;max-width:1100px
-}
+/* ===== TOPBAR / HUB ===== */
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px auto 14px;max-width:1100px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.4px}
 .progress{display:flex;align-items:center;gap:10px}
 .bar{width:160px;height:10px;border-radius:999px;background:#1f2230;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
@@ -163,3 +93,35 @@ input{
 .footer{display:flex;gap:10px;justify-content:center;margin:16px auto;max-width:1100px}
 .confetti{pointer-events:none}
 .content img{max-width:100%;border-radius:12px}
+
+/* ===== GATE: fons imatge + riddle ===== */
+.gate-bg{
+  position: relative; min-height: 70vh;
+  display:flex; align-items:center; justify-content:center;
+  padding: 20px; background-size: cover; background-position: center;
+  border-radius: 20px; overflow: hidden;
+}
+.gate-bg::before{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));
+  z-index:0;
+}
+.gate-card.on-image{ position:relative; z-index:2; max-width:720px;
+  background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.02));
+  border-radius:14px; padding:18px;
+}
+.riddle{ margin-top:12px; padding:12px; border-radius:10px;
+  background:rgba(0,0,0,.35); color:var(--text);
+  border:1px solid rgba(255,255,255,.05);
+}
+
+/* Lletres de pista encerclades */
+.clue{
+  font-family:"RamonHand", Poppins, system-ui, sans-serif;
+  text-transform:uppercase;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:1.6em; height:1.6em; line-height:1.6em;
+  border:2px solid currentColor; border-radius:50%;
+  margin:0 .08em; font-weight:800;
+}
+.hint-text{ color: var(--muted); font-size:0.95rem; margin-top:8px; }
