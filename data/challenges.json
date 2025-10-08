@@ -1,1 +1,133 @@
-.
+[
+  {
+    "id": "c1",
+    "title": "ON VA COMENÇAR TOT?",
+    "intro": "Recordes el primer lloc on vam dormir junts?",
+    "type": "text",
+    "emoji": "💭",
+    "handTitle": true,
+    "answer": "poblenou",
+    "accept": ["poble nou", "poblenou"],
+    "score": 1
+  },
+  {
+    "id": "c2",
+    "title": "ENDEVINA LA CANÇÓ",
+    "intro": "Escolta aquest fragment i escriu el títol. (Pots posar 'Yellow' per provar-ho)",
+    "type": "audio",
+    "emoji": "🎵",
+    "src": "assets/audio/intro.mp3",
+    "accept": ["yellow", "yellow coldplay"],
+    "score": 1
+  },
+  {
+    "id": "c3",
+    "title": "UNA FOTO BORROSA",
+    "intro": "Endevina quin lloc nostre s’amaga darrere aquesta imatge borrosa.",
+    "type": "image-guess",
+    "emoji": "🖼️",
+    "src": "assets/images/sample.jpg",
+    "accept": ["roma", "colosseu", "colosseum"],
+    "score": 1
+  },
+  {
+    "id": "c4",
+    "title": "DETALL GRACIÓS",
+    "intro": "Quina és la meva mania més estranya segons tu?",
+    "type": "text",
+    "emoji": "😜",
+    "answer": "endreçar els coixins",
+    "accept": ["endreçar els coixins", "endreçar coixins", "ordenar els coixins"],
+    "score": 1
+  },
+  {
+    "id": "c5",
+    "title": "RECORDS EN ORDRE",
+    "intro": "Ordena on vam viatjar (més antic → més recent).",
+    "type": "choice",
+    "emoji": "🧭",
+    "options": [
+      "Roma → Lisboa → Menorca",
+      "Lisboa → Menorca → Roma",
+      "Menorca → Roma → Lisboa"
+    ],
+    "answerIndex": 2,
+    "score": 1
+  },
+  {
+    "id": "c6",
+    "title": "UNA FRASE TEVA",
+    "intro": "Acaba aquesta frase com creus que la completaria jo: 'El millor moment d’aquest any va ser...' ",
+    "type": "text",
+    "emoji": "✍️",
+    "answer": "quan vam anar a menorca",
+    "accept": ["menorca", "quan vam anar a menorca"],
+    "score": 1
+  },
+  {
+    "id": "c7",
+    "title": "SONS QUE RECONEIXES?",
+    "intro": "Endevina què és aquest so.",
+    "type": "audio",
+    "emoji": "🎧",
+    "src": "assets/audio/riu.mp3",
+    "accept": ["riu", "riure", "riure meu"],
+    "score": 1
+  },
+  {
+    "id": "c8",
+    "title": "ON SOM?",
+    "intro": "Aquesta és una pista visual d’un lloc on vam estar. Saps quin és?",
+    "type": "image-guess",
+    "emoji": "📸",
+    "src": "assets/images/pista2.jpg",
+    "accept": ["lisboa", "portugal"],
+    "score": 1
+  },
+  {
+    "id": "c9",
+    "title": "EM DESCRIUS?",
+    "intro": "Si haguessis de descriure’m en una sola paraula, quina seria?",
+    "type": "text",
+    "emoji": "💬",
+    "answer": "impredictible",
+    "accept": ["impredictible", "boig", "espontani"],
+    "score": 1
+  },
+  {
+    "id": "c10",
+    "title": "UN DETALL QUE NOMÉS TU SAPS",
+    "intro": "Quina és la meva pizza preferida? (ho has vist unes quantes vegades 😏)",
+    "type": "text",
+    "emoji": "🍕",
+    "answer": "prosciutto e funghi",
+    "accept": ["prosciutto e funghi", "pernil i xampinyons", "xampinyons i pernil"],
+    "score": 1
+  },
+  {
+    "id": "c11",
+    "title": "AIXÒ HO VAIG DIR JO",
+    "intro": "Complet aquesta frase que vaig dir una vegada: 'Si pogués estar ara en qualsevol lloc del món, estaria a...' ",
+    "type": "text",
+    "emoji": "🌍",
+    "handTitle": true,
+    "answer": "roma",
+    "accept": ["roma", "italia", "a roma"],
+    "score": 1
+  },
+  {
+    "id": "c12",
+    "title": "UNA ÚLTIMA COSA",
+    "intro": "Tria quina d’aquestes tres coses et fa més feliç.",
+    "type": "choice",
+    "emoji": "💛",
+    "handTitle": true,
+    "options": [
+      "Una abraçada",
+      "Una pizza junts",
+      "Un viatge sense destí"
+    ],
+    "answerIndex": 2,
+    "score": 1
+  }
+]
