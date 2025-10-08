@@ -20,29 +20,47 @@
 
   <div id="app">
 
-    <!-- 1) GATE -->
-    <section id="gate" class="view active" aria-label="Porta d'entrada">
-      <div class="card gate-card" role="dialog" aria-labelledby="gateTitle" aria-describedby="gateDesc">
-        <h1 id="gateTitle" class="title">
-          <span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏
-        </h1>
-        <p id="gateDesc" class="subtitle">Entra amb el teu nom d'usuària i la paraula secreta.</p>
+   <!-- 1) PANTALLA D’AUTENTICACIÓ (amb imatge i riddle) -->
+<section id="gate" class="view active" aria-label="Porta d'entrada">
+  <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
+    <div class="card gate-card on-image" role="dialog" aria-labelledby="gateTitle" aria-describedby="gateDesc">
+      <h1 id="gateTitle" class="title">
+        <span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏
+      </h1>
+      <p id="gateDesc" class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
 
-        <form id="loginForm" autocomplete="off">
-          <label for="username">Usuària</label>
-          <input id="username" name="username" type="text" placeholder="laura" required />
-          <label for="password">Contrasenya</label>
-          <input id="password" name="password" type="password" placeholder="••••••" required />
+      <form id="loginForm" autocomplete="off" style="margin-top:8px;">
+        <label for="username">Usuària</label>
+        <input id="username" name="username" type="text" placeholder="laura" required />
+
+        <label for="password">Contrasenya</label>
+        <input id="password" name="password" type="password" placeholder="••••••" required />
+
+        <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
           <button type="submit" class="btn primary">Començar</button>
-          <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
-        </form>
-
-        <div class="hint" aria-hidden="true">
-          <img src="assets/icons/lock.svg" alt="" width="18" height="18" />
-          <span>Només per a tu 💛</span>
+          <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
         </div>
+        <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- Riddle visible quan es demana -->
+      <div id="riddleBox" class="riddle" style="display:none;">
+        <div id="riddleText" style="font-weight:600;"></div>
+        <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--text)" />
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button id="riddleSubmit" class="btn riddle-btn primary">Comprovar resposta</button>
+          <button id="riddleHint" class="btn riddle-btn ghost">Pista</button>
+        </div>
+        <p id="riddleMsg" class="hint-text" aria-live="polite"></p>
       </div>
-    </section>
+
+      <div class="hint" aria-hidden="true" style="margin-top:12px;">
+        <img src="assets/icons/lock.svg" alt="" width="18" height="18" />
+        <span>La primera pista t'ajudarà a recordar el dia d'aquesta foto.</span>
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- 2) HUB -->
     <section id="hub" class="view" aria-label="Mapa de proves">
