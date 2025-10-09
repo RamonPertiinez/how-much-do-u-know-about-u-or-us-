@@ -7,7 +7,9 @@
   <meta name="description" content="Joc d'aniversari amb 25 proves i una sorpresa final." />
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#0f0f14" />
+  <!-- Poppins (text base) -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Estils del projecte -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -17,7 +19,7 @@
 
   <div id="app">
 
-    <!-- 1) PANTALLA D’AUTENTICACIÓ -->
+    <!-- 1) PANTALLA D’AUTENTICACIÓ (amb imatge i riddle) -->
     <section id="gate" class="view active" aria-label="Porta d'entrada">
       <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
         <div class="card gate-card on-image" role="dialog" aria-labelledby="gateTitle" aria-describedby="gateDesc">
@@ -29,51 +31,61 @@
           <form id="loginForm" autocomplete="off" style="margin-top:8px;">
             <label for="username">Usuària</label>
             <input id="username" name="username" type="text" placeholder="laura" required />
+
             <label for="password">Contrasenya</label>
             <input id="password" name="password" type="password" placeholder="••••••" required />
+
             <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
               <button type="submit" class="btn primary">Començar</button>
               <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
             </div>
+
             <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
           </form>
 
-          <!-- Riddle -->
+          <!-- Botó per reiniciar estat i recarregar (per proves) -->
+          <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">
+            🔄 Reinicia joc
+          </button>
+
+          <!-- Riddle visible quan es demana -->
           <div id="riddleBox" class="riddle" style="display:none;">
             <div id="riddleText" style="font-weight:600;">
+              <p>hola guapa 💛 quines ganes tenia que arribés el teu dia, el teu aniversari, i fer-lo una mica especial encara que estigui lluny i no ho celebrem en persona... per ara 😏<br>
+              bueno, qui sap... espera’t 30 segons i mira Radera Teu 😁 no segueixis llegint per ara.</p>
 
-              <p>hola guapa 💛 <span class="clue-inline">Q</span>uines ganes tenia que arribés el te<span class="clue-inline">U</span> dia, el teu aniversari, <span class="clue-inline">I</span> fer-lo una mica especial e<span class="clue-inline">N</span>cara que estigui lluny i no ho celebrem en persona... per ara 😏</p>
+              <p>ja has mirat radera? què esperaves? jejejeje tan de booooo!!!! 🤭<br>
+              queden uns mesets però en res ja estaré per aquí molestant i fent-te abraçades jejeje 🤗</p>
 
-              <p><span class="clue-inline">D</span>'acord, qui sap... espera’t 30 segons i mira rere teu 😁 <span class="clue-inline">I</span> no segueixis llegint per <span class="clue-inline">A</span>ra.</p>
+              <p>comencem amb això que estàs veient aquí... i et preguntaràs: què és això? com que contrasenya? com que nom d’usuària? què he de fer? 🤔</p>
 
-              <p><span class="clue-inline">E</span>i! ja has mirat radera? què esperaves? jejejeje tan de booooo!!!! 🤭  
-              <span class="clue-inline">N</span>o pateixis: queden uns mesets però en res ja estaré per aquí molestant i fent-te abraçades jejeje 🤗  
-              <span class="clue-inline">S</span>erà aviat.</p>
+              <p>t’ho explico molt senzillament 💬 això és un joc, una petita experiència per poder arribar a resoldre el regal final 🎁<br>
+              un regal especial que he volgut fer interactiu, perquè pensis una estoneta i així estiguis distreta una mica.<br>
+              ho pots anar fent durant el dia, no cal que ho facis de cop ⏳<br>
+              fins i tot seria una bona idea que jo estigués en trucada, ves a saber… ☎️</p>
 
-              <p><span class="clue-inline">V</span>a, comencem amb això que estàs veient aquí... i et preguntaràs: què és això? com que contrasenya? com que nom d’usuària? què he de fer? 🤔  
-              <span class="clue-inline">A</span>ra t’ho explico:  
-              <span class="clue-inline">N</span>o té pèrdua.</p>
+              <p>quan averiguis quina és la contrasenya 🔐 podràs començar el joc.<br>
+              és molt simple: són diferents proves, i si arribes a una puntuació de 8 encertades 🎯 podràs revelar el regal final 💌</p>
 
-              <p><span class="clue-inline">F</span>àcil 💬 això és un joc, una petita <span class="clue-inline">E</span>xperiència per poder a<span class="clue-inline">R</span>ribar a resoldre el regal final 🎁  
-              un regal especial que he volgut fer interactiu, perquè pensis una estoneta i així estiguis distreta una mica.</p>
-
-              <p><span class="clue-inline">A</span>ixò ho pots anar fent durant el dia, no cal que ho facis de cop ⏳; fins i tot seria una bona idea que jo estigués en trucada, ves a saber… ☎️</p>
-
-              <p><span class="clue-inline">Q</span>uan averiguis quina és la contrasenya 🔐 podràs començar el joc.  
-              <span class="clue-inline">U</span>na vegada dins, veuràs diferents proves; si arribes a una puntuació de 8 encertades 🎯  
-              <span class="clue-inline">E</span>ns apareixerà una pantalla molt especial 💌  
-              <span class="clue-inline">S</span>abràs què he preparat…  
-              <span class="clue-inline">T</span>'espere una sorpresa preciosa.  
-              <span class="clue-inline">A</span>ra bé, primer…</p>
-
-              <p><span class="clue-inline">F</span>ixa’t bé en aquest text 👀  
-              <span class="clue-inline">O</span>bserva que hi ha algunes majúscules…  
-              <span class="clue-inline">T</span>otes juntes amaguen una pregunta.  
-              <span class="clue-inline">O</span>i que la veus?</p>
+              <p>comencem pel principi, però 😇<br>
+              quina és la contrasenya? fixa’t bé que hi ha majúscules en el text… però aquestes majúscules no tenen gaire sentit, no? o sí...? 👀</p>
 
               <p>molta sort, guapa 💕 i espero que no et costi gaire jejejejeje 😜</p>
+
+              <!-- PISTA ENCERCADA -->
+              <p class="muted" style="margin-top:14px;">
+                <span class="clue">Q</span><span class="clue">U</span><span class="clue">I</span><span class="clue">N</span>
+                <span class="clue">D</span><span class="clue">I</span><span class="clue">A</span>
+                <span class="clue">E</span><span class="clue">N</span><span class="clue">S</span>
+                <span class="clue">V</span><span class="clue">A</span><span class="clue">N</span>
+                <span class="clue">F</span><span class="clue">E</span><span class="clue">R</span>
+                <span class="clue">A</span>
+                <span class="clue">Q</span><span class="clue">U</span><span class="clue">E</span><span class="clue">S</span><span class="clue">T</span><span class="clue">A</span>
+                <span class="clue">F</span><span class="clue">O</span><span class="clue">T</span><span class="clue">O</span>❓
+              </p>
             </div>
 
+            <!-- Input i botons -->
             <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí"
               style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--text)" />
             <div style="display:flex;gap:8px;margin-top:8px;">
@@ -87,9 +99,9 @@
             <img src="assets/icons/lock.svg" alt="" width="18" height="18" />
             <span>La primera pista t'ajudarà a recordar el dia d'aquesta foto.</span>
           </div>
-        </div>
-      </div>
-    </section>
+        </div> <!-- /gate-card -->
+      </div>   <!-- /gate-bg -->
+    </section> <!-- /gate -->
 
     <!-- 2) HUB -->
     <section id="hub" class="view" aria-label="Mapa de proves">
@@ -103,7 +115,9 @@
           <div class="score"><span id="scoreNum">0</span>/<span id="scoreGoal">8</span></div>
         </div>
       </header>
+
       <div class="map-grid" id="challengeGrid" role="list"></div>
+
       <footer class="footer">
         <button id="btnShuffle" class="btn">Barreja el mapa 🔀</button>
         <button id="btnReset" class="btn ghost" hidden>Reinicia (debug)</button>
@@ -124,9 +138,6 @@
       </div>
     </section>
 
-    <button id="clearCache" class="btn ghost" style="margin-top:10px;">🔄 Reinicia joc</button>
-
-
     <!-- 4) FINAL -->
     <section id="final" class="view" aria-label="Sorpresa final">
       <div class="final-wrap">
@@ -135,7 +146,9 @@
 
         <div class="final-card">
           <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
-          <p id="finalBody">Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛</p>
+          <p id="finalBody">
+            Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛
+          </p>
         </div>
 
         <audio id="finalAudio" class="audio-ctrl" controls preload="none">
