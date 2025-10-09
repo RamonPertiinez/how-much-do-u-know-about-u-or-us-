@@ -76,25 +76,52 @@
     catch{return structuredClone(fallback);}
   }
 
-  function setupRiddleUI(){
-    const btnShow=document.getElementById("btnShowRiddle");
-    const riddleBox=document.getElementById("riddleBox");
-    const riddleAnswer=document.getElementById("riddleAnswer");
-    const riddleSubmit=document.getElementById("riddleSubmit");
-    const riddleHintBtn=document.getElementById("riddleHint");
-    const riddleMsg=document.getElementById("riddleMsg");
-    const passwordInput=document.getElementById("password");
+// --- RIDDLE UI logic (foto + enigma inicial) ---
+function setupRiddleUI(){
+  const btnShow = document.getElementById('btnShowRiddle');
+  const riddleBox = document.getElementById('riddleBox');
+  const riddleText = document.getElementById('riddleText');
+  const riddleAnswer = document.getElementById('riddleAnswer');
+  const riddleSubmit = document.getElementById('riddleSubmit');
+  const riddleHintBtn = document.getElementById('riddleHint');
+  const riddleMsg = document.getElementById('riddleMsg');
+  const passwordInput = document.getElementById('password');
 
-    if(!state.config||!state.config.gateRiddle)return;
-    const r=state.config.gateRiddle;
+  // Attach toggle ALWAYS (encara que no hi hagi config) 👇
+  btnShow?.addEventListener('click', ()=>{
+    const hidden = window.getComputedStyle(riddleBox).display === 'none';
+    riddleBox.style.display = hidden ? 'block' : 'none';
+    if (hidden) riddleMsg.textContent = '';
+  });
 
-    btnShow?.addEventListener("click",()=>{
-      riddleBox.style.display=riddleBox.style.display==="none"?"block":"none";
-      riddleMsg.textContent="";
-    });
-    riddleHintBtn?.addEventListener("click",()=>{riddleMsg.textContent=r.hint||"Pista no disponible."});
-    riddleSubmit?.addEventListener("click",()=>{
-      const val=(riddleAnswer.value||"").normalize("NFD").replace(/\p{Diacritic}/gu,"").trim().toLowerCase();
-      const ok=Array.isArray(r.accept)&&r.accept.map(a=>a.normalize("NFD").replace(/\p{Diacritic}/gu,"").trim().toLowerCase()).includes(val);
-      if(ok){
-        riddleMsg.textContent
+  // Si no hi ha gateRiddle, no fem la resta (però el toggle ja funciona)
+  if (!state.config || !state.config.gateRiddle) return;
+  const r = state.config.gateRiddle;
+
+  // Si hi ha 'text' al config, l'escrivim; si no, es respecta l'HTML del index.html
+  if (r.text) { riddleText.textContent = r.text; }
+
+  riddleHintBtn?.addEventListener('click', ()=>{
+    riddleMsg.textContent = r.hint || 'Pista no disponible.';
+  });
+
+  riddleSubmit?.addEventListener('click', ()=>{
+    const val = (riddleAnswer.value || '')
+      .toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').trim().toLowerCase();
+    const ok = Array.isArray(r.accept) && r.accept
+      .map(a=>a.toString().normalize('NFD').replace(/\p{Diacritic}/gu,'').trim().toLowerCase())
+      .includes(val);
+
+    if(ok){
+      riddleMsg.textContent = 'Correcte! Has descobert la pista. 🔓';
+      riddleMsg.style.color = '';
+      if (r.onCorrect === 'revealPassword' && state.config.auth?.password){
+        passwordInput.value = state.config.auth.password;
+        document.querySelector('#loginForm button[type="submit"]')?.focus();
+      }
+    } else {
+      riddleMsg.textContent = 'No exactament... prova un altre cop o demana una pista.';
+      riddleMsg.style.color = 'var(--err)';
+    }
+  });
+}
