@@ -10,7 +10,8 @@
     "audio": ""
   },
   "gateRiddle": {
-    "hint": "Llegeix les majúscules encerclades… potser amaguen una pregunta 😉",
+    "hint": "Llegeix només les MAJÚSCULES que veus pel text… potser amaguen una pregunta 😉",
+    "secretPhrase": "QUIN DIA ENS VAN FER AQUESTA FOTO",
     "accept": ["23062025", "23/06/2025", "23-06-2025", "23 de juny del 2025"],
     "onCorrect": "revealPassword"
   }
