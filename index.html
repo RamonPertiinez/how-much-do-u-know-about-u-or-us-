@@ -11,6 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <!-- Estils del projecte -->
   <link rel="stylesheet" href="css/styles.css" />
+  <!-- Estils específics del Joc 1 -->
+  <link rel="stylesheet" href="css/game1-audio.css" />
   <style>
     /* Blindatge: no alterar majúscules/minúscules del riddle */
     #riddleText { text-transform: none; }
@@ -49,12 +51,10 @@
             <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
           </form>
 
-          <!-- Botó per reiniciar estat i recarregar (per proves) -->
           <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">
             🔄 Reinicia joc
           </button>
 
-          <!-- Riddle visible quan es demana -->
           <div id="riddleBox" class="riddle" style="display:none;">
             <div id="riddleText" style="font-weight:600;">
 
@@ -81,7 +81,6 @@
 
             </div>
 
-            <!-- Input i botons -->
             <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí" autocapitalize="off"
               style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--text)" />
             <div style="display:flex;gap:8px;margin-top:8px;">
@@ -95,9 +94,9 @@
             <img src="assets/icons/lock.svg" alt="" width="18" height="18" />
             <span>La primera pista t'ajudarà a recordar el dia d'aquesta foto.</span>
           </div>
-        </div> <!-- /gate-card -->
-      </div>   <!-- /gate-bg -->
-    </section> <!-- /gate -->
+        </div>
+      </div>
+    </section>
 
     <!-- 2) HUB -->
     <section id="hub" class="view" aria-label="Mapa de proves">
@@ -134,6 +133,36 @@
       </div>
     </section>
 
+    <!-- 🆕 3BIS) JOC 1 - ENDEVINA LA CANÇÓ -->
+    <section id="game-audio" class="game-card" hidden>
+      <header class="ga-head">
+        <h2>🎵 Endevina la cançó</h2>
+        <p class="ga-sub">Escolta <b>10 segons</b> i escriu el <b>títol o l'artista</b>. Si en falles una, es reinicia!</p>
+      </header>
+
+      <div class="ga-body">
+        <div class="ga-progress">
+          <div class="ga-progress-fill" id="gaProgressFill" style="width:0%"></div>
+        </div>
+
+        <div class="ga-audio">
+          <button id="gaPlay" class="ga-btn">▶︎ Escolta 10s</button>
+          <span id="gaTimer" class="ga-timer">00:10</span>
+        </div>
+
+        <form id="gaForm" class="ga-form" autocomplete="off">
+          <input id="gaInput" type="text" placeholder="Títol o artista…" required />
+          <button class="ga-btn" type="submit">Comprova</button>
+        </form>
+
+        <div id="gaMsg" class="ga-msg"></div>
+      </div>
+
+      <footer class="ga-foot">
+        <button id="gaReset" class="ga-btn ghost">Reinicia</button>
+      </footer>
+    </section>
+
     <!-- 4) FINAL -->
     <section id="final" class="view" aria-label="Sorpresa final">
       <div class="final-wrap">
@@ -160,5 +189,6 @@
 
   <!-- JS principal -->
   <script src="js/app.js" defer></script>
+  <script src="js/game1-audio.js" defer></script>
 </body>
 </html>
