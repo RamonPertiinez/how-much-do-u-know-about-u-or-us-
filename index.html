@@ -14,30 +14,30 @@
 </head>
 <body>
   <noscript>
-    <div style="padding:16px;font-family:Poppins,system-ui">Aquest joc necessita JavaScript. Si us plau, activa’l 💛</div>
+    <div style="padding:16px;font-family:Poppins,system-ui">aquest joc necessita javascript. si us plau, activa’l 💛</div>
   </noscript>
 
   <div id="app">
 
     <!-- 1) PANTALLA D’AUTENTICACIÓ (amb imatge i riddle) -->
-    <section id="gate" class="view active" aria-label="Porta d'entrada">
+    <section id="gate" class="view active" aria-label="porta d'entrada">
       <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
         <div class="card gate-card on-image" role="dialog" aria-labelledby="gateTitle" aria-describedby="gateDesc">
           <h1 id="gateTitle" class="title">
-            <span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏
+            <span class="handwritten">tens ganes de saber el teu regal?</span> 😏
           </h1>
-          <p id="gateDesc" class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
+          <p id="gateDesc" class="subtitle">per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
 
           <form id="loginForm" autocomplete="off" style="margin-top:8px;">
-            <label for="username">Usuària</label>
+            <label for="username">usuària</label>
             <input id="username" name="username" type="text" placeholder="laura" required />
 
-            <label for="password">Contrasenya</label>
+            <label for="password">contrasenya</label>
             <input id="password" name="password" type="password" placeholder="••••••" required />
 
             <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-              <button type="submit" class="btn primary">Començar</button>
-              <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
+              <button type="submit" class="btn primary">començar</button>
+              <button type="button" id="btnShowRiddle" class="btn ghost">veure pista</button>
             </div>
 
             <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
@@ -45,51 +45,51 @@
 
           <!-- Botó per reiniciar estat i recarregar (per proves) -->
           <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">
-            🔄 Reinicia joc
+            🔄 reinicia joc
           </button>
 
           <!-- Riddle visible quan es demana -->
           <div id="riddleBox" class="riddle" style="display:none;">
             <div id="riddleText" style="font-weight:600;">
-              <p><strong>Q</strong>uina il·lusió, guapa 💛, avui toca una sorpresa. Tinc ganes que arribi el moment i, encara que estigui lluny, ho viurem a la nostra manera 😏. <strong>U</strong>n petit joc per començar; <strong>I</strong> tu, tranquil·la, és fàcil; <strong>N</strong>o cal córrer.</p>
+              <p><strong>Q</strong>uina il·lusió, guapa 💛, avui toca una sorpresa. tinc ganes que arribi el moment i, encara que estigui lluny, ho viurem a la nostra manera 😏. <strong>U</strong>n petit joc per començar; <strong>I</strong> tu, tranquil·la, és fàcil; <strong>N</strong>o cal córrer.</p>
 
-              <p>Només cal que t’esperis una mica i miris radera teu. I <strong>D</strong>e veritat, respira; <strong>I</strong> tot seguit, segueix; ja veuràs que <strong>A</strong>l cap d’una estona ho tindràs.</p>
+              <p>només cal que t’esperis una mica i miris radera teu. i <strong>D</strong>e veritat, respira; <strong>I</strong> tot seguit, segueix; ja veuràs que <strong>A</strong>l cap d’una estona ho tindràs.</p>
 
-              <p>Començarem amb una cosa molt senzilla: t’explico el funcionament i després ho provaràs. <strong>E</strong>ns agraden els reptes, oi? <strong>N</strong>o és res complicat; <strong>S</strong>erveix per obrir la porta del joc.</p>
+              <p>començarem amb una cosa molt senzilla: t’explico el funcionament i després ho provaràs. <strong>E</strong>ns agraden els reptes, oi? <strong>N</strong>o és res complicat; <strong>S</strong>erveix per obrir la porta del joc.</p>
 
               <p><strong>V</strong>euràs un espai per escriure; posa atenció al text. <strong>A</strong>quí hi ha l’ajuda que necessites, però discreta. <strong>N</strong>omés cal mirar bé.</p>
 
-              <p>Per començar, pensa en la contrasenya. <strong>F</strong>ins que no la sàpigues, no podràs avançar. <strong>E</strong>stà amagada davant teu. <strong>R</strong>elaxa’t i observa.</p>
+              <p>per començar, pensa en la contrasenya. <strong>F</strong>ins que no la sàpigues, no podràs avançar. <strong>E</strong>stà amagada davant teu. <strong>R</strong>elaxa’t i observa.</p>
 
-              <p><strong>A</strong>questa pista està escrita dins del que llegeixes. <strong>Q</strong>uan llegeixis, fixa’t que de tant en tant alguna lletra és diferent. <strong>U</strong>na mica més gran? No; simplement en <strong>E</strong>stat de majúscula. <strong>S</strong>i les reculls en ordre, <strong>T</strong>ot plegat formarà una pregunta <strong>A</strong>miga teva.</p>
+              <p><strong>A</strong>questa pista està escrita dins del que llegeixes. <strong>Q</strong>uan llegeixis, fixa’t que de tant en tant alguna lletra és diferent. <strong>U</strong>na mica més gran? no; simplement en <strong>E</strong>stat de majúscula. <strong>S</strong>i les reculls en ordre, <strong>T</strong>ot plegat formarà una pregunta <strong>A</strong>miga teva.</p>
 
-              <p>Per si et cal una empenteta final: <strong>F</strong>ixa’t en cada detall. <strong>O</strong>bservar amb calma ajuda. <strong>T</strong>’hi posaràs bé. <strong>O</strong>k, som-hi!</p>
+              <p>per si et cal una empenteta final: <strong>F</strong>ixa’t en cada detall. <strong>O</strong>bservar amb calma ajuda. <strong>T</strong>’hi posaràs bé. <strong>O</strong>k, som-hi!</p>
             </div>
 
             <!-- Input i botons -->
-            <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí"
+            <input id="riddleAnswer" type="text" placeholder="escriu la teva resposta aquí"
               style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--text)" />
             <div style="display:flex;gap:8px;margin-top:8px;">
-              <button id="riddleSubmit" class="btn riddle-btn primary">Comprovar resposta</button>
-              <button id="riddleHint" class="btn riddle-btn ghost">Pista</button>
+              <button id="riddleSubmit" class="btn riddle-btn primary">comprovar resposta</button>
+              <button id="riddleHint" class="btn riddle-btn ghost">pista</button>
             </div>
             <p id="riddleMsg" class="hint-text" aria-live="polite"></p>
           </div>
 
           <div class="hint" aria-hidden="true" style="margin-top:12px;">
             <img src="assets/icons/lock.svg" alt="" width="18" height="18" />
-            <span>La primera pista t'ajudarà a recordar el dia d'aquesta foto.</span>
+            <span>la primera pista t'ajudarà a recordar el dia d'aquesta foto.</span>
           </div>
         </div> <!-- /gate-card -->
       </div>   <!-- /gate-bg -->
     </section> <!-- /gate -->
 
     <!-- 2) HUB -->
-    <section id="hub" class="view" aria-label="Mapa de proves">
+    <section id="hub" class="view" aria-label="mapa de proves">
       <header class="topbar">
         <div class="brand">
-          <button id="easterReset" class="btn small ghost" aria-label="Opcions ocultes">🎁</button>
-          <span id="gameTitle">Tens ganes de saber el teu regal?</span>
+          <button id="easterReset" class="btn small ghost" aria-label="opcions ocultes">🎁</button>
+          <span id="gameTitle">tens ganes de saber el teu regal?</span>
         </div>
         <div class="progress">
           <div class="bar"><div class="fill" id="progressFill"></div></div>
@@ -100,35 +100,35 @@
       <div class="map-grid" id="challengeGrid" role="list"></div>
 
       <footer class="footer">
-        <button id="btnShuffle" class="btn">Barreja el mapa 🔀</button>
-        <button id="btnReset" class="btn ghost" hidden>Reinicia (debug)</button>
+        <button id="btnShuffle" class="btn">barreja el mapa 🔀</button>
+        <button id="btnReset" class="btn ghost" hidden>reinicia (debug)</button>
       </footer>
     </section>
 
     <!-- 3) PLAY -->
-    <section id="play" class="view" aria-label="Prova en curs">
+    <section id="play" class="view" aria-label="prova en curs">
       <div class="card play-card">
         <div class="row">
-          <button id="btnBack" class="btn small">⟵ Tornar</button>
+          <button id="btnBack" class="btn small">⟵ tornar</button>
         </div>
-        <h2 id="challengeTitle" class="handSlot">Títol de la prova</h2>
-        <p id="challengeIntro" class="muted">Intro de la prova</p>
+        <h2 id="challengeTitle" class="handSlot">títol de la prova</h2>
+        <p id="challengeIntro" class="muted">intro de la prova</p>
         <div id="challengeContent" class="content"></div>
-        <div class="actions"><button id="btnSubmit" class="btn primary">Enviar</button></div>
+        <div class="actions"><button id="btnSubmit" class="btn primary">enviar</button></div>
         <p id="feedback" class="msg" role="alert" aria-live="assertive"></p>
       </div>
     </section>
 
     <!-- 4) FINAL -->
-    <section id="final" class="view" aria-label="Sorpresa final">
+    <section id="final" class="view" aria-label="sorpresa final">
       <div class="final-wrap">
-        <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
-        <p id="finalSubheading" class="lead">Has superat les proves del meu cor. Ara prepara't…</p>
+        <h1 id="finalHeading">🎉 sorpresa desbloquejada!</h1>
+        <p id="finalSubheading" class="lead">has superat les proves del meu cor. ara prepara't…</p>
 
         <div class="final-card">
-          <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
+          <h2 id="finalTitle"><span class="handwritten">una nit elegant a roma</span> 🇮🇹</h2>
           <p id="finalBody">
-            Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛
+            al gener, porta la teva roba més elegant. tinc reservat un lloc especial per sopar junts. 💛
           </p>
         </div>
 
@@ -136,17 +136,16 @@
           <source src="assets/audio/final.mp3" type="audio/mpeg" />
         </audio>
 
-        <button id="btnRestart" class="btn">Tornar a començar</button>
+        <button id="btnRestart" class="btn">tornar a començar</button>
       </div>
       <div class="confetti" id="confetti" aria-hidden="true"></div>
     </section>
 
   </div>
 
-  <!-- JS principal -->
+  <!-- js principal -->
   <script src="js/app.js" defer></script>
 
-  <!-- (Sense pista encerclada ni script d'injecció: el text ja porta les majúscules correctes) -->
   <style>:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}</style>
 </body>
 </html>
