@@ -51,26 +51,19 @@
           <!-- Riddle visible quan es demana -->
           <div id="riddleBox" class="riddle" style="display:none;">
             <div id="riddleText" style="font-weight:600;">
-              <p>hola guapa 💛 quines ganes tenia que arribés el teu dia, el teu aniversari, i fer-lo una mica especial encara que estigui lluny i no ho celebrem en persona... per ara 😏<br>
-              bueno, qui sap... espera’t 30 segons i mira Radera Teu 😁 no segueixis llegint per ara.</p>
+              <p><strong>Q</strong>uina il·lusió, guapa 💛, avui toca una sorpresa. Tinc ganes que arribi el moment i, encara que estigui lluny, ho viurem a la nostra manera 😏. <strong>U</strong>n petit joc per començar; <strong>I</strong> tu, tranquil·la, és fàcil; <strong>N</strong>o cal córrer.</p>
 
-              <p>ja has mirat radera? què esperaves? jejejeje tan de booooo!!!! 🤭<br>
-              queden uns mesets però en res ja estaré per aquí molestant i fent-te abraçades jejeje 🤗</p>
+              <p>Només cal que t’esperis una mica i miris radera teu. I <strong>D</strong>e veritat, respira; <strong>I</strong> tot seguit, segueix; ja veuràs que <strong>A</strong>l cap d’una estona ho tindràs.</p>
 
-              <p>comencem amb això que estàs veient aquí... i et preguntaràs: què és això? com que contrasenya? com que nom d’usuària? què he de fer? 🤔</p>
+              <p>Començarem amb una cosa molt senzilla: t’explico el funcionament i després ho provaràs. <strong>E</strong>ns agraden els reptes, oi? <strong>N</strong>o és res complicat; <strong>S</strong>erveix per obrir la porta del joc.</p>
 
-              <p>t’ho explico molt senzillament 💬 això és un joc, una petita experiència per poder arribar a resoldre el regal final 🎁<br>
-              un regal especial que he volgut fer interactiu, perquè pensis una estoneta i així estiguis distreta una mica.<br>
-              ho pots anar fent durant el dia, no cal que ho facis de cop ⏳<br>
-              fins i tot seria una bona idea que jo estigués en trucada, ves a saber… ☎️</p>
+              <p><strong>V</strong>euràs un espai per escriure; posa atenció al text. <strong>A</strong>quí hi ha l’ajuda que necessites, però discreta. <strong>N</strong>omés cal mirar bé.</p>
 
-              <p>quan averiguis quina és la contrasenya 🔐 podràs començar el joc.<br>
-              és molt simple: són diferents proves, i si arribes a una puntuació de 8 encertades 🎯 podràs revelar el regal final 💌</p>
+              <p>Per començar, pensa en la contrasenya. <strong>F</strong>ins que no la sàpigues, no podràs avançar. <strong>E</strong>stà amagada davant teu. <strong>R</strong>elaxa’t i observa.</p>
 
-              <p>comencem pel principi, però 😇<br>
-              quina és la contrasenya? fixa’t bé que hi ha majúscules en el text… però aquestes majúscules no tenen gaire sentit, no? o sí...? 👀</p>
+              <p><strong>A</strong>questa pista està escrita dins del que llegeixes. <strong>Q</strong>uan llegeixis, fixa’t que de tant en tant alguna lletra és diferent. <strong>U</strong>na mica més gran? No; simplement en <strong>E</strong>stat de majúscula. <strong>S</strong>i les reculls en ordre, <strong>T</strong>ot plegat formarà una pregunta <strong>A</strong>miga teva.</p>
 
-              <p>molta sort, guapa 💕 i espero que no et costi gaire jejejejeje 😜</p>
+              <p>Per si et cal una empenteta final: <strong>F</strong>ixa’t en cada detall. <strong>O</strong>bservar amb calma ajuda. <strong>T</strong>’hi posaràs bé. <strong>O</strong>k, som-hi!</p>
             </div>
 
             <!-- Input i botons -->
@@ -132,7 +125,7 @@
         <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
         <p id="finalSubheading" class="lead">Has superat les proves del meu cor. Ara prepara't…</p>
 
-      <div class="final-card">
+        <div class="final-card">
           <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
           <p id="finalBody">
             Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛
@@ -153,50 +146,7 @@
   <!-- JS principal -->
   <script src="js/app.js" defer></script>
 
-  <!-- Injecció de majúscules per ocultar la frase a la primera pantalla -->
-  <script defer>
-  (function () {
-    // Quan el DOM està llest:
-    window.addEventListener('DOMContentLoaded', function () {
-      const root = document.getElementById('riddleText');
-      if (!root) return;
-
-      // 1) Si per error hi hagués la pista antiga, elimina-la
-      const oldClue = root.querySelector('.clue')?.parentElement;
-      if (oldClue) oldClue.remove();
-
-      // 2) Frase secreta (sense signes) -> s'incrusta com a MAJÚSCULES dins del text existent
-      const target = 'QUIN DIA ENS VAN FER AQUESTA FOTO';
-      const letters = target.replace(/[^A-ZÀ-ÖØ-Þ]/g, '').toUpperCase().split('');
-
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-      let i = 0;
-
-      while (walker.nextNode() && i < letters.length) {
-        const node = walker.currentNode;
-        const src = node.nodeValue;
-        if (!src || !src.trim()) continue;
-
-        let out = '';
-        for (const ch of src) {
-          const isLetter = /[a-zà-öø-ÿ]/i.test(ch);          // lletra unicode
-          const canUp = isLetter && ch === ch.toLowerCase();  // només si és minúscula
-          if (i < letters.length && canUp && ch.toLowerCase() === letters[i].toLowerCase()) {
-            out += ch.toUpperCase(); // inserim la majúscula de la frase
-            i++;
-          } else {
-            out += ch;
-          }
-        }
-        if (out !== src) node.nodeValue = out;
-      }
-
-      // Opcional (debug suau): si no s'han pogut injectar totes, no fem res visible.
-      // console.log('Majúscules injectades:', i, '/', letters.length);
-    });
-  })();
-  </script>
-
+  <!-- (Sense pista encerclada ni script d'injecció: el text ja porta les majúscules correctes) -->
   <style>:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}</style>
 </body>
 </html>
