@@ -1,1 +1,25 @@
-.
+/* ===== Joc 1: Endevina la cançó (estils) ===== */
+.game-card{max-width:760px;margin:24px auto;background:#111;border:1px solid #222;border-radius:16px;padding:20px}
+.ga-head h2{margin:0 0 6px}
+.ga-sub{opacity:.8;margin:0 0 16px}
+
+.ga-progress{height:8px;background:#222;border-radius:8px;overflow:hidden}
+.ga-progress-fill{height:100%;background:#3bd5e4;transition:width .3s}
+
+.ga-audio{display:flex;align-items:center;gap:12px;margin:16px 0}
+.ga-btn{border:0;border-radius:12px;padding:10px 14px;background:#242424;color:#eee;cursor:pointer;transition:transform .06s ease, background .15s}
+.ga-btn:hover{background:#2f2f2f}
+.ga-btn:active{transform:translateY(1px)}
+.ga-btn[disabled]{opacity:.5;cursor:not-allowed}
+.ga-btn.ghost{background:transparent;border:1px solid #333}
+
+.ga-timer{opacity:.8;min-width:52px;text-align:center}
+
+.ga-form{display:flex;gap:8px}
+.ga-form input{flex:1;border:1px solid #333;background:#0c0c0c;color:#eee;border-radius:12px;padding:10px 12px}
+
+.ga-msg{min-height:22px;margin-top:10px}
+.ga-msg.ok{color:#79df88}
+.ga-msg.err{color:#ff9090}
+
+.ga-foot{margin-top:12px;display:flex;justify-content:flex-end}
