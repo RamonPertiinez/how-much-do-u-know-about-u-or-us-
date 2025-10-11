@@ -133,35 +133,34 @@
       </div>
     </section>
 
-    <!-- 🆕 3BIS) JOC 1 - ENDEVINA LA CANÇÓ -->
-    <section id="game-audio" class="game-card" hidden>
-      <header class="ga-head">
-        <h2>🎵 Endevina la cançó</h2>
-        <p class="ga-sub">Escolta <b>10 segons</b> i escriu el <b>títol o l'artista</b>. Si en falles una, es reinicia!</p>
-      </header>
+<!-- 🆕 Joc 1: Endevina la cançó (Multiple-Choice) -->
+<section id="game-audio" class="game-card" hidden>
+  <header class="ga-head">
+    <h2>🎵 Endevina la cançó</h2>
+    <p class="ga-sub">Escolta <b>10 segons</b> i tria la <b>cançó correcta</b>. Si en falles una, es reinicia!</p>
+  </header>
 
-      <div class="ga-body">
-        <div class="ga-progress">
-          <div class="ga-progress-fill" id="gaProgressFill" style="width:0%"></div>
-        </div>
+  <div class="ga-body">
+    <div class="ga-progress">
+      <div class="ga-progress-fill" id="gaProgressFill" style="width:0%"></div>
+    </div>
 
-        <div class="ga-audio">
-          <button id="gaPlay" class="ga-btn">▶︎ Escolta 10s</button>
-          <span id="gaTimer" class="ga-timer">00:10</span>
-        </div>
+    <div class="ga-audio">
+      <button id="gaPlay" class="ga-btn">▶︎ Escolta 10s</button>
+      <span id="gaTimer" class="ga-timer">00:10</span>
+    </div>
 
-        <form id="gaForm" class="ga-form" autocomplete="off">
-          <input id="gaInput" type="text" placeholder="Títol o artista…" required />
-          <button class="ga-btn" type="submit">Comprova</button>
-        </form>
+    <!-- on pintarem les 3 opcions -->
+    <div id="gaChoices" class="ga-choices"></div>
 
-        <div id="gaMsg" class="ga-msg"></div>
-      </div>
+    <div id="gaMsg" class="ga-msg"></div>
+  </div>
 
-      <footer class="ga-foot">
-        <button id="gaReset" class="ga-btn ghost">Reinicia</button>
-      </footer>
-    </section>
+  <footer class="ga-foot">
+    <button id="gaReset" class="ga-btn ghost">Reinicia</button>
+  </footer>
+</section>
+
 
     <!-- 4) FINAL -->
     <section id="final" class="view" aria-label="Sorpresa final">
