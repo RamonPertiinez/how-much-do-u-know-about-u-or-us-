@@ -11,6 +11,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <!-- Estils del projecte -->
   <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Blindatge: no alterar majúscules/minúscules del riddle */
+    #riddleText { text-transform: none; }
+    /* Accessibilitat focus */
+    :focus-visible { outline:2px solid #22d3ee; outline-offset:2px; }
+  </style>
 </head>
 <body>
   <noscript>
@@ -76,7 +82,7 @@
             </div>
 
             <!-- Input i botons -->
-            <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí"
+            <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí" autocapitalize="off"
               style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--text)" />
             <div style="display:flex;gap:8px;margin-top:8px;">
               <button id="riddleSubmit" class="btn riddle-btn primary">Comprovar resposta</button>
@@ -154,6 +160,5 @@
 
   <!-- JS principal -->
   <script src="js/app.js" defer></script>
-  <style>:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}</style>
 </body>
 </html>
