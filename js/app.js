@@ -34,7 +34,6 @@
     },
     gateRiddle: {
       hint: "Llegeix només les majúscules que veus pel text… potser amaguen una pregunta 😉",
-      // secretPhrase ja no s'utilitza perquè no fem cap injecció
       accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"],
       onCorrect: "revealPassword"
     }
@@ -141,7 +140,7 @@
     // Si hi ha 'text' al config, l’escrivim; si no, respectem l’HTML del index.html
     if (r.text) { riddleText.textContent = r.text; }
 
-    // Cap injecció automàtica de majúscules aquí. El text del HTML és la font de veritat.
+    // (Important) Cap injecció automàtica de majúscules aquí.
 
     riddleHintBtn?.addEventListener('click', ()=>{
       riddleMsg.textContent = r.hint || 'Pista no disponible.';
