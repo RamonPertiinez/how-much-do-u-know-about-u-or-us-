@@ -25,7 +25,7 @@
   const DEFAULT_CONFIG = {
     title: "Tens ganes de saber el teu regal? 😏",
     goal: 8,
-    auth: { username: "laura", password: "08011" },
+    auth: { username: "laura", password: "23062025" },
     final: {
       heading: "🎉 Sorpresa desbloquejada!",
       subheading: "Has superat les proves del meu cor.",
@@ -34,11 +34,10 @@
     },
     gateRiddle: {
       hint: "Llegeix només les majúscules que veus pel text… potser amaguen una pregunta 😉",
-      secretPhrase: "QUIN DIA ENS VAN FER AQUESTA FOTO",
+      // secretPhrase ja no s'utilitza perquè no fem cap injecció
       accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"],
       onCorrect: "revealPassword"
     }
-
   };
 
   const DEFAULT_CHALLENGES = [
@@ -58,40 +57,6 @@
   async function fetchJSON(path,fallback){
     try{ const res=await fetch(path,{cache:"no-cache"}); if(!res.ok) throw new Error(res.status+" "+res.statusText); return await res.json(); }
     catch(e){ console.warn(`[app] No s'ha trobat ${path}. Carregant per defecte.`, e); return structuredClone(fallback); }
-  }
-
-  // --- Amagar frase secreta: QUIN DIA ENS VAN FER AQUESTA FOTO ---
-  function injectSecretCaps(root, phrase){
-    if(!root) return;
-    // 1) treu pista antiga si existís
-    const oldClue = root.querySelector('.clue')?.parentElement;
-    if (oldClue) oldClue.remove();
-
-    // 2) frase → lletres (sense espais/punts) en majúscules
-    const targetLetters = phrase.replace(/[^A-ZÀ-ÖØ-Þ]/gi, '').toUpperCase().split('');
-
-    // 3) camina pels nodes de text i converteix a MAJÚSCULA la següent minúscula que coincideixi
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-    let i = 0;
-    while (walker.nextNode() && i < targetLetters.length){
-      const node = walker.currentNode;
-      const src = node.nodeValue;
-      if (!src || !src.trim()) continue;
-
-      let out = '';
-      for (const ch of src){
-        const isLetter = /[a-zà-öø-ÿ]/i.test(ch);
-        const canUp = isLetter && ch === ch.toLowerCase();
-        if (canUp && i < targetLetters.length && ch.toLowerCase() === targetLetters[i].toLowerCase()){
-          out += ch.toUpperCase();
-          i++;
-        } else {
-          out += ch;
-        }
-      }
-      if (out !== src) node.nodeValue = out;
-    }
-    // Si i < targetLetters.length no fem res visible: queda discret encara que no càpiga tot.
   }
 
   // ---------- Boot ----------
@@ -119,9 +84,8 @@
 
     setupRiddleUI();
 
-      // Amaga la frase a la primera pantalla segons el config
-      injectSecretCaps(riddleText, r.secretPhrase || "QUIN DIA ENS VAN FER AQUESTA FOTO");
-
+    // Reinicia joc (neteja estat i recarrega)
+    qs("#clearCache")?.addEventListener("click", ()=>{ localStorage.clear(); location.reload(true); });
 
     // Login
     els.loginForm?.addEventListener("submit", (e)=>{
@@ -177,8 +141,7 @@
     // Si hi ha 'text' al config, l’escrivim; si no, respectem l’HTML del index.html
     if (r.text) { riddleText.textContent = r.text; }
 
-    // *** NOVETAT: amaga la frase a la primera pantalla ***
-    injectSecretCaps(riddleText, "QUIN DIA ENS VAN FER AQUESTA FOTO");
+    // Cap injecció automàtica de majúscules aquí. El text del HTML és la font de veritat.
 
     riddleHintBtn?.addEventListener('click', ()=>{
       riddleMsg.textContent = r.hint || 'Pista no disponible.';
@@ -190,7 +153,7 @@
         const ok = Array.isArray(r.accept) && r.accept.map(norm).includes(val);
         if(ok){
           riddleMsg.textContent = 'Correcte! Has descobert la pista. 🔓';
-          riddleMsg.style.color = '';
+          riddleMsg.className = 'hint-text';
           if (r.onCorrect === 'revealPassword' && state.config.auth?.password){
             passwordInput.value = state.config.auth.password;
             document.querySelector('#loginForm button[type="submit"]')?.focus();
