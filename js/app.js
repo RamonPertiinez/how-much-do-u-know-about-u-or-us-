@@ -33,7 +33,7 @@
       audio: ""
     },
     gateRiddle: {
-      hint: "Llegeix les majúscules encerclades… potser amaguen una pregunta 😉",
+      hint: "Llegeix només les majúscules que veus pel text… potser amaguen una pregunta 😉",
       accept: ["12072022","12/07/2022","12-07-2022","12 juliol 2022"],
       onCorrect: "revealPassword"
     }
@@ -56,6 +56,40 @@
   async function fetchJSON(path,fallback){
     try{ const res=await fetch(path,{cache:"no-cache"}); if(!res.ok) throw new Error(res.status+" "+res.statusText); return await res.json(); }
     catch(e){ console.warn(`[app] No s'ha trobat ${path}. Carregant per defecte.`, e); return structuredClone(fallback); }
+  }
+
+  // --- Amagar frase secreta: QUIN DIA ENS VAN FER AQUESTA FOTO ---
+  function injectSecretCaps(root, phrase){
+    if(!root) return;
+    // 1) treu pista antiga si existís
+    const oldClue = root.querySelector('.clue')?.parentElement;
+    if (oldClue) oldClue.remove();
+
+    // 2) frase → lletres (sense espais/punts) en majúscules
+    const targetLetters = phrase.replace(/[^A-ZÀ-ÖØ-Þ]/gi, '').toUpperCase().split('');
+
+    // 3) camina pels nodes de text i converteix a MAJÚSCULA la següent minúscula que coincideixi
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    let i = 0;
+    while (walker.nextNode() && i < targetLetters.length){
+      const node = walker.currentNode;
+      const src = node.nodeValue;
+      if (!src || !src.trim()) continue;
+
+      let out = '';
+      for (const ch of src){
+        const isLetter = /[a-zà-öø-ÿ]/i.test(ch);
+        const canUp = isLetter && ch === ch.toLowerCase();
+        if (canUp && i < targetLetters.length && ch.toLowerCase() === targetLetters[i].toLowerCase()){
+          out += ch.toUpperCase();
+          i++;
+        } else {
+          out += ch;
+        }
+      }
+      if (out !== src) node.nodeValue = out;
+    }
+    // Si i < targetLetters.length no fem res visible: queda discret encara que no càpiga tot.
   }
 
   // ---------- Boot ----------
@@ -139,6 +173,9 @@
 
     // Si hi ha 'text' al config, l’escrivim; si no, respectem l’HTML del index.html
     if (r.text) { riddleText.textContent = r.text; }
+
+    // *** NOVETAT: amaga la frase a la primera pantalla ***
+    injectSecretCaps(riddleText, "QUIN DIA ENS VAN FER AQUESTA FOTO");
 
     riddleHintBtn?.addEventListener('click', ()=>{
       riddleMsg.textContent = r.hint || 'Pista no disponible.';
