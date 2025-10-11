@@ -7,37 +7,38 @@
   // Cada pista: fitxer d'àudio + 3 opcions + índex correcte (0..2)
   // He copiat literalment les teves notes (les "LA BONA").
   const TRACKS = [
-    {
-      file: "audio/game1/track1.mp3",
-      artist: "Ginestà",
-      options: ["Un piset amb tu", "T’estimo molt", "Ulls d’avellana"],
-      correctIndex: 2, // <-- la bona
-    },
-    {
-      file: "audio/game1/track2.mp3",
-      artist: "Manel",
-      options: ["Els guapos són els raros", "En la que el Bernat se’t troba", "Teresa Rampell"],
-      correctIndex: 0, // <-- la bona
-    },
-    {
-      file: "audio/game1/track3.mp3",
-      artist: "Oques Grasses",
-      options: ["La gent que estimo", "Sort de tu", "De bonesh"],
-      correctIndex: 2, // <-- la bona (tal com ho tens escrit)
-    },
-    {
-      file: "audio/game1/track4.mp3",
-      artist: "The Tyets",
-      options: ["Tàndem", "Canilla", "Sushi Poke"],
-      correctIndex: 1, // <-- la bona
-    },
-    {
-      file: "audio/game1/track5.mp3",
-      artist: "Txarango",
-      options: ["La dansa del vestit", "Músic de carrer", "Sou persones"],
-      correctIndex: 2, // <-- la bona
-    },
-  ];
+  {
+    file: "assets/audio/game1/track1.mp3",
+    artist: "Ginestà",
+    options: ["Un piset amb tu", "T’estimo molt", "Ulls d’avellana"],
+    correctIndex: 2,
+  },
+  {
+    file: "assets/audio/game1/track2.mp3",
+    artist: "Manel",
+    options: ["Els guapos són els raros", "En la que el Bernat se’t troba", "Teresa Rampell"],
+    correctIndex: 0,
+  },
+  {
+    file: "assets/audio/game1/track3.mp3",
+    artist: "Oques Grasses",
+    options: ["La gent que estimo", "Sort de tu", "De bonesh"],
+    correctIndex: 2,
+  },
+  {
+    file: "assets/audio/game1/track4.mp3",
+    artist: "The Tyets",
+    options: ["Tàndem", "Canilla", "Sushi Poke"],
+    correctIndex: 1,
+  },
+  {
+    file: "assets/audio/game1/track5.mp3",
+    artist: "Txarango",
+    options: ["La dansa del vestit", "Músic de carrer", "Sou persones"],
+    correctIndex: 2,
+  },
+];
+
 
   const CLIP_SECONDS = 10;
 
@@ -77,47 +78,30 @@
     clearTimeout(endTimer);
   };
 
-  const playClip = async () => {
-    stopAudio();
-    audio = new Audio(TRACKS[idx].file);
-    elPlay.disabled = true;
-    setMsg(`Escoltant fragment… (${TRACKS[idx].artist})`);
-    playing = true;
+ const playClip = async () => {
+  stopAudio();
+  audio = new Audio(TRACKS[idx].file);
+  elPlay.disabled = true;
+  setMsg(`Escoltant fragment… (${TRACKS[idx].artist})`);
+  try {
+    audio.load();                      // <- assegura la càrrega
+    await audio.play();                // <- primer intent
+  } catch (err) {
+    setMsg("Prem ▶︎ un altre cop per permetre l'àudio 🎧");
+    elPlay.disabled = false;
+    return;
+  }
+  // compte enrere de 10s
+  let remain = CLIP_SECONDS;
+  elTimer.textContent = `00:${String(remain).padStart(2, "0")}`;
+  const tick = setInterval(() => {
+    remain -= 1;
+    elTimer.textContent = `00:${String(Math.max(remain, 0)).padStart(2, "0")}`;
+    if (remain <= 0) clearInterval(tick);
+  }, 1000);
+  endTimer = setTimeout(() => { stopAudio(); setMsg("Temps!"); }, CLIP_SECONDS * 1000);
+};
 
-    try {
-      await audio.play();
-      let remain = CLIP_SECONDS;
-      elTimer.textContent = `00:${String(remain).padStart(2, "0")}`;
-
-      const tick = setInterval(() => {
-        if (!playing) return clearInterval(tick);
-        remain -= 1;
-        elTimer.textContent = `00:${String(Math.max(remain, 0)).padStart(2, "0")}`;
-        if (remain <= 0) clearInterval(tick);
-      }, 1000);
-
-      endTimer = setTimeout(() => {
-        stopAudio();
-        setMsg("Temps!");
-      }, CLIP_SECONDS * 1000);
-    } catch (e) {
-      setMsg("No puc reproduir l'àudio (permisos del navegador?).", "err");
-      elPlay.disabled = false;
-    }
-  };
-
-  const paintChoices = () => {
-    const tr = TRACKS[idx];
-    elChoices.innerHTML = "";
-    tr.options.forEach((label, i) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "ga-choice";
-      btn.textContent = label;
-      btn.addEventListener("click", () => onChoice(i, btn));
-      elChoices.appendChild(btn);
-    });
-  };
 
   const resetGame = (announce = true) => {
     stopAudio();
