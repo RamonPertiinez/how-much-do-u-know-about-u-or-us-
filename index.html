@@ -71,18 +71,6 @@
               quina és la contrasenya? fixa’t bé que hi ha majúscules en el text… però aquestes majúscules no tenen gaire sentit, no? o sí...? 👀</p>
 
               <p>molta sort, guapa 💕 i espero que no et costi gaire jejejejeje 😜</p>
-
-              <!-- PISTA ENCERCADA -->
-              <p class="muted" style="margin-top:14px;">
-                <span class="clue">Q</span><span class="clue">U</span><span class="clue">I</span><span class="clue">N</span>
-                <span class="clue">D</span><span class="clue">I</span><span class="clue">A</span>
-                <span class="clue">E</span><span class="clue">N</span><span class="clue">S</span>
-                <span class="clue">V</span><span class="clue">A</span><span class="clue">N</span>
-                <span class="clue">F</span><span class="clue">E</span><span class="clue">R</span>
-                <span class="clue">A</span>
-                <span class="clue">Q</span><span class="clue">U</span><span class="clue">E</span><span class="clue">S</span><span class="clue">T</span><span class="clue">A</span>
-                <span class="clue">F</span><span class="clue">O</span><span class="clue">T</span><span class="clue">O</span>❓
-              </p>
             </div>
 
             <!-- Input i botons -->
@@ -144,7 +132,7 @@
         <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
         <p id="finalSubheading" class="lead">Has superat les proves del meu cor. Ara prepara't…</p>
 
-        <div class="final-card">
+      <div class="final-card">
           <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
           <p id="finalBody">
             Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛
@@ -162,7 +150,53 @@
 
   </div>
 
+  <!-- JS principal -->
   <script src="js/app.js" defer></script>
+
+  <!-- Injecció de majúscules per ocultar la frase a la primera pantalla -->
+  <script defer>
+  (function () {
+    // Quan el DOM està llest:
+    window.addEventListener('DOMContentLoaded', function () {
+      const root = document.getElementById('riddleText');
+      if (!root) return;
+
+      // 1) Si per error hi hagués la pista antiga, elimina-la
+      const oldClue = root.querySelector('.clue')?.parentElement;
+      if (oldClue) oldClue.remove();
+
+      // 2) Frase secreta (sense signes) -> s'incrusta com a MAJÚSCULES dins del text existent
+      const target = 'QUIN DIA ENS VAN FER AQUESTA FOTO';
+      const letters = target.replace(/[^A-ZÀ-ÖØ-Þ]/g, '').toUpperCase().split('');
+
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let i = 0;
+
+      while (walker.nextNode() && i < letters.length) {
+        const node = walker.currentNode;
+        const src = node.nodeValue;
+        if (!src || !src.trim()) continue;
+
+        let out = '';
+        for (const ch of src) {
+          const isLetter = /[a-zà-öø-ÿ]/i.test(ch);          // lletra unicode
+          const canUp = isLetter && ch === ch.toLowerCase();  // només si és minúscula
+          if (i < letters.length && canUp && ch.toLowerCase() === letters[i].toLowerCase()) {
+            out += ch.toUpperCase(); // inserim la majúscula de la frase
+            i++;
+          } else {
+            out += ch;
+          }
+        }
+        if (out !== src) node.nodeValue = out;
+      }
+
+      // Opcional (debug suau): si no s'han pogut injectar totes, no fem res visible.
+      // console.log('Majúscules injectades:', i, '/', letters.length);
+    });
+  })();
+  </script>
+
   <style>:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}</style>
 </body>
 </html>
