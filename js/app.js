@@ -114,6 +114,36 @@
     els.btnRestart?.addEventListener("click", ()=>{ localStorage.removeItem(storageKey); state.solved={}; state.score=0; swap(VIEWS.gate); });
 
     log("Inici OK");
+
+    // 🔌 Connectar Joc 1 (Endevina la cançó)
+    wireGame1Hooks();
+
+    // (OPCIONAL) Obrir el Joc 1 directament des d'una tile "Endevina la cançó"
+    installOpenGame1FromTile();
+  }
+
+  // ---------- Opcional: Obrir el Joc 1 des d'una tile ----------
+  function installOpenGame1FromTile(){
+    document.addEventListener('click', (ev) => {
+      const tile = ev.target.closest('.tile');
+      if (!tile) return;
+
+      const titleText = (tile.querySelector('h3')?.textContent || '').toLowerCase();
+      // Detecta una tile amb el títol "Endevina la cançó"
+      if (titleText.includes('endevina la cançó')) {
+        // Amaga vistes natives i mostra la secció del Joc 1
+        Object.values(VIEWS).forEach(el=>el.classList.remove('active'));
+        const gameView = document.querySelector('#game-audio');
+        if (gameView) {
+          // Assegurem que el HUB no sigui la vista activa
+          VIEWS.hub.classList.remove('active');
+          gameView.hidden = false;
+          gameView.classList.add('active');
+          ev.preventDefault();
+          ev.stopPropagation();
+        }
+      }
+    }, true);
   }
 
   // ---------- Riddle ----------
@@ -139,8 +169,6 @@
 
     // Si hi ha 'text' al config, l’escrivim; si no, respectem l’HTML del index.html
     if (r.text) { riddleText.textContent = r.text; }
-
-    // (Important) Cap injecció automàtica de majúscules aquí.
 
     riddleHintBtn?.addEventListener('click', ()=>{
       riddleMsg.textContent = r.hint || 'Pista no disponible.';
@@ -255,5 +283,42 @@
       els.feedback.textContent="Mmm… intenta-ho una altra vegada!"; els.feedback.className="msg err";
       if(ch.type==="image-guess"){ const img=els.chContent.querySelector("img"); if(img) img.style.filter="blur(3px)"; }
     }
+  }
+
+  // ---------- Integració del Joc 1 (hooks) ----------
+  function wireGame1Hooks(){
+    const tryHook = () => {
+      if (!window.GameAudioGuess) { setTimeout(tryHook, 50); return; }
+
+      const hubView  = VIEWS.hub;
+      const gameView = document.querySelector('#game-audio');
+
+      // Evita sumar punts múltiples si es rejuga
+      const GAME_ID = 'game1-audio';
+
+      window.GameAudioGuess.onWin = () => {
+        if (!state.solved[GAME_ID]) {
+          state.solved[GAME_ID] = true;
+          state.score += 1;
+          save();
+        }
+        // Torna al HUB i refresca UI
+        if (gameView) gameView.hidden = true;
+        Object.values(VIEWS).forEach(el => el.classList.remove('active'));
+        VIEWS.hub.classList.add('active');
+
+        renderGrid();
+        updateProgress();
+      };
+
+      window.GameAudioGuess.onFail = () => {
+        if (navigator.vibrate) navigator.vibrate(80);
+        log("Joc 1 fallat: reinici.");
+      };
+
+      log("Hooks del Joc 1 connectats");
+    };
+
+    tryHook();
   }
 })();
