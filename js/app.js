@@ -34,9 +34,11 @@
     },
     gateRiddle: {
       hint: "Llegeix només les majúscules que veus pel text… potser amaguen una pregunta 😉",
-      accept: ["12072022","12/07/2022","12-07-2022","12 juliol 2022"],
+      secretPhrase: "QUIN DIA ENS VAN FER AQUESTA FOTO",
+      accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"],
       onCorrect: "revealPassword"
     }
+
   };
 
   const DEFAULT_CHALLENGES = [
@@ -117,8 +119,9 @@
 
     setupRiddleUI();
 
-    // Reinicia joc (neteja estat i recarrega)
-    qs("#clearCache")?.addEventListener("click", ()=>{ localStorage.clear(); location.reload(true); });
+      // Amaga la frase a la primera pantalla segons el config
+      injectSecretCaps(riddleText, r.secretPhrase || "QUIN DIA ENS VAN FER AQUESTA FOTO");
+
 
     // Login
     els.loginForm?.addEventListener("submit", (e)=>{
