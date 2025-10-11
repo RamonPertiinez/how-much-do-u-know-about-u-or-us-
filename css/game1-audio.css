@@ -22,4 +22,14 @@
 .ga-msg.ok{color:#79df88}
 .ga-msg.err{color:#ff9090}
 
+/* …(mantén el que ja tens a game1-audio.css)… */
+
+/* Opcions multiple-choice */
+.ga-choices{display:grid;gap:10px;margin-top:10px}
+.ga-choice{border:1px solid #333;background:#0c0c0c;color:#eee;border-radius:12px;padding:12px;cursor:pointer}
+.ga-choice:hover{background:#151515}
+.ga-choice.correct{outline:2px solid #6bdc7a}
+.ga-choice.wrong{outline:2px solid #ff8080}
+
+
 .ga-foot{margin-top:12px;display:flex;justify-content:flex-end}
