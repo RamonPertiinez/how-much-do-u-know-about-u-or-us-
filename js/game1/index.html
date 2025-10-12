@@ -1,1 +1,54 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Joc 2 — On es va fer la foto?</title>
+
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="game2.css">
+</head>
+<body>
+  <header class="wrap">
+    <a class="back" href="../../index.html">← Tornar</a>
+    <h1>Joc 2 · On es va fer la foto?</h1>
+    <p class="intro">
+      Prem <strong>Començar</strong>: el vídeo començarà i s’activarà un <strong>comptador</strong>.
+      Tria el lloc correcte al desplegable. Només n’hi ha <strong>1 de correcte</strong>.
+    </p>
+  </header>
+
+  <main class="wrap">
+    <section class="player">
+      <video id="clip" preload="metadata" playsinline>
+        <source src="../../assets/video/game2/reveal.mp4" type="video/mp4">
+        El teu navegador no pot reproduir el vídeo.
+      </video>
+
+      <div class="controls">
+        <button id="btnStart">▶︎ Començar</button>
+        <button id="btnPause" disabled>⏸️ Pausa</button>
+        <div class="timer">
+          Temps: <span id="time">00:30</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz">
+      <label for="guess"><strong>On es va fer la foto?</strong></label>
+      <select id="guess" disabled>
+        <option value="" selected disabled>Selecciona un estany del Pirineu català…</option>
+      </select>
+      <button id="btnSubmit" disabled>Respondre</button>
+      <p id="feedback" class="feedback"></p>
+      <div id="after" class="after hidden">
+        <a class="btn" href="../../index.html">Tornar al menú</a>
+        <button id="btnReplay" class="btn">Tornar a jugar</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="game2.js"></script>
+</body>
+</html>
 
