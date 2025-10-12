@@ -7,6 +7,7 @@
   const $now     = qs('#gaNow');
   const $msg     = qs('#gaMsg');
   const $reset   = qs('#gaReset');
+  const $toHub   = qs('#gaToHub'); // 🆕
   const $choices = qs('#gaChoices');
   const $pfill   = qs('#gaProgressFill');
 
@@ -34,49 +35,22 @@
   const basePath = computeBasePath();
 
   // ---------- Tracks ----------
-  // Assegura't que existeixen aquests fitxers a assets/audio/game1/
   const TRACKS = [
-    {
-      // 1) Ginestà
-      file: 'assets/audio/game1/track1.mp3',
-      artist: 'Ginestà',
-      options: ['Un piset amb tu', 'T’estimo molt', 'Ulls d’avellana'],
-      correctIndex: 2
-    },
-    {
-      // 2) Manel
-      file: 'assets/audio/game1/track2.mp3',
-      artist: 'Manel',
-      options: ['Els guapos són els raros', 'En la que el Bernat se’t troba', 'Teresa Rampell'],
-      correctIndex: 0
-    },
-    {
-      // 3) Oques Grasses
-      file: 'assets/audio/game1/track3.mp3',
-      artist: 'Oques Grasses',
-      options: ['La gent que estimo', 'Sort de tu', 'De bonesh'],
-      correctIndex: 2
-    },
-    {
-      // 4) The Tyets
-      file: 'assets/audio/game1/track4.mp3',
-      artist: 'The Tyets',
-      options: ['Tàndem', 'Camil·la', 'Sushi Poke'],
-      correctIndex: 1
-    },
-    {
-      // 5) Txarango
-      file: 'assets/audio/game1/track5.mp3',
-      artist: 'Txarango',
-      options: ['La dansa del vestit', 'Músic de carrer', 'Som persones'],
-      correctIndex: 2
-    },
+    { file: 'assets/audio/game1/track1.mp3', artist: 'Ginestà',
+      options: ['Un piset amb tu', 'T’estimo molt', 'Ulls d’avellana'], correctIndex: 2 },
+    { file: 'assets/audio/game1/track2.mp3', artist: 'Manel',
+      options: ['Els guapos són els raros', 'En la que el Bernat se’t troba', 'Teresa Rampell'], correctIndex: 0 },
+    { file: 'assets/audio/game1/track3.mp3', artist: 'Oques Grasses',
+      options: ['La gent que estimo', 'Sort de tu', 'De bonesh'], correctIndex: 2 },
+    { file: 'assets/audio/game1/track4.mp3', artist: 'The Tyets',
+      options: ['Tàndem', 'Camil·la', 'Sushi Poke'], correctIndex: 1 },
+    { file: 'assets/audio/game1/track5.mp3', artist: 'Txarango',
+      options: ['La dansa del vestit', 'Músic de carrer', 'Som persones'], correctIndex: 2 },
   ];
 
   // ---------- Estat ----------
-  let current = 0;        // índex de pista
-  let audioEl = null;     // objecte Audio
-  let timeId  = null;     // interval per actualitzar el comptador
+  let current = 0;
+  let audioEl = null;
 
   // ---------- Helpers ----------
   const buildUrl = (rel) => {
@@ -89,7 +63,6 @@
   const attachAudioEvents = (a) => {
     a.addEventListener('timeupdate', () => setTime(a.currentTime));
     a.addEventListener('ended', () => {
-      // S'ha acabat la cançó: demanem resposta
       setMsg('🎧 Ha acabat el fragment. Tria la resposta!', 'info');
     });
     a.addEventListener('error', () => setMsg('No s’ha pogut carregar l’àudio.', 'err'));
@@ -97,14 +70,7 @@
     a.addEventListener('pause', () => setMsg('⏸️ Pausa', 'info'));
   };
 
-  const stopTimers = () => {
-    if (timeId) { clearInterval(timeId); timeId = null; }
-  };
-
-  const stopPlayback = () => {
-    stopTimers();
-    if (audioEl) { try { audioEl.pause(); } catch {} }
-  };
+  const stopPlayback = () => { if (audioEl) { try { audioEl.pause(); } catch {} } };
 
   const updateProgress = () => {
     const pct = Math.round((current / TRACKS.length) * 100);
@@ -126,7 +92,9 @@
   };
 
   const loadTrack = () => {
-    // prepara la pista actual
+    // amaga el botó de tornar mentre jugues
+    if ($toHub) $toHub.style.display = 'none';
+
     stopPlayback();
     setTime(0);
     const t = TRACKS[current];
@@ -142,32 +110,27 @@
 
   const play = async () => {
     if (!audioEl) loadTrack();
-    try {
-      await audioEl.play();
-    } catch (e) {
-      setMsg('No s’ha pogut iniciar la reproducció. Torna-ho a provar.', 'err');
-      log(e);
-    }
+    try { await audioEl.play(); }
+    catch (e) { setMsg('No s’ha pogut iniciar la reproducció. Torna-ho a provar.', 'err'); }
   };
 
-  const pause = () => {
-    if (audioEl) { try { audioEl.pause(); } catch {} }
+  const pause = () => { if (audioEl) { try { audioEl.pause(); } catch {} } };
+
+  // 🆕 quan es completa el joc, mostra botó i permet tornar al HUB
+  const finishGame = () => {
+    setMsg('🎉 Has completat el joc d’àudio!', 'ok');
+    $play?.setAttribute('disabled','disabled');
+    $pause?.setAttribute('disabled','disabled');
+    [...$choices.querySelectorAll('button')].forEach(b => b.setAttribute('disabled','disabled'));
+    if ($toHub) $toHub.style.display = ''; // mostra "Torna al mapa"
   };
 
   const goToNext = () => {
     current += 1;
     updateProgress();
-    if (current >= TRACKS.length) {
-      setMsg('🎉 Has completat el joc d’àudio!', 'ok');
-      // inhabilita controls
-      $play?.setAttribute('disabled','disabled');
-      $pause?.setAttribute('disabled','disabled');
-      [...$choices.querySelectorAll('button')].forEach(b => b.setAttribute('disabled','disabled'));
-      return;
-    }
+    if (current >= TRACKS.length) return finishGame();
     loadTrack();
-    // autoplay de la següent pista
-    play();
+    play(); // autoplay de la següent pista
   };
 
   const resetGame = () => {
@@ -177,6 +140,7 @@
     setMsg('');
     $play?.removeAttribute('disabled');
     $pause?.removeAttribute('disabled');
+    if ($toHub) $toHub.style.display = 'none';
     loadTrack();
   };
 
@@ -192,6 +156,21 @@
       resetGame();
     }
   };
+
+  // 🆕 tornar al HUB quan prems el botó
+  $toHub?.addEventListener('click', () => {
+    // amaga el joc d’àudio
+    const game = document.querySelector('#game-audio');
+    if (game) game.setAttribute('hidden', '');
+
+    // mostra el HUB
+    const hub = document.querySelector('#hub');
+    if (hub) hub.classList.add('active');
+
+    // (opcional) envia un esdeveniment per si app.js en vol fer res
+    document.dispatchEvent(new CustomEvent('game:audio:completed'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   // ---------- Esdeveniments ----------
   $play?.addEventListener('click', play);
