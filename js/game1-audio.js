@@ -18,8 +18,6 @@
   const setTimer = (s) => ($timer.textContent = `00:${String(s).padStart(2,'0')}`);
 
   // ---------- Base path robust ----------
-  // - Si hi ha <base>, fem servir document.baseURI
-  // - Altrament, detectem el primer segment del path (GitHub Pages de projectes)
   const computeBasePath = () => {
     const hasBase = !!document.querySelector('base[href]');
     if (hasBase) return new URL('.', document.baseURI).pathname;
@@ -30,29 +28,41 @@
   log('basePath:', basePath);
 
   // ---------- Tracks del joc ----------
-  // Mantén rutes RELATIVES (sense barra inicial).
+  // ⚠️ Deixa les rutes RELATIVES (sense barra inicial) i assegura't que els fitxers existeixen.
   const TRACKS = [
     {
+      // 1) Ginestà
       file: 'assets/audio/game1/track1.mp3',
       artist: 'Ginestà',
       options: ['Un piset amb tu', 'T’estimo molt', 'Ulls d’avellana'],
       correctIndex: 2
     },
-    // Si vols afegir més cançons, afegeix-les aquí amb el mateix format.
+    {
+      // 2) Manel  (ADAPTA les opcions exactes si vols d’altres)
+      file: 'assets/audio/game1/track2.mp3',
+      artist: 'Manel',
+      options: ['Benvolgut', 'En la que el Bernat se’t troba', 'Al mar!'],
+      correctIndex: 1
+    },
+    // ↓ si vols més pistes, afegeix aquí
+    // {
+    //   file: 'assets/audio/game1/track3.mp3',
+    //   artist: 'Artista X',
+    //   options: ['Opció A', 'Opció B', 'Opció C'],
+    //   correctIndex: 0
+    // },
   ];
 
   // ---------- Estat ----------
-  let current = 0;
-  let audioEl = null;
-  let countdownId = null;
+  let current = 0;        // índex de la pista actual
+  let audioEl = null;     // objecte <audio> en memòria
+  let countdownId = null; // interval del compte enrere
 
   // ---------- Helpers URL ----------
   const buildUrl = (rel) => {
-    // Si hi ha <base>, new URL() ja ho resol bé
     if (document.querySelector('base[href]')) {
       return new URL(rel.replace(/^\/+/, ''), document.baseURI).href;
     }
-    // Fallback: concatenar basePath + rel net
     return `${basePath}${rel.replace(/^\/+/, '')}`;
   };
 
@@ -79,25 +89,16 @@
     setTimer(10);
   };
 
-  const resetGame = () => {
-    stopPlayback();
-    current = 0;
-    setTimer(10);
-    setMsg('');
-    updateProgress();
-    renderChoices();
-  };
-
   const updateProgress = () => {
-    // Exemple simple: percentatge segons quantes cançons hauries passat (pots ajustar-ho si afegeixes més)
-    const pct = Math.floor((current / TRACKS.length) * 100);
+    // percentatge segons en quina pista estem (0..len)
+    const pct = Math.round((current / TRACKS.length) * 100);
     if ($pfill) $pfill.style.width = `${pct}%`;
   };
 
-  // ---------- UI: opcions ----------
   const renderChoices = () => {
     const t = TRACKS[current];
     if (!$choices || !t) return;
+
     $choices.innerHTML = '';
     t.options.forEach((label, i) => {
       const btn = document.createElement('button');
@@ -109,28 +110,41 @@
     });
   };
 
+  const goToNextTrack = () => {
+    current += 1;
+    updateProgress();
+    stopPlayback();          // assegura que no quedi res sonant
+    setMsg('');              // neteja missatge
+    setTimer(10);            // reseteja el comptador
+    if (current >= TRACKS.length) {
+      setMsg('🎉 Has completat el joc d’àudio!', 'ok');
+      // opcionalment, deshabilita botó de play/choices
+      $play?.setAttribute('disabled', 'disabled');
+      [...$choices.querySelectorAll('button')].forEach(b => b.setAttribute('disabled','disabled'));
+    } else {
+      renderChoices();       // pinta les noves opcions de la nova pista
+    }
+  };
+
   const onChoose = (idx) => {
     const t = TRACKS[current];
     if (!t) return;
+
     stopPlayback();
+
     if (idx === t.correctIndex) {
-      setMsg('✅ Correcte! Seguim…', 'ok');
-      current = Math.min(current + 1, TRACKS.length); // avança
-      updateProgress();
-      if (current >= TRACKS.length) {
-        setMsg('🎉 Has completat el joc d’àudio!', 'ok');
-      } else {
-        renderChoices();
-      }
+      setMsg('✅ Correcte! Següent pista…', 'ok');
+      // Espera uns ms perquè l’usuària vegi el missatge i canvia de pista
+      setTimeout(goToNextTrack, 300);
     } else {
       setMsg('❌ Incorrecte! Reinicio el joc.', 'err');
       resetGame();
     }
   };
 
-  // ---------- Reproducció 10 segons ----------
   const play10s = async () => {
     stopPlayback();
+
     const t = TRACKS[current];
     if (!t) {
       setMsg('No queda cap pista per reproduir.', 'err');
@@ -138,36 +152,33 @@
     }
 
     const url = buildUrl(t.file);
-    log('URL pista:', url);
+    log(`Pista ${current+1}/${TRACKS.length}:`, t.artist, url);
 
     setMsg('Comprovant fitxer…');
     const ok = await headCheck(url);
     if (!ok) {
-      setMsg('No s’ha trobat l’MP3 (404). Revisa el nom del repo o la ruta.', 'err');
-      log('Recorda: amb repo "how-much-do-u-know-about-u-or-us--main", la URL ha de començar per /how-much-do-u-know-about-u-or-us--main/');
+      setMsg('No s’ha trobat l’MP3 (404). Revisa la ruta o el nom del repo.', 'err');
       return;
     }
 
-    setMsg('Carregant i reproduint 10s…');
+    setMsg(`Reproduint 10s — ${t.artist}…`);
 
-    // Usa <audio> invisible via JS per evitar problemes d’autoplay (cal clic previ)
     audioEl = new Audio(url);
     audioEl.preload = 'auto';
 
-    // Logs útils
     audioEl.addEventListener('canplay', () => log('canplay'));
     audioEl.addEventListener('play',    () => log('play'));
     audioEl.addEventListener('error',   () => log('error event'));
 
     try {
-      await audioEl.play(); // això requereix el clic de l’usuari (ja el tenim amb el botó)
+      await audioEl.play(); // clic d’usuari garantit pel botó
     } catch (e) {
-      setMsg('No s’ha pogut iniciar la reproducció. Torna-ho a provar després del clic.', 'err');
+      setMsg('No s’ha pogut iniciar la reproducció. Torna-ho a provar.', 'err');
       log('play() error', e);
       return;
     }
 
-    // Countdown de 10→0 i pausa
+    // Countdown 10 → 0 i pausa
     let remain = 10;
     setTimer(remain);
     countdownId = setInterval(() => {
@@ -177,16 +188,26 @@
         clearInterval(countdownId);
         countdownId = null;
         try { audioEl.pause(); } catch {}
-        setMsg('⏱️ Temps esgotat. Tria la resposta!', 'info');
+        setMsg('⏱️ Temps! Tria la resposta.', 'info');
       }
     }, 1000);
+  };
+
+  const resetGame = () => {
+    stopPlayback();
+    current = 0;
+    setTimer(10);
+    setMsg('');
+    $play?.removeAttribute('disabled');
+    updateProgress();
+    renderChoices();
   };
 
   // ---------- Esdeveniments ----------
   $play?.addEventListener('click', play10s);
   $reset?.addEventListener('click', resetGame);
 
-  // Inicialitza UI
+  // Inicialitza
   setTimer(10);
   updateProgress();
   renderChoices();
