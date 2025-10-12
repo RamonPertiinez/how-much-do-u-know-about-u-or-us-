@@ -1,9 +1,9 @@
-// ===== Joc 1 - Endevina la cançó (fusion: audio OK + multiple-choice + fallback rutes) =====
+// ===== Joc 1 - Endevina la cançó (multiple-choice) =====
+// Amb fallback automàtic de rutes: assets/ → audio/ → raw.githubusercontent.com
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
 
-  // ---- Config bàsica: només posem EL NOM del fitxer ----
-  // (el codi ja s'encarrega d'afegir la ruta correcta i fer fallback)
+  // Només indiquem el nom del fitxer; les rutes les resol el codi
   const TRACKS = [
     { file: "track1.mp3", artist: "Ginestà",
       options: ["Un piset amb tu", "T’estimo molt", "Ulls d’avellana"], correctIndex: 2 },
@@ -17,13 +17,15 @@
       options: ["La dansa del vestit", "Músic de carrer", "Sou persones"], correctIndex: 2 },
   ];
 
-  // Rutes candidates (1a: amb assets/, 2a: sense)
-  const PATHS = ["assets/audio/game1/", "audio/game1/"];
+  // Bases a provar (ordre)
+  const RAW_BASE = "https://raw.githubusercontent.com/RamonPertinez/how-much-do-u-know-about-u-or-us-/main/assets/audio/game1/";
+  const PATHS = ["assets/audio/game1/", "audio/game1/", RAW_BASE];
+
   const CLIP_SECONDS = 10;
 
-  let idx = 0, audio = null, endTimer = null, pathIdx = 0;
+  let idx = 0, audio = null, endTimer = null, baseIdx = 0;
 
-  const root   = $("#game-audio");
+  const root = $("#game-audio");
   if (!root) return;
 
   const elPlay  = $("#gaPlay", root);
@@ -32,7 +34,7 @@
   const elReset = $("#gaReset", root);
   const elBar   = $("#gaProgressFill", root);
 
-  // Crea el contenidor d’opcions si no existeix
+  // contenidor d’opcions
   let elChoices = $("#gaChoices", root);
   if (!elChoices) {
     const body = root.querySelector(".ga-body") || root;
@@ -45,7 +47,7 @@
   const setMsg = (txt, cls = "") => { elMsg.className = `ga-msg ${cls}`; elMsg.textContent = txt; };
   const updateProgress = () => { elBar.style.width = `${(idx / TRACKS.length) * 100}%`; };
 
-  const currentSrc = () => PATHS[pathIdx] + TRACKS[idx].file;
+  const srcFor = (iBase) => PATHS[iBase] + TRACKS[idx].file;
 
   const stopAudio = () => {
     try { audio?.pause(); } catch {}
@@ -53,47 +55,51 @@
     elPlay.disabled = false;
   };
 
-  // Intenta reproduir; si falla per 404/MIME, prova l’altra ruta
+  async function tryPlayWithBase(iBase) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        audio = new Audio(srcFor(iBase));
+        audio.preload = "auto";
+        audio.addEventListener("canplay", () => resolve("canplay"), { once: true });
+        audio.addEventListener("error", () => reject(new Error("audio error")), { once: true });
+        audio.load();
+
+        // alguns navegadors no triguen a disparar "canplay"; provem play directament
+        await audio.play();
+        resolve("playing");
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
   const playClip = async () => {
     stopAudio();
-    audio = new Audio(currentSrc());
     elPlay.disabled = true;
     setMsg(`Escoltant fragment… (${TRACKS[idx].artist})`);
 
-    // listener d'error per canviar de ruta si cal
-    let triedFallback = false;
-    const onErr = async () => {
-      // prova fallback de ruta un sol cop
-      if (!triedFallback && pathIdx + 1 < PATHS.length) {
-        triedFallback = true;
-        pathIdx += 1;
-        audio.src = currentSrc();
-        try {
-          audio.load();
-          await audio.play();
-          afterPlayCountdown(); // èxit amb fallback
-          return;
-        } catch { /* si també falla, caurà al catch de sota */ }
+    // Prova seqüencialment totes les bases
+    let played = false;
+    for (let i = baseIdx; i < PATHS.length; i++) {
+      try {
+        await tryPlayWithBase(i);
+        baseIdx = i;         // recorda la base que ha funcionat
+        played = true;
+        break;
+      } catch (e) {
+        // continua amb la següent base
+        continue;
       }
-      // error definitiu
-      setMsg("No puc reproduir l'àudio (ruta o permisos).", "err");
-      console.error("Audio error", audio.error, "src:", audio.src);
-      elPlay.disabled = false;
-    };
-    audio.addEventListener("error", onErr, { once: true });
-
-    try {
-      audio.load();           // assegura càrrega
-      await audio.play();     // primer intent
-      afterPlayCountdown();
-    } catch (err) {
-      // pot ser autoplay bloquejat; demana segon clic
-      setMsg("Prem ▶︎ un altre cop per permetre l'àudio 🎧");
-      elPlay.disabled = false;
     }
-  };
 
-  function afterPlayCountdown() {
+    if (!played) {
+      setMsg("No puc reproduir l'àudio (404 o permisos).", "err");
+      console.error("No playable source for:", TRACKS[idx].file, "tested:", PATHS);
+      elPlay.disabled = false;
+      return;
+    }
+
+    // compte enrere
     let remain = CLIP_SECONDS;
     elTimer.textContent = `00:${String(remain).padStart(2, "0")}`;
     const tick = setInterval(() => {
@@ -102,7 +108,7 @@
       if (remain <= 0) clearInterval(tick);
     }, 1000);
     endTimer = setTimeout(() => { stopAudio(); setMsg("Temps!"); }, CLIP_SECONDS * 1000);
-  }
+  };
 
   const paintChoices = () => {
     const tr = TRACKS[idx];
@@ -164,7 +170,6 @@
   paintChoices();
   elTimer.textContent = `00:${String(CLIP_SECONDS).padStart(2, "0")}`;
 
-  // API per integrar amb l'app
   window.GameAudioGuess = {
     show() { root.hidden = false; },
     hide() { root.hidden = true;  },
