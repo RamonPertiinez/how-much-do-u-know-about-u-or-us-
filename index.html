@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#0f0f14" />
 
-  <!-- 👇 ajusta-ho si el nom del repo és un altre, o elimina-ho si prefereixes -->
+  <!-- 👇 Mantinc el base href per a GitHub Pages; ajusta el nom del repo si cal -->
   <base href="/how-much-do-u-know-about-u-or-us-/">
 
   <!-- Fonts i CSS -->
@@ -19,6 +19,21 @@
   <style>
     #riddleText { text-transform: none; }
     :focus-visible { outline:2px solid #22d3ee; outline-offset:2px; }
+    /* Targeta llançadora del Joc 2 (coherent amb estil existent) */
+    .game-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .game-card h2 { margin: 0 0 6px; font-size: clamp(18px, 2.2vw, 22px); }
+    .game-card .sub { color: rgba(255,255,255,0.7); margin: 0 0 12px; }
+    .game-card .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .btn.linklike { text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -120,8 +135,8 @@
       </div>
     </section>
 
-    <!-- Joc 1: Endevina la cançó -->
-    <section id="game-audio" class="game-card">
+    <!-- Joc 1: Endevina la cançó (integrat dins l'index) -->
+    <section id="game-audio" class="game-card" aria-label="Joc 1: Endevina la cançó">
       <header class="ga-head">
         <h2>🎵 Endevina la cançó</h2>
         <p class="ga-sub">Escolta i tria la <b>cançó correcta</b>. Si en falles una, es reinicia!</p>
@@ -140,12 +155,23 @@
         <div id="gaMsg" class="ga-msg"></div>
       </div>
 
-<footer class="ga-foot">
-  <button id="gaReset" class="ga-btn ghost">Reinicia</button>
-  <!-- 🆕 Botó per tornar al mapa (apareix en completar el joc) -->
-  <button id="gaToHub" class="ga-btn" style="display:none">Torna al mapa</button>
-</footer>
+      <footer class="ga-foot">
+        <button id="gaReset" class="ga-btn ghost">Reinicia</button>
+        <!-- 🆕 Botó per tornar al mapa (apareix en completar el joc) -->
+        <button id="gaToHub" class="ga-btn" style="display:none">Torna al mapa</button>
+      </footer>
+    </section>
 
+    <!-- 🆕 Joc 2: Llençadora cap a la pàgina del joc 2 -->
+    <section id="game-photo-launch" class="game-card" aria-label="Joc 2: On es va fer la foto?">
+      <h2>🎯 Joc 2 — On es va fer la foto?</h2>
+      <p class="sub">Mira un vídeo que s’enfoca a poc a poc i tria el lloc correcte d’un desplegable.</p>
+      <div class="row">
+        <!-- Enllaça a /docs/js/game2/index.html (gràcies al <base> pots posar ruta relativa) -->
+        <a class="btn primary linklike" href="js/game2/" aria-label="Obrir el Joc 2 en aquesta pestanya">▶︎ Obrir Joc 2</a>
+        <a class="btn ghost linklike" href="js/game2/" target="_blank" rel="noopener" aria-label="Obrir el Joc 2 en una pestanya nova">Obrir en una pestanya nova</a>
+      </div>
+      <p class="sub" style="margin-top:8px;">Vídeo: <code>assets/video/game2/reveal.mp4</code> (≤ 25 MB)</p>
     </section>
 
     <!-- 4) FINAL -->
