@@ -8,20 +8,16 @@
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#0f0f14" />
 
-  <!-- 👇 IMPORTANT per GitHub Pages: posa el nom EXACTE del repo -->
+  <!-- 👇 ajusta-ho si el nom del repo és un altre, o elimina-ho si prefereixes -->
   <base href="/how-much-do-u-know-about-u-or-us-/">
 
-
-  <!-- Poppins (text base) -->
+  <!-- Fonts i CSS -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <!-- Estils del projecte -->
   <link rel="stylesheet" href="css/styles.css" />
-  <!-- Estils específics del Joc 1 -->
   <link rel="stylesheet" href="css/game1-audio.css" />
+
   <style>
-    /* Blindatge: no alterar majúscules/minúscules del riddle */
     #riddleText { text-transform: none; }
-    /* Accessibilitat focus */
     :focus-visible { outline:2px solid #22d3ee; outline-offset:2px; }
   </style>
 </head>
@@ -32,7 +28,7 @@
 
   <div id="app">
 
-    <!-- 1) PANTALLA D’AUTENTICACIÓ (amb imatge i riddle) -->
+    <!-- 1) PANTALLA D’ENTRADA -->
     <section id="gate" class="view active" aria-label="Porta d'entrada">
       <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
         <div class="card gate-card on-image" role="dialog" aria-labelledby="gateTitle" aria-describedby="gateDesc">
@@ -44,46 +40,34 @@
           <form id="loginForm" autocomplete="off" style="margin-top:8px;">
             <label for="username">Usuària</label>
             <input id="username" name="username" type="text" placeholder="laura" required />
-
             <label for="password">Contrasenya</label>
             <input id="password" name="password" type="password" placeholder="••••••" required />
-
             <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
               <button type="submit" class="btn primary">Començar</button>
               <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
             </div>
-
             <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
           </form>
 
-          <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">
-            🔄 Reinicia joc
-          </button>
+          <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">🔄 Reinicia joc</button>
 
           <div id="riddleBox" class="riddle" style="display:none;">
             <div id="riddleText" style="font-weight:600;">
-
+              <!-- (…el teu text del riddle… ) -->
               <p>hola guapa 💛 Quines ganes tenia que arribés el teU dia, el teu aniversari, i fer-lo una mica especial encara que estIgui lluny i no ho celebrem en persoNa... per ara 😏<br>
               bueno, qui sap... espera’t 30 segons i mira radera teu 😁 no segueixis llegint per ara.</p>
-
               <p>ja has mirat raDera? què esperaves? jejejeje tan de booooo!!!! 🤭<br>
               queden uns mesets però en res ja estaré per aquí molestant I fent-te abraçades jejeje 🤗</p>
-
               <p>comencem amb això que estàs veient aquí... i et preguntarAs: què és això? com que contrasEnya? com que nom d’usuària? què he de fer? 🤔</p>
-
               <p>t’ho explico molt senzillameNt 💬 això és un joc, una petita experiència per poder arribar a reSoldre el regal final 🎁<br>
               un regal especial que he Volgut fer interactiu, perquè pensis una estonetA i així estiguis distreta uNa mica.<br>
               ho pots anar Fent durant el dia, no cal que ho facis de cop ⏳<br>
               fins i tot sEria una bona idea que jo estigués en tRucada, ves a sAber… ☎️</p>
-
               <p>quan averiguis Quina és la contrasenya 🔐 podràs començar el joc.<br>
               és molt simple: són diferents proves, i si arribes a Una puntuació de 8 encertadEs 🎯 podràS revelar el regal final 💌</p>
-
               <p>comencem pel principi, però 😇<br>
               quina és la contrasenya? fixa’T bé que hi ha mAjúscules en el text… Fins ara bé? però aquestes majúscules no tenen gaire sentit, nO? o sí...? 👀</p>
-
               <p>molTa sort, guapa 💕 i esperO que no et costi gaire jejejejeje 😜</p>
-
             </div>
 
             <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí" autocapitalize="off"
@@ -127,9 +111,7 @@
     <!-- 3) PLAY -->
     <section id="play" class="view" aria-label="Prova en curs">
       <div class="card play-card">
-        <div class="row">
-          <button id="btnBack" class="btn small">⟵ Tornar</button>
-        </div>
+        <div class="row"><button id="btnBack" class="btn small">⟵ Tornar</button></div>
         <h2 id="challengeTitle" class="handSlot">Títol de la prova</h2>
         <p id="challengeIntro" class="muted">Intro de la prova</p>
         <div id="challengeContent" class="content"></div>
@@ -138,21 +120,20 @@
       </div>
     </section>
 
-    <!-- 🆕 Joc 1: Endevina la cançó (Multiple-Choice) -->
+    <!-- Joc 1: Endevina la cançó -->
     <section id="game-audio" class="game-card">
       <header class="ga-head">
         <h2>🎵 Endevina la cançó</h2>
-        <p class="ga-sub">Escolta <b>10 segons</b> i tria la <b>cançó correcta</b>. Si en falles una, es reinicia!</p>
+        <p class="ga-sub">Escolta i tria la <b>cançó correcta</b>. Si en falles una, es reinicia!</p>
       </header>
 
       <div class="ga-body">
-        <div class="ga-progress">
-          <div class="ga-progress-fill" id="gaProgressFill" style="width:0%"></div>
-        </div>
+        <div class="ga-progress"><div class="ga-progress-fill" id="gaProgressFill" style="width:0%"></div></div>
 
         <div class="ga-audio">
-          <button id="gaPlay" class="ga-btn">▶︎ Escolta 10s</button>
-          <span id="gaTimer" class="ga-timer">00:10</span>
+          <button id="gaPlay" class="ga-btn">▶︎ Reprodueix</button>
+          <button id="gaPause" class="ga-btn ghost">⏸️ Pausa</button>
+          <span id="gaNow" class="ga-timer">00:00</span>
         </div>
 
         <div id="gaChoices" class="ga-choices"></div>
@@ -172,9 +153,7 @@
 
         <div class="final-card">
           <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
-          <p id="finalBody">
-            Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛
-          </p>
+          <p id="finalBody">Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛</p>
         </div>
 
         <audio id="finalAudio" class="audio-ctrl" controls preload="none">
@@ -188,7 +167,7 @@
 
   </div>
 
-  <!-- JS principal -->
+  <!-- JS -->
   <script src="js/app.js" defer></script>
   <script src="js/game1-audio.js" defer></script>
 </body>
