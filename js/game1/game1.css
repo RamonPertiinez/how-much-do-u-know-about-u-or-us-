@@ -1,1 +1,20 @@
+:root {
+  --bg:#0f1115; --fg:#e9eef5; --muted:#9aa4b2;
+  --ok:#18b663; --err:#ff6166; --line:#2a2f3a; --card:#171a21; --btn:#2a6df2;
+}
+body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui; }
+.wrap { width:min(960px,92vw); margin:20px auto; }
+.back { color:var(--muted); text-decoration:none; }
+.intro { color:var(--muted); margin-bottom:1em; }
+.player, .quiz { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; }
+.controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.status { color:var(--muted); margin-left:auto; }
+button, .btn { background:var(--btn); color:#fff; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; }
+button[disabled]{opacity:.5; cursor:not-allowed;}
+.options { display:grid; gap:10px; grid-template-columns:1fr; margin-top:10px; }
+.option { background:#0b0d12; border:1px solid var(--line); border-radius:10px; padding:10px; cursor:pointer; }
+.option.correct { outline:2px solid var(--ok); }
+.option.wrong { outline:2px solid var(--err); }
+.feedback { min-height:1.5em; margin-top:8px; }
+.nav { display:flex; gap:10px; margin-top:10px; }
 
