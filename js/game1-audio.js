@@ -27,31 +27,46 @@
   const basePath = computeBasePath();
   log('basePath:', basePath);
 
-  // ---------- Tracks del joc ----------
-  // ⚠️ Deixa les rutes RELATIVES (sense barra inicial) i assegura't que els fitxers existeixen.
-  const TRACKS = [
-    {
-      // 1) Ginestà
-      file: 'assets/audio/game1/track1.mp3',
-      artist: 'Ginestà',
-      options: ['Un piset amb tu', 'T’estimo molt', 'Ulls d’avellana'],
-      correctIndex: 2
-    },
-    {
-      // 2) Manel  (ADAPTA les opcions exactes si vols d’altres)
-      file: 'assets/audio/game1/track2.mp3',
-      artist: 'Manel',
-      options: ['Benvolgut', 'En la que el Bernat se’t troba', 'Al mar!'],
-      correctIndex: 1
-    },
-    // ↓ si vols més pistes, afegeix aquí
-    // {
-    //   file: 'assets/audio/game1/track3.mp3',
-    //   artist: 'Artista X',
-    //   options: ['Opció A', 'Opció B', 'Opció C'],
-    //   correctIndex: 0
-    // },
-  ];
+  // ⚠️ Suposo que els arxius existeixen així:
+// assets/audio/game1/track1.mp3 ... track5.mp3
+const TRACKS = [
+  {
+    // 1) Ginestà
+    file: 'assets/audio/game1/track1.mp3',
+    artist: 'Ginestà',
+    options: ['Un piset amb tu', 'T’estimo molt', 'Ulls d’avellana'],
+    correctIndex: 2
+  },
+  {
+    // 2) Manel
+    file: 'assets/audio/game1/track2.mp3',
+    artist: 'Manel',
+    options: ['Els guapos són els raros', 'En la que el Bernat se’t troba', 'Teresa Rampell'],
+    correctIndex: 0
+  },
+  {
+    // 3) Oques Grasses
+    file: 'assets/audio/game1/track3.mp3',
+    artist: 'Oques Grasses',
+    options: ['La gent que estimo', 'Sort de tu', 'De bonesh'],
+    correctIndex: 2
+  },
+  {
+    // 4) The Tyets
+    file: 'assets/audio/game1/track4.mp3',
+    artist: 'The Tyets',
+    options: ['Tàndem', 'Camil·la', 'Sushi Poke'],
+    correctIndex: 1
+  },
+  {
+    // 5) Txarango
+    file: 'assets/audio/game1/track5.mp3',
+    artist: 'Txarango',
+    options: ['La dansa del vestit', 'Músic de carrer', 'Som persones'],
+    correctIndex: 2
+  },
+];
+
 
   // ---------- Estat ----------
   let current = 0;        // índex de la pista actual
