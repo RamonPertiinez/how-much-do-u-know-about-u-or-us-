@@ -20,25 +20,25 @@
       file: "../../assets/audio/game1/track2.mp3",
       artist: "Manel",
       options: ["Els guapos són els raros", "En la que el Bernat se’t troba", "Boomerang"],
-      correctIndex: 1, // <-- ajusta segons "LA BONA"
+      correctIndex: 0, // <-- ajusta segons "LA BONA"
     },
     {
       file: "../../assets/audio/game1/track3.mp3",
-      artist: "Txarango",
-      options: ["Compta amb mi", "Una lluna a l’aigua", "Vola"],
-      correctIndex: 1,
+      artist: "Oques Grasses",
+      options: ["La Gent que Estimo", "Sort de Tu", "De Bonseh"],
+      correctIndex: 2,
     },
     {
       file: "../../assets/audio/game1/track4.mp3",
-      artist: "Oques Grasses",
-      options: ["Sta Guai", "Serem ocells", "Tornar d’amagat"],
-      correctIndex: 0,
-    },
-    {
-      file: "../../assets/audio/game1/track5.mp3",
       artist: "The Tyets",
-      options: ["Coti x Coti", "Olívia", "Bomba de fum"],
-      correctIndex: 0,
+      options: ["Tandem", "Camila", "Sushi Poke"],
+      correctIndex: 1,
+    },
+        {
+      file: "../../assets/audio/game1/track5.mp3",
+      artist: "Txarango",
+      options: ["La Dansa del Vestit", "Music de Carrer", "Som Perosnes"],
+      correctIndex: 2,
     },
   ];
 
