@@ -68,6 +68,14 @@
     const cfg = await fetchJSON("data/config.json", DEFAULT_CONFIG);
     const chs = await fetchJSON("data/challenges.json", DEFAULT_CHALLENGES);
     state.config = cfg; state.challenges = chs;
+    // ✅ Si el Hub ja estava desbloquejat, mostra'l directament
+if (localStorage.getItem("hmky.hubUnlocked") === "1") {
+  // amaga la porta i obre el Hub
+  VIEWS.gate?.classList.remove("active");
+  VIEWS.gate?.classList.add("hidden");
+  VIEWS.hub?.classList.add("active");
+}
+
 
     // Apply UI config
     document.title = cfg.title || document.title;
@@ -91,10 +99,24 @@
       e.preventDefault();
       try{
         const u = norm(els.user.value), p = els.pass.value;
-        if(u === norm(cfg.auth.username) && p === cfg.auth.password){
-          els.loginMsg.textContent = "Benvinguda 💛"; els.loginMsg.className = "msg ok";
-          setTimeout(()=>{ swap(VIEWS.hub); renderGrid(); updateProgress(); }, 350);
-        } else {
+       if (u === norm(cfg.auth.username) && p === cfg.auth.password) {
+  els.loginMsg.textContent = "Benvinguda 💛";
+  els.loginMsg.className = "msg ok";
+
+  // ✅ marca el Hub com a desbloquejat
+  localStorage.setItem("hmky.hubUnlocked", "1");
+
+  // opcionalment amaga explícitament la Gate
+  VIEWS.gate?.classList.remove("active");
+  VIEWS.gate?.classList.add("hidden");
+
+  setTimeout(() => {
+    swap(VIEWS.hub);
+    renderGrid();
+    updateProgress();
+  }, 350);
+}
+ else {
           els.loginMsg.textContent = "Ups! Credencials incorrectes"; els.loginMsg.className = "msg err";
         }
       }catch(err){ fail("Error al validar credencials", err); }
@@ -178,14 +200,24 @@
       try{
         const val = norm(riddleAnswer.value);
         const ok = Array.isArray(r.accept) && r.accept.map(norm).includes(val);
-        if(ok){
-          riddleMsg.textContent = 'Correcte! Has descobert la pista. 🔓';
-          riddleMsg.className = 'hint-text';
-          if (r.onCorrect === 'revealPassword' && state.config.auth?.password){
-            passwordInput.value = state.config.auth.password;
-            document.querySelector('#loginForm button[type="submit"]')?.focus();
-          }
-        } else {
+        if (ok) {
+  riddleMsg.textContent = 'Correcte! Has descobert la pista. 🔓';
+  riddleMsg.className = 'hint-text';
+
+  // ✅ omple la contrasenya i envia el formulari per entrar al Hub
+  if (r.onCorrect === 'revealPassword' && state.config.auth?.password) {
+    passwordInput.value = state.config.auth.password;
+
+    // Si vols saltar el pas manual, envia el formulari automàticament:
+    const form = document.querySelector('#loginForm');
+    if (form && form.requestSubmit) {
+      form.requestSubmit();     // farà servir el teu handler de login existent
+    } else {
+      document.querySelector('#loginForm button[type="submit"]')?.click();
+    }
+  }
+} 
+ else {
           riddleMsg.textContent = 'No exactament... prova un altre cop o demana una pista.';
           riddleMsg.style.color = 'var(--err)';
         }
