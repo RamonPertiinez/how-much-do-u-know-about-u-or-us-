@@ -55,6 +55,15 @@
       </div>
     </div>
   </div>
+<script>
+  try {
+    const n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if (n && n.type === 'reload') location.replace('../../index.html#hub');
+  } catch {}
+  if (!localStorage.getItem('hmky.hubUnlocked')) {
+    location.replace('../../index.html#hub');
+  }
+</script>
 
   <script src="game3.js"></script>
   <script>
