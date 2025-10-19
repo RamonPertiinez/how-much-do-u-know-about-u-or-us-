@@ -82,12 +82,17 @@
     const chs = await fetchJSON("data/challenges.json", DEFAULT_CHALLENGES);
     state.config = cfg; state.challenges = chs;
 
-    // ✅ Si el Hub ja estava desbloquejat, mostra'l directament
-    if (localStorage.getItem("hmky.hubUnlocked") === "1") {
-      VIEWS.gate?.classList.remove("active");
-      VIEWS.gate?.classList.add("hidden");
-      VIEWS.hub?.classList.add("active");
-    }
+// ✅ Si el Hub ja estava desbloquejat, mostra'l directament
+if (localStorage.getItem("hmky.hubUnlocked") === "1") {
+  VIEWS.gate?.classList.remove("active");
+  VIEWS.gate?.classList.add("hidden");
+  VIEWS.hub?.classList.add("active");
+
+  // ➕ AFEGIR:
+  renderGrid();
+  updateProgress();
+}
+
 
     // Apply UI config
     document.title = cfg.title || document.title;
