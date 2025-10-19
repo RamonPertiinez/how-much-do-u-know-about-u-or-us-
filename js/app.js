@@ -58,6 +58,19 @@
     catch(e){ console.warn(`[app] No s'ha trobat ${path}. Carregant per defecte.`, e); return structuredClone(fallback); }
   }
 
+  // --- Flags de jocs externs (game1/2/3) ---
+  function readExternalFlags(){
+    return {
+      g1: localStorage.getItem('game1_done') === '1',
+      g2: localStorage.getItem('game2_done') === '1',
+      g3: localStorage.getItem('game3_done') === '1',
+    };
+  }
+  function externalPoints(){ // 1 punt per joc completat
+    const f = readExternalFlags();
+    return [f.g1,f.g2,f.g3].filter(Boolean).length;
+  }
+
   // ---------- Boot ----------
   document.addEventListener("DOMContentLoaded", () => {
     try{ boot(); }catch(e){ fail("Error iniciant l’app. Prova a fer Reinicia joc 🔄", e); }
@@ -68,14 +81,13 @@
     const cfg = await fetchJSON("data/config.json", DEFAULT_CONFIG);
     const chs = await fetchJSON("data/challenges.json", DEFAULT_CHALLENGES);
     state.config = cfg; state.challenges = chs;
-    // ✅ Si el Hub ja estava desbloquejat, mostra'l directament
-if (localStorage.getItem("hmky.hubUnlocked") === "1") {
-  // amaga la porta i obre el Hub
-  VIEWS.gate?.classList.remove("active");
-  VIEWS.gate?.classList.add("hidden");
-  VIEWS.hub?.classList.add("active");
-}
 
+    // ✅ Si el Hub ja estava desbloquejat, mostra'l directament
+    if (localStorage.getItem("hmky.hubUnlocked") === "1") {
+      VIEWS.gate?.classList.remove("active");
+      VIEWS.gate?.classList.add("hidden");
+      VIEWS.hub?.classList.add("active");
+    }
 
     // Apply UI config
     document.title = cfg.title || document.title;
@@ -99,24 +111,23 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
       e.preventDefault();
       try{
         const u = norm(els.user.value), p = els.pass.value;
-       if (u === norm(cfg.auth.username) && p === cfg.auth.password) {
-  els.loginMsg.textContent = "Benvinguda 💛";
-  els.loginMsg.className = "msg ok";
+        if (u === norm(cfg.auth.username) && p === cfg.auth.password) {
+          els.loginMsg.textContent = "Benvinguda 💛";
+          els.loginMsg.className = "msg ok";
 
-  // ✅ marca el Hub com a desbloquejat
-  localStorage.setItem("hmky.hubUnlocked", "1");
+          // ✅ marca el Hub com a desbloquejat
+          localStorage.setItem("hmky.hubUnlocked", "1");
 
-  // opcionalment amaga explícitament la Gate
-  VIEWS.gate?.classList.remove("active");
-  VIEWS.gate?.classList.add("hidden");
+          // amaga explícitament la Gate
+          VIEWS.gate?.classList.remove("active");
+          VIEWS.gate?.classList.add("hidden");
 
-  setTimeout(() => {
-    swap(VIEWS.hub);
-    renderGrid();
-    updateProgress();
-  }, 350);
-}
- else {
+          setTimeout(() => {
+            swap(VIEWS.hub);
+            renderGrid();
+            updateProgress();
+          }, 350);
+        } else {
           els.loginMsg.textContent = "Ups! Credencials incorrectes"; els.loginMsg.className = "msg err";
         }
       }catch(err){ fail("Error al validar credencials", err); }
@@ -129,7 +140,7 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
     ["pointerup","pointerleave","pointercancel"].forEach(ev=>els.easterReset?.addEventListener(ev,()=>clearTimeout(t)));
 
     // Play
-    els.btnBack?.addEventListener("click", ()=>{ swap(VIEWS.hub); renderGrid(); });
+    els.btnBack?.addEventListener("click", ()=>{ swap(VIEWS.hub); renderGrid(); updateProgress(); });
     els.btnSubmit?.addEventListener("click", onSubmit);
 
     // Final
@@ -142,6 +153,19 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
 
     // (OPCIONAL) Obrir el Joc 1 directament des d'una tile "Endevina la cançó"
     installOpenGame1FromTile();
+
+    // 🔁 Recalcular barra quan tornes del joc 2/3 o canvies pestanya
+    const refresh = () => updateProgress();
+    window.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(); });
+    window.addEventListener('focus', refresh);
+    window.addEventListener('hashchange', refresh);
+
+    // (opcional) si el joc 3 dispara l'event, actualitza immediat
+    window.addEventListener('game3:finished', refresh);
+
+    // pinta inicial
+    renderGrid();
+    updateProgress();
   }
 
   // ---------- Opcional: Obrir el Joc 1 des d'una tile ----------
@@ -151,13 +175,10 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
       if (!tile) return;
 
       const titleText = (tile.querySelector('h3')?.textContent || '').toLowerCase();
-      // Detecta una tile amb el títol "Endevina la cançó"
       if (titleText.includes('endevina la cançó')) {
-        // Amaga vistes natives i mostra la secció del Joc 1
         Object.values(VIEWS).forEach(el=>el.classList.remove('active'));
         const gameView = document.querySelector('#game-audio');
         if (gameView) {
-          // Assegurem que el HUB no sigui la vista activa
           VIEWS.hub.classList.remove('active');
           gameView.hidden = false;
           gameView.classList.add('active');
@@ -189,7 +210,6 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
     if (!state.config || !state.config.gateRiddle) return;
     const r = state.config.gateRiddle;
 
-    // Si hi ha 'text' al config, l’escrivim; si no, respectem l’HTML del index.html
     if (r.text) { riddleText.textContent = r.text; }
 
     riddleHintBtn?.addEventListener('click', ()=>{
@@ -201,23 +221,17 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
         const val = norm(riddleAnswer.value);
         const ok = Array.isArray(r.accept) && r.accept.map(norm).includes(val);
         if (ok) {
-  riddleMsg.textContent = 'Correcte! Has descobert la pista. 🔓';
-  riddleMsg.className = 'hint-text';
+          riddleMsg.textContent = 'Correcte! Has descobert la pista. 🔓';
+          riddleMsg.className = 'hint-text';
 
-  // ✅ omple la contrasenya i envia el formulari per entrar al Hub
-  if (r.onCorrect === 'revealPassword' && state.config.auth?.password) {
-    passwordInput.value = state.config.auth.password;
-
-    // Si vols saltar el pas manual, envia el formulari automàticament:
-    const form = document.querySelector('#loginForm');
-    if (form && form.requestSubmit) {
-      form.requestSubmit();     // farà servir el teu handler de login existent
-    } else {
-      document.querySelector('#loginForm button[type="submit"]')?.click();
-    }
-  }
-} 
- else {
+          // ✅ omple la contrasenya i envia el formulari per entrar al Hub
+          if (r.onCorrect === 'revealPassword' && state.config.auth?.password) {
+            passwordInput.value = state.config.auth.password;
+            const form = document.querySelector('#loginForm');
+            if (form && form.requestSubmit) form.requestSubmit();
+            else document.querySelector('#loginForm button[type="submit"]')?.click();
+          }
+        } else {
           riddleMsg.textContent = 'No exactament... prova un altre cop o demana una pista.';
           riddleMsg.style.color = 'var(--err)';
         }
@@ -228,10 +242,17 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
   // ---------- Progress / Final ----------
   function updateProgress(){
     const goal = state.config.goal || 8;
-    const p = Math.min(100, (state.score/goal)*100);
-    els.progressFill.style.width = p+"%";
-    els.scoreNum.textContent = state.score;
-    if (state.score >= goal){
+
+    // punts interns de reptes + punts externs (jocs 1/2/3)
+    const ext = externalPoints();
+    const totalScore = state.score + ext;
+
+    const p = Math.min(100, (totalScore/goal)*100);
+    if (els.progressFill) els.progressFill.style.width = p+"%";
+    if (els.scoreNum) els.scoreNum.textContent = totalScore;
+
+    // final si arriba a goal
+    if (totalScore >= goal){
       celebrate();
       setTimeout(()=>{ swap(VIEWS.final); try{ els.finalAudio?.play().catch(()=>{});}catch{} }, 600);
     }
@@ -334,6 +355,9 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
           state.score += 1;
           save();
         }
+        // Marca també el flag extern per coherència amb la barra
+        localStorage.setItem('game1_done','1');
+
         // Torna al HUB i refresca UI
         if (gameView) gameView.hidden = true;
         Object.values(VIEWS).forEach(el => el.classList.remove('active'));
