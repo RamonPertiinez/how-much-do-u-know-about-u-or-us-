@@ -1,9 +1,8 @@
 (() => {
   // ---------- Utils ----------
   const qs = (s, r = document) => r.querySelector(s);
-  const qsa = (s, r = document) => [...r.querySelectorAll(s)];
   const norm = (t) => (t || "").toString().normalize("NFD").replace(/\p{Diacritic}/gu,"").trim().toLowerCase();
-  const log = (...a)=>{ console.log("[app]", ...a); };
+  const log = (...a)=>console.log("[app]",...a);
   const fail = (msg,err)=>{ console.error("[app]", msg, err||""); const b=qs("#loginMsg"); if(b){ b.className="msg err"; b.textContent = msg; } };
 
   const VIEWS = { gate: qs("#gate"), hub: qs("#hub"), play: qs("#play"), final: qs("#final") };
@@ -13,9 +12,9 @@
     grid: qs("#challengeGrid"), btnShuffle: qs("#btnShuffle"), btnReset: qs("#btnReset"), easterReset: qs("#easterReset"),
     btnBack: qs("#btnBack"), chTitle: qs("#challengeTitle"), chIntro: qs("#challengeIntro"), chContent: qs("#challengeContent"),
     btnSubmit: qs("#btnSubmit"), feedback: qs("#feedback"),
-    finalHeading: qs("#finalHeading"), finalSub: qs("#finalSubheading"), finalTitle: qs("#finalTitle"),
+    finalHeading: qs("#finalHeading"), finalSub: qs("#finalSubheading"),
     finalBody: qs("#finalBody"), finalAudio: qs("#finalAudio"), btnRestart: qs("#btnRestart"),
-    gameTitle: qs("#gameTitle"), confetti: qs("#confetti"),
+    gameTitle: qs("#gameTitle"), confetti: qs("#confetti")
   };
 
   const storageKey = "laura25-state-v1";
@@ -26,55 +25,31 @@
     title: "Tens ganes de saber el teu regal? 😏",
     goal: 8,
     auth: { username: "laura", password: "23062025" },
-    final: {
-      heading: "🎉 Sorpresa desbloquejada!",
-      subheading: "Has superat les proves del meu cor.",
-      body: "Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts a Roma. 💛",
-      audio: ""
-    },
-    gateRiddle: {
-      hint: "Llegeix només les majúscules que veus pel text… potser amaguen una pregunta 😉",
-      accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"],
-      onCorrect: "revealPassword"
-    }
+    final: { heading: "🎉 Sorpresa desbloquejada!", subheading: "Has superat les proves del meu cor.", body: "Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts a Roma. 💛", audio: "" },
+    gateRiddle: { hint: "Llegeix només les majúscules...", accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"], onCorrect: "revealPassword" }
   };
 
-  const DEFAULT_CHALLENGES = [
-    { id:"c1", title:"On va començar tot?", intro:"Recordes el primer lloc on vam dormir junts?", type:"text", emoji:"💭", answer:"poblenou", accept:["poble nou","poblenou"], score:1 },
-    { id:"c2", title:"Endevina la cançó", intro:"Escolta el fragment i escriu el títol (pots provar ‘yellow’).", type:"audio", emoji:"🎵", src:"assets/audio/intro.mp3", accept:["yellow","yellow coldplay"], score:1 },
-    { id:"c3", title:"Quina foto és?", intro:"Una pista borrosa d'un lloc nostre", type:"image-guess", emoji:"🖼️", src:"assets/images/sample.jpg", accept:["roma","colosseu","colosseum"], score:1 },
-    { id:"c4", title:"El detall graciós", intro:"Quina és la meva mania més estranya segons tu?", type:"text", emoji:"😜", answer:"endreçar els coixins", accept:["endreçar coixins","endreçar els coixins","ordenar els coixins"], score:1 },
-    { id:"c5", title:"Records en ordre", intro:"Ordena on vam viatjar (més antic → més recent)", type:"choice", emoji:"🧭",
-      options:["Roma → Lisboa → Menorca","Lisboa → Menorca → Roma","Menorca → Roma → Lisboa"], answerIndex:2, score:1 }
-  ];
+  const DEFAULT_CHALLENGES = []; // (si no tens reptes interns al hub, el deixem buit)
 
   // ---------- Helpers ----------
   const save = ()=>localStorage.setItem(storageKey, JSON.stringify({solved:state.solved, score:state.score}));
   const load = ()=>{ try{ const d=JSON.parse(localStorage.getItem(storageKey)); if(d){ state.solved=d.solved||{}; state.score=d.score||0; } }catch{} };
   const swap = (v)=>{ Object.values(VIEWS).forEach(el=>el.classList.remove("active")); v.classList.add("active"); };
-  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
   async function fetchJSON(path,fallback){
     try{ const res=await fetch(path,{cache:"no-cache"}); if(!res.ok) throw new Error(res.status+" "+res.statusText); return await res.json(); }
-    catch(e){ console.warn(`[app] No s'ha trobat ${path}. Carregant per defecte.`, e); return structuredClone(fallback); }
+    catch{ return structuredClone(fallback); }
   }
 
-  // --- Flags de jocs externs (game1/2/3) ---
-  function readExternalFlags(){
-    return {
-      g1: localStorage.getItem('game1_done') === '1',
-      g2: localStorage.getItem('game2_done') === '1',
-      g3: localStorage.getItem('game3_done') === '1',
-    };
-  }
-  function externalPoints(){ // 1 punt per joc completat
-    const f = readExternalFlags();
-    return [f.g1,f.g2,f.g3].filter(Boolean).length;
-  }
+  // Flags dels jocs externs (1/2/3)
+  function readExternalFlags(){ return {
+    g1: localStorage.getItem('game1_done') === '1',
+    g2: localStorage.getItem('game2_done') === '1',
+    g3: localStorage.getItem('game3_done') === '1',
+  }; }
+  function externalPoints(){ return Object.values(readExternalFlags()).filter(Boolean).length; }
 
   // ---------- Boot ----------
-  document.addEventListener("DOMContentLoaded", () => {
-    try{ boot(); }catch(e){ fail("Error iniciant l’app. Prova a fer Reinicia joc 🔄", e); }
-  });
+  document.addEventListener("DOMContentLoaded", () => { try{ boot(); }catch(e){ fail("Error iniciant l’app.", e); } });
 
   async function boot(){
     load();
@@ -82,19 +57,6 @@
     const chs = await fetchJSON("data/challenges.json", DEFAULT_CHALLENGES);
     state.config = cfg; state.challenges = chs;
 
-// ✅ Si el Hub ja estava desbloquejat, mostra'l directament
-if (localStorage.getItem("hmky.hubUnlocked") === "1") {
-  VIEWS.gate?.classList.remove("active");
-  VIEWS.gate?.classList.add("hidden");
-  VIEWS.hub?.classList.add("active");
-
-  // ➕ AFEGIR:
-  renderGrid();
-  updateProgress();
-}
-
-
-    // Apply UI config
     document.title = cfg.title || document.title;
     els.gameTitle.textContent = cfg.title || "Joc";
     els.scoreGoal.textContent = cfg.goal || 8;
@@ -108,8 +70,8 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
 
     setupRiddleUI();
 
-    // Reinicia joc (neteja estat i recarrega)
-    qs("#clearCache")?.addEventListener("click", ()=>{ localStorage.clear(); location.reload(true); });
+    // Reinicia joc
+    document.getElementById("clearCache")?.addEventListener("click", ()=>{ localStorage.clear(); location.reload(); });
 
     // Login
     els.loginForm?.addEventListener("submit", (e)=>{
@@ -117,269 +79,99 @@ if (localStorage.getItem("hmky.hubUnlocked") === "1") {
       try{
         const u = norm(els.user.value), p = els.pass.value;
         if (u === norm(cfg.auth.username) && p === cfg.auth.password) {
-          els.loginMsg.textContent = "Benvinguda 💛";
-          els.loginMsg.className = "msg ok";
-
-          // ✅ marca el Hub com a desbloquejat
+          els.loginMsg.textContent = "Benvinguda 💛"; els.loginMsg.className = "msg ok";
           localStorage.setItem("hmky.hubUnlocked", "1");
-
-          // amaga explícitament la Gate
-          VIEWS.gate?.classList.remove("active");
-          VIEWS.gate?.classList.add("hidden");
-
-          setTimeout(() => {
-            swap(VIEWS.hub);
-            renderGrid();
-            updateProgress();
-          }, 350);
+          setTimeout(() => { swap(VIEWS.hub); updateProgress(); }, 300);
         } else {
           els.loginMsg.textContent = "Ups! Credencials incorrectes"; els.loginMsg.className = "msg err";
         }
       }catch(err){ fail("Error al validar credencials", err); }
     });
 
-    // Hub
-    els.btnShuffle?.addEventListener("click", ()=>renderGrid(true));
-    els.btnReset?.addEventListener("click", ()=>{ localStorage.removeItem(storageKey); state.solved={}; state.score=0; renderGrid(); updateProgress(); });
-    let t; els.easterReset?.addEventListener("pointerdown",()=>t=setTimeout(()=>els.btnReset.hidden=false,800));
-    ["pointerup","pointerleave","pointercancel"].forEach(ev=>els.easterReset?.addEventListener(ev,()=>clearTimeout(t)));
-
-    // Play
-    els.btnBack?.addEventListener("click", ()=>{ swap(VIEWS.hub); renderGrid(); updateProgress(); });
-    els.btnSubmit?.addEventListener("click", onSubmit);
+    // Botó tornar des de la vista 'play'
+    els.btnBack?.addEventListener("click", ()=>{ swap(VIEWS.hub); updateProgress(); });
 
     // Final
     els.btnRestart?.addEventListener("click", ()=>{ localStorage.removeItem(storageKey); state.solved={}; state.score=0; swap(VIEWS.gate); });
 
-    log("Inici OK");
+    // Si el Hub ja estava desbloquejat (refresh), obre directament
+    if (localStorage.getItem("hmky.hubUnlocked") === "1") {
+      swap(VIEWS.hub);
+      updateProgress();
+    }
 
-    // 🔌 Connectar Joc 1 (Endevina la cançó)
-    wireGame1Hooks();
-
-    // (OPCIONAL) Obrir el Joc 1 directament des d'una tile "Endevina la cançó"
-    installOpenGame1FromTile();
-
-    // 🔁 Recalcular barra quan tornes del joc 2/3 o canvies pestanya
+    // Recalcular barra en tornar al hub (si s'ha jugat a una pestanya)
     const refresh = () => updateProgress();
     window.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(); });
     window.addEventListener('focus', refresh);
     window.addEventListener('hashchange', refresh);
 
-    // (opcional) si el joc 3 dispara l'event, actualitza immediat
+    // Esdeveniments opcionals (si algun joc els dispara)
+    window.addEventListener('game1:finished', refresh);
+    window.addEventListener('game2:finished', refresh);
     window.addEventListener('game3:finished', refresh);
 
-    // pinta inicial
-    renderGrid();
     updateProgress();
-  }
-
-  // ---------- Opcional: Obrir el Joc 1 des d'una tile ----------
-  function installOpenGame1FromTile(){
-    document.addEventListener('click', (ev) => {
-      const tile = ev.target.closest('.tile');
-      if (!tile) return;
-
-      const titleText = (tile.querySelector('h3')?.textContent || '').toLowerCase();
-      if (titleText.includes('endevina la cançó')) {
-        Object.values(VIEWS).forEach(el=>el.classList.remove('active'));
-        const gameView = document.querySelector('#game-audio');
-        if (gameView) {
-          VIEWS.hub.classList.remove('active');
-          gameView.hidden = false;
-          gameView.classList.add('active');
-          ev.preventDefault();
-          ev.stopPropagation();
-        }
-      }
-    }, true);
   }
 
   // ---------- Riddle ----------
   function setupRiddleUI(){
     const btnShow = document.getElementById('btnShowRiddle');
     const riddleBox = document.getElementById('riddleBox');
-    const riddleText = document.getElementById('riddleText');
-    const riddleAnswer = document.getElementById('riddleAnswer');
+    if (btnShow && riddleBox){
+      btnShow.addEventListener('click', ()=>{
+        const hidden = getComputedStyle(riddleBox).display === 'none';
+        riddleBox.style.display = hidden ? 'block' : 'none';
+      });
+    }
+    const r = DEFAULT_CONFIG.gateRiddle;
     const riddleSubmit = document.getElementById('riddleSubmit');
-    const riddleHintBtn = document.getElementById('riddleHint');
+    const riddleAnswer = document.getElementById('riddleAnswer');
     const riddleMsg = document.getElementById('riddleMsg');
     const passwordInput = document.getElementById('password');
 
-    // Toggle sempre actiu
-    btnShow?.addEventListener('click', ()=>{
-      const hidden = getComputedStyle(riddleBox).display === 'none';
-      riddleBox.style.display = hidden ? 'block' : 'none';
-      if (hidden) riddleMsg.textContent = '';
-    });
-
-    if (!state.config || !state.config.gateRiddle) return;
-    const r = state.config.gateRiddle;
-
-    if (r.text) { riddleText.textContent = r.text; }
-
-    riddleHintBtn?.addEventListener('click', ()=>{
-      riddleMsg.textContent = r.hint || 'Pista no disponible.';
-    });
-
     riddleSubmit?.addEventListener('click', ()=>{
-      try{
-        const val = norm(riddleAnswer.value);
-        const ok = Array.isArray(r.accept) && r.accept.map(norm).includes(val);
-        if (ok) {
-          riddleMsg.textContent = 'Correcte! Has descobert la pista. 🔓';
-          riddleMsg.className = 'hint-text';
-
-          // ✅ omple la contrasenya i envia el formulari per entrar al Hub
-          if (r.onCorrect === 'revealPassword' && state.config.auth?.password) {
-            passwordInput.value = state.config.auth.password;
-            const form = document.querySelector('#loginForm');
-            if (form && form.requestSubmit) form.requestSubmit();
-            else document.querySelector('#loginForm button[type="submit"]')?.click();
-          }
-        } else {
-          riddleMsg.textContent = 'No exactament... prova un altre cop o demana una pista.';
-          riddleMsg.style.color = 'var(--err)';
+      const val = norm(riddleAnswer?.value);
+      const ok = r.accept.map(norm).includes(val);
+      if (ok){
+        riddleMsg.textContent = 'Correcte! 🔓';
+        if (r.onCorrect === 'revealPassword'){
+          passwordInput.value = DEFAULT_CONFIG.auth.password;
+          document.getElementById('loginForm')?.requestSubmit?.();
         }
-      }catch(err){ fail("Error comprovant la pista", err); }
+      } else {
+        riddleMsg.textContent = 'No exactament...';
+      }
     });
   }
 
-  // ---------- Progress / Final ----------
+  // ---------- Barra / Final ----------
   function updateProgress(){
-    const goal = state.config.goal || 8;
+    const goal = state.config?.goal || 8;
+    const totalScore = state.score + externalPoints(); // punts interns + jocs 1/2/3
+    const p = Math.max(0, Math.min(100, (totalScore/goal)*100));
+    if (els.progressFill) els.progressFill.style.width = p + "%";
+    if (els.scoreNum) els.scoreNum.textContent = totalScore.toString();
 
-    // punts interns de reptes + punts externs (jocs 1/2/3)
-    const ext = externalPoints();
-    const totalScore = state.score + ext;
-
-    const p = Math.min(100, (totalScore/goal)*100);
-    if (els.progressFill) els.progressFill.style.width = p+"%";
-    if (els.scoreNum) els.scoreNum.textContent = totalScore;
-
-    // final si arriba a goal
     if (totalScore >= goal){
       celebrate();
-      setTimeout(()=>{ swap(VIEWS.final); try{ els.finalAudio?.play().catch(()=>{});}catch{} }, 600);
+      setTimeout(()=>{ swap(VIEWS.final); try{ els.finalAudio?.play().catch(()=>{});}catch{} }, 500);
     }
   }
 
   function celebrate(){
-    const c = els.confetti; c.innerHTML="";
+    const c = els.confetti; if (!c) return;
+    c.innerHTML="";
     for(let i=0;i<80;i++){
       const s=document.createElement("span");
-      s.style.position="fixed"; s.style.left=Math.random()*100+"vw"; s.style.top="-10px";
+      s.style.left=Math.random()*100+"vw"; s.style.top="-10px";
       s.style.width=s.style.height=8+Math.random()*8+"px";
-      s.style.background=`hsl(${Math.random()*360},80%,60%)`; s.style.opacity=".9"; s.style.borderRadius="2px";
-      s.style.transform=`rotate(${Math.random()*360}deg)`; s.style.transition="transform 1.2s ease, top 1.2s ease";
+      s.style.background=`hsl(${Math.random()*360},80%,60%)`; s.style.opacity=".9";
+      s.style.transform=`rotate(${Math.random()*360}deg)`;
+      s.style.transition="transform 1.2s ease, top 1.2s ease";
       c.appendChild(s);
       requestAnimationFrame(()=>{ s.style.top="110vh"; s.style.transform=`translateY(100vh) rotate(${Math.random()*720}deg)`; });
       setTimeout(()=>s.remove(),1500);
     }
-  }
-
-  // ---------- Hub ----------
-  function renderGrid(shuffleNow=false){
-    let list = state.challenges.slice(); if(shuffleNow) list = shuffle(list);
-    els.grid.innerHTML = "";
-    list.forEach(ch=>{
-      const t=document.createElement("button");
-      t.className="tile"; t.dataset.id=ch.id; t.setAttribute("role","listitem");
-      t.innerHTML = `<h3>${ch.emoji||"🎯"} ${ch.title}</h3>
-        <div class="badges">
-          <span class="badge">${ch.type}</span>
-          ${state.solved[ch.id] ? '<span class="badge">✅ Fet</span>' : '<span class="badge">❓</span>'}
-        </div>`;
-      if (state.solved[ch.id]) t.classList.add("solved");
-      t.addEventListener("click", ()=>openChallenge(ch.id));
-      els.grid.appendChild(t);
-    });
-  }
-
-  // ---------- Play ----------
-  function openChallenge(id){
-    const ch = state.challenges.find(x=>x.id===id); if(!ch) return;
-    state.current = ch;
-
-    els.chTitle.classList.toggle("handwritten", !!ch.handTitle);
-    els.chTitle.textContent = `${ch.emoji||""} ${ch.title}`;
-    els.chIntro.textContent = ch.intro || "";
-    els.feedback.textContent = ""; els.feedback.className = "msg";
-
-    const c = els.chContent; c.innerHTML = "";
-    if (ch.type==="choice"){
-      ch.options.forEach((opt,i)=>{
-        const lbl=document.createElement("label"); lbl.className="option";
-        lbl.innerHTML=`<input type="radio" name="opt" value="${i}"> ${opt}`;
-        c.appendChild(lbl);
-      });
-    } else if (["text","audio","image-guess"].includes(ch.type)){
-      if (ch.type==="audio"){ const au=document.createElement("audio"); au.controls=true; au.className="audio-ctrl"; au.src=ch.src||""; c.appendChild(au); }
-      if (ch.type==="image-guess"){ const img=document.createElement("img"); img.src=ch.src||""; img.alt="pista"; img.style.filter="blur(6px)"; c.appendChild(img); }
-      const inp=document.createElement("input"); inp.type="text"; inp.placeholder=ch.placeholder||"Escriu la resposta"; inp.id="textAnswer"; c.appendChild(inp);
-    } else {
-      c.textContent = "Tipus no implementat encara.";
-    }
-    swap(VIEWS.play);
-  }
-
-  // ---------- Validació ----------
-  function onSubmit(){
-    const ch = state.current; if(!ch) return;
-    let ok=false;
-    if (ch.type==="choice"){
-      const sel=document.querySelector('input[name="opt"]:checked');
-      ok = sel && Number(sel.value)===Number(ch.answerIndex);
-    } else {
-      const el = qs("#textAnswer"); const val = norm(el?.value);
-      ok = Array.isArray(ch.accept) ? ch.accept.map(norm).includes(val) : norm(ch.answer)===val;
-    }
-    if(ok){
-      if(!state.solved[ch.id]){ state.solved[ch.id]=true; state.score+=ch.score||1; save(); }
-      els.feedback.textContent="Correcte! 🥳"; els.feedback.className="msg ok";
-      setTimeout(()=>{ swap(VIEWS.hub); renderGrid(); updateProgress(); }, 600);
-    } else {
-      els.feedback.textContent="Mmm… intenta-ho una altra vegada!"; els.feedback.className="msg err";
-      if(ch.type==="image-guess"){ const img=els.chContent.querySelector("img"); if(img) img.style.filter="blur(3px)"; }
-    }
-  }
-
-  // ---------- Integració del Joc 1 (hooks) ----------
-  function wireGame1Hooks(){
-    const tryHook = () => {
-      if (!window.GameAudioGuess) { setTimeout(tryHook, 50); return; }
-
-      const hubView  = VIEWS.hub;
-      const gameView = document.querySelector('#game-audio');
-
-      // Evita sumar punts múltiples si es rejuga
-      const GAME_ID = 'game1-audio';
-
-      window.GameAudioGuess.onWin = () => {
-        if (!state.solved[GAME_ID]) {
-          state.solved[GAME_ID] = true;
-          state.score += 1;
-          save();
-        }
-        // Marca també el flag extern per coherència amb la barra
-        localStorage.setItem('game1_done','1');
-
-        // Torna al HUB i refresca UI
-        if (gameView) gameView.hidden = true;
-        Object.values(VIEWS).forEach(el => el.classList.remove('active'));
-        VIEWS.hub.classList.add('active');
-
-        renderGrid();
-        updateProgress();
-      };
-
-      window.GameAudioGuess.onFail = () => {
-        if (navigator.vibrate) navigator.vibrate(80);
-        log("Joc 1 fallat: reinici.");
-      };
-
-      log("Hooks del Joc 1 connectats");
-    };
-
-    tryHook();
   }
 })();
