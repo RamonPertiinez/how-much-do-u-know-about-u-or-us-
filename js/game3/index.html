@@ -4,99 +4,66 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Joc 3 · Encerta els ulls</title>
-  <link rel="preload" as="image" href="images/PERSONA_1.jpeg">
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Un toc de layout bàsic per si encara no tens el style.css fet */
-    :root { --bg:#0f1115; --card:#171a21; --ink:#e7ecf3; --muted:#9fb0c2; --ok:#39d98a; --err:#ff6b6b; --brand:#8ab4f8;}
-    *{box-sizing:border-box} html,body{height:100%}
-    body{margin:0; font-family:system-ui,Segoe UI,Roboto,Inter,Arial; background:var(--bg); color:var(--ink); display:grid; place-items:center}
-    .wrap{width:min(900px,92vw); padding:18px}
-    .topbar{display:flex; align-items:center; gap:12px; margin-bottom:14px}
+    :root { --bg:#0f1117; --card:#171a21; --ink:#e7ecf3; --muted:#9fb0c2; --ok:#39d98a; --err:#ff6b6b; --brand:#8ab4f8;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Inter,Arial}
+    .wrap{width:min(900px,92vw);margin:0 auto;padding:18px}
+    .topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
     .back{appearance:none;border:1px solid #263041;background:#131821;color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer}
-    h1{font-size:clamp(22px,3.2vw,30px); margin:0}
-    .card{background:var(--card); border:1px solid #202634; border-radius:18px; padding:18px}
-    .imgBox{display:grid; place-items:center; margin:10px 0 18px}
-    .imgBox img{width:min(560px,90%); aspect-ratio:16/9; object-fit:cover; border-radius:14px; border:1px solid #2a3344}
-    .opts{display:grid; gap:10px; grid-template-columns:repeat(3,1fr)}
-    .opts button{appearance:none; border:1px solid #263041; background:#111722; color:var(--ink); padding:12px 10px; border-radius:12px; cursor:pointer; font-weight:600}
-    .opts button:hover{border-color:#3a475f}
-    .status{min-height:26px; margin:10px 0 4px; color:var(--muted)}
+    .card{background:var(--card);border:1px solid #202634;border-radius:18px;padding:18px}
+    .imgBox{display:grid;place-items:center;margin:10px 0 18px}
+    .imgBox img{width:min(560px,90%);aspect-ratio:16/9;object-fit:cover;border-radius:14px;border:1px solid #2a3344}
+    .opts{display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+    .opts button{appearance:none;border:1px solid #263041;background:#111722;color:var(--ink);padding:12px 10px;border-radius:12px;cursor:pointer;font-weight:600}
+    .status{min-height:26px;margin:10px 0 4px;color:var(--muted)}
     .status.ok{color:var(--ok)} .status.err{color:var(--err)}
-    .controls{display:flex; justify-content:space-between; align-items:center; margin-top:12px}
-    .pill{font-size:14px; color:var(--muted)}
-    .next, .end{appearance:none; border:0; background:var(--brand); color:#0b1020; padding:10px 16px; border-radius:12px; font-weight:700; cursor:pointer}
+    .controls{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+    .next,.end{appearance:none;border:0;background:var(--brand);color:#0b1020;padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer}
     .end{display:none}
-    .score{font-weight:700}
     @media (max-width:700px){ .opts{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
+  <script>
+    // Si es recarrega el joc, torna al Hub
+    try {
+      const n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (n && n.type === 'reload') location.replace('../../index.html#hub');
+    } catch {}
+    if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
+  </script>
+
   <div class="wrap">
     <div class="topbar">
-      <button class="back" id="btnBack" title="Tornar al menú">⟵ Menú</button>
+      <button class="back" id="btnBack">⟵ Tornar al menú</button>
       <h1>Joc 3 — Encerta els ulls</h1>
     </div>
 
     <div class="card">
-      <div class="pill"><span id="roundNum">Ronda 1</span> · <span id="score">0</span>/5 encerts</div>
-
-      <div class="imgBox">
-        <img id="eyesImg" alt="Imatge d'uns ulls" src="images/PERSONA_1.jpeg">
-      </div>
-
+      <div class="pill"><span id="roundNum">Ronda 1</span> · <span id="score">0</span>/6 encerts</div>
+      <div class="imgBox"><img id="eyesImg" alt="Imatge d'uns ulls" src="images/PERSONA_1.jpeg"></div>
       <div class="opts" id="options"></div>
-
       <div id="status" class="status"></div>
-
       <div class="controls">
-        <button class="end" id="btnFinish">Acabar i tornar al menú</button>
+        <button class="end" id="btnFinish">Tornar al menú</button>
         <button class="next" id="btnNext" disabled>Següent ➜</button>
       </div>
     </div>
   </div>
-<script>
-  try {
-    const n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
-    if (n && n.type === 'reload') location.replace('../../index.html#hub');
-  } catch {}
-  if (!localStorage.getItem('hmky.hubUnlocked')) {
-    location.replace('../../index.html#hub');
-  }
-</script>
 
   <script src="game3.js"></script>
   <script>
-    // --- Integració amb la barra del menú principal ---
-    // Quan l’usuari marqui el joc com completat, guardem estat a localStorage.
-    // El teu index principal pot llegir localStorage.getItem('game3_done') === '1'
-    // i pintar la barra/progrés en conseqüència.
-    const markDone = () => {
-      localStorage.setItem('game3_done', '1');
-      // opcional: també un comptador de punts per si el vols mostrar al hub
+    // Marca el joc com complet quan es rep l'esdeveniment de final
+    function markGame3Done(){
+      localStorage.setItem('game3_done','1');
       localStorage.setItem('game3_score', window.Game3?.score ?? 0);
-    };
+    }
+    window.addEventListener('game3:finished', markGame3Done);
 
-    // Botó “Tornar al menú”
-    document.getElementById('btnBack').addEventListener('click', () => {
-      // si l’usuari surt havent acabat, ja estarà marcat; si surt abans, no.
-      location.href = '../../index.html#hub';
-    });
-
-    // Quan el JS del joc acabi, exposa un callback:
-    window.addEventListener('game3:finished', () => {
-      markDone();
-      // Mostra el botó de final i amaga el “Següent”
-      document.getElementById('btnFinish').style.display = 'inline-block';
-      document.getElementById('btnNext').style.display = 'none';
-    });
-
-    // Botó “Acabar i tornar al menú”
-    document.getElementById('btnFinish').addEventListener('click', () => {
-      markDone();
-      location.href = '../../index.html#hub';
-    });
+    // Tornar al Hub (també marca com fet si el botó és el final)
+    document.getElementById('btnBack').onclick = () => { location.href='../../index.html#hub'; };
+    document.getElementById('btnFinish').onclick = () => { markGame3Done(); location.href='../../index.html#hub'; };
   </script>
 </body>
 </html>
-
