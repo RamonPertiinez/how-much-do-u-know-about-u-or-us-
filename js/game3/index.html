@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Joc 3 · Encerta els ulls</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./style.css" />
   <style>
     :root { --bg:#0f1117; --card:#171a21; --ink:#e7ecf3; --muted:#9fb0c2; --ok:#39d98a; --err:#ff6b6b; --brand:#8ab4f8;}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Inter,Arial}
@@ -26,9 +26,9 @@
 </head>
 <body>
   <script>
-    // Si es recarrega el joc, torna al Hub
+    // Si es recarrega, torna al hub
     try {
-      const n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      const n = performance.getEntriesByType?.('navigation')[0];
       if (n && n.type === 'reload') location.replace('../../index.html#hub');
     } catch {}
     if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
@@ -42,7 +42,7 @@
 
     <div class="card">
       <div class="pill"><span id="roundNum">Ronda 1</span> · <span id="score">0</span>/6 encerts</div>
-      <div class="imgBox"><img id="eyesImg" alt="Imatge d'uns ulls" src="images/PERSONA_1.jpeg"></div>
+      <div class="imgBox"><img id="eyesImg" alt="Imatge d'uns ulls" src="./images/PERSONA_1.jpeg"></div>
       <div class="opts" id="options"></div>
       <div id="status" class="status"></div>
       <div class="controls">
@@ -52,16 +52,14 @@
     </div>
   </div>
 
-  <script src="game3.js"></script>
+  <script src="./game3.js?v=fix1"></script>
   <script>
-    // Marca el joc com complet quan es rep l'esdeveniment de final
     function markGame3Done(){
       localStorage.setItem('game3_done','1');
       localStorage.setItem('game3_score', window.Game3?.score ?? 0);
     }
     window.addEventListener('game3:finished', markGame3Done);
 
-    // Tornar al Hub (també marca com fet si el botó és el final)
     document.getElementById('btnBack').onclick = () => { location.href='../../index.html#hub'; };
     document.getElementById('btnFinish').onclick = () => { markGame3Done(); location.href='../../index.html#hub'; };
   </script>
