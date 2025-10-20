@@ -37,38 +37,66 @@
   <noscript><div style="padding:16px;font-family:Poppins,system-ui">Aquest joc necessita JavaScript. Si us plau, activa’l 💛</div></noscript>
 
   <div id="app">
-    <!-- 1) GATE (activa per defecte) -->
-    <section id="gate" class="view active" aria-label="Porta d'entrada">
-      <div class="card gate-card on-image" style="background:rgba(0,0,0,.2)">
-        <h1 class="title"><span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏</h1>
-        <p class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
+  <!-- 1) GATE (activa per defecte) -->
+<section id="gate" class="view active" aria-label="Porta d'entrada">
+  <!-- 💛 recuperem la imatge de fons -->
+  <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
+    <div class="card gate-card on-image">
+      <h1 class="title">
+        <span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏
+      </h1>
+      <p class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
 
-        <form id="loginForm" autocomplete="off" style="margin-top:8px;">
-          <label for="username">Usuària</label>
-          <input id="username" name="username" type="text" placeholder="laura" required />
-          <label for="password">Contrasenya</label>
-          <input id="password" name="password" type="password" placeholder="••••••" required />
-          <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <button type="submit" class="btn primary">Començar</button>
-            <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
-          </div>
-          <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
-        </form>
-
-        <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">🔄 Reinicia joc</button>
-
-        <!-- (Opcional) Caixa del riddle si la vols fer servir -->
-        <div id="riddleBox" class="riddle" style="display:none;">
-          <p id="riddleText">Llegeix només les majúscules del text que et vaig posar… 😉</p>
-          <input id="riddleAnswer" type="text" placeholder="Resposta de la pista" />
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <button id="riddleSubmit" class="btn primary">Comprovar resposta</button>
-            <button id="riddleHint" class="btn">Pista</button>
-          </div>
-          <p id="riddleMsg" class="hint-text"></p>
+      <form id="loginForm" autocomplete="off" style="margin-top:8px;">
+        <label for="username">Usuària</label>
+        <input id="username" name="username" type="text" placeholder="laura" required />
+        <label for="password">Contrasenya</label>
+        <input id="password" name="password" type="password" placeholder="••••••" required />
+        <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+          <button type="submit" class="btn primary">Començar</button>
+          <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
         </div>
+        <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">🔄 Reinicia joc</button>
+
+      <!-- 📜 Text COMPLET de la pista (com el tenies) -->
+      <div id="riddleBox" class="riddle" style="display:none;">
+        <div id="riddleText" style="font-weight:600;">
+          <p>hola guapa 💛 Quines ganes tenia que arribés el teU dia, el teu aniversari, i fer-lo una mica especial encara que estIgui lluny i no ho celebrem en persoNa... per ara 😏<br>
+          bueno, qui sap... espera’t 30 segons i mira radera teu 😁 no segueixis llegint per ara.</p>
+          <p>ja has mirat raDera? què esperaves? jejejeje tan de booooo!!!! 🤭<br>
+          queden uns mesets però en res ja estaré per aquí molestant I fent-te abraçades jejeje 🤗</p>
+          <p>comencem amb això que estàs veient aquí... i et preguntarAs: què és això? com que contrasEnya? com que nom d’usuària? què he de fer? 🤔</p>
+          <p>t’ho explico molt senzillameNt 💬 això és un joc, una petita experiència per poder arribar a reSoldre el regal final 🎁<br>
+          un regal especial que he Volgut fer interactiu, perquè pensis una estonetA i així estiguis distreta uNa mica.<br>
+          ho pots anar Fent durant el dia, no cal que ho facis de cop ⏳<br>
+          fins i tot sEria una bona idea que jo estigués en tRucada, ves a sAber… ☎️</p>
+          <p>quan averiguis Quina és la contrasenya 🔐 podràs començar el joc.<br>
+          és molt simple: són diferents proves, i si arribes a Una puntuació de 8 encertadEs 🎯 podràS revelar el regal final 💌</p>
+          <p>comencem pel principi, però 😇<br>
+          quina és la contrasenya? fixa’T bé que hi ha mAjúscules en el text… Fins ara bé? però aquestes majúscules no tenen gaire sentit, nO? o sí...? 👀</p>
+          <p>molTa sort, guapa 💕 i esperO que no et costi gaire jejejejeje 😜</p>
+        </div>
+
+        <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí" autocapitalize="off"
+          style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--text)" />
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button id="riddleSubmit" class="btn riddle-btn primary">Comprovar resposta</button>
+          <button id="riddleHint" class="btn riddle-btn ghost">Pista</button>
+        </div>
+        <p id="riddleMsg" class="hint-text" aria-live="polite"></p>
       </div>
-    </section>
+
+      <div class="hint" aria-hidden="true" style="margin-top:12px;">
+        <img src="assets/icons/lock.svg" alt="" width="18" height="18" />
+        <span>La primera pista t'ajudarà a recordar el dia d'aquesta foto.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 
     <!-- 2) HUB -->
     <section id="hub" class="view" aria-label="Mapa de proves">
