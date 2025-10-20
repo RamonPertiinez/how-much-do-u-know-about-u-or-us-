@@ -7,8 +7,8 @@
   <meta name="description" content="Joc d'aniversari amb 25 proves i una sorpresa final." />
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#0f0f14" />
-  <base href="/how-much-do-u-know-about-u-or-us-/">
 
+  <!-- ⚠️ SENSE <base> per evitar rutes trencades a GitHub Pages -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css" />
 
@@ -37,7 +37,7 @@
   <noscript><div style="padding:16px;font-family:Poppins,system-ui">Aquest joc necessita JavaScript. Si us plau, activa’l 💛</div></noscript>
 
   <div id="app">
-    <!-- 1) GATE -->
+    <!-- 1) GATE (activa per defecte) -->
     <section id="gate" class="view active" aria-label="Porta d'entrada">
       <div class="card gate-card on-image" style="background:rgba(0,0,0,.2)">
         <h1 class="title"><span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏</h1>
@@ -56,6 +56,17 @@
         </form>
 
         <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">🔄 Reinicia joc</button>
+
+        <!-- (Opcional) Caixa del riddle si la vols fer servir -->
+        <div id="riddleBox" class="riddle" style="display:none;">
+          <p id="riddleText">Llegeix només les majúscules del text que et vaig posar… 😉</p>
+          <input id="riddleAnswer" type="text" placeholder="Resposta de la pista" />
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button id="riddleSubmit" class="btn primary">Comprovar resposta</button>
+            <button id="riddleHint" class="btn">Pista</button>
+          </div>
+          <p id="riddleMsg" class="hint-text"></p>
+        </div>
       </div>
     </section>
 
@@ -77,7 +88,7 @@
         <h2>🎵 Joc 1 — Endevina la cançó</h2>
         <p>Escolta la pista i tria la cançó correcta. Hi ha 5 cançons en total.</p>
         <div class="row">
-          <a class="btn primary" href="js/game1/index.html">▶️ Obrir Joc 1</a>
+          <a class="btn primary" href="./js/game1/index.html">▶️ Obrir Joc 1</a>
         </div>
       </section>
 
@@ -86,7 +97,7 @@
         <h2>📸 Joc 2 — Una foto borrosa</h2>
         <p>Mira un vídeo que s’enfoca a poc a poc i tria el lloc correcte d’un desplegable.</p>
         <div class="row">
-          <a class="btn primary" href="js/game2/index.html">▶️ Obrir Joc 2</a>
+          <a class="btn primary" href="./js/game2/index.html">▶️ Obrir Joc 2</a>
         </div>
       </section>
 
@@ -95,14 +106,14 @@
         <h2>👀 Joc 3 — Encerta els ulls</h2>
         <p>Endevina a qui pertanyen els ulls triant entre 3 opcions. Hi ha 6 rondes en total.</p>
         <div class="row">
-          <a class="btn primary" href="js/game3/index.html">▶️ Obrir Joc 3</a>
+          <a class="btn primary" href="./js/game3/index.html">▶️ Obrir Joc 3</a>
         </div>
       </section>
 
-      <!-- 🔁 Botó de reset global -->
+      <!-- Botó de reset global -->
       <section class="card" style="text-align:center;">
         <h2>🔁 Reiniciar tot el joc</h2>
-        <p>Si alguna cosa no funciona o vols començar de zero, pots reiniciar-ho tot.</p>
+        <p>Si alguna cosa no funciona o vols començar de zero, reinicia.</p>
         <button id="btnFullReset" class="btn reset">Reiniciar i tornar a l’inici</button>
       </section>
     </section>
@@ -117,7 +128,7 @@
           <p id="finalBody">Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛</p>
         </div>
         <audio id="finalAudio" class="audio-ctrl" controls preload="none">
-          <source src="assets/audio/final.mp3" type="audio/mpeg" />
+          <source src="./assets/audio/final.mp3" type="audio/mpeg" />
         </audio>
         <button id="btnRestart" class="btn">Tornar a començar</button>
       </div>
@@ -126,9 +137,9 @@
   </div>
 
   <!-- JS global -->
-  <script src="js/app.js?v=hub8" defer></script>
+  <script src="./js/app.js?v=fix1" defer></script>
 
-  <!-- Script del botó de reset -->
+  <!-- Reset global -->
   <script>
     document.addEventListener("DOMContentLoaded",()=>{
       const btn = document.getElementById("btnFullReset");
@@ -136,8 +147,8 @@
         btn.addEventListener("click", ()=>{
           if(confirm("Vols reiniciar TOT el joc i tornar a l’inici?")){
             localStorage.clear();
-            location.href = "index.html";
-            setTimeout(()=>location.reload(),300);
+            location.href = "./index.html";
+            setTimeout(()=>location.reload(), 150);
           }
         });
       }
