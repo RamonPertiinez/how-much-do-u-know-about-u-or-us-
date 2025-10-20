@@ -7,28 +7,20 @@
   <meta name="description" content="Joc d'aniversari amb 25 proves i una sorpresa final." />
   <meta name="robots" content="noindex,nofollow" />
   <meta name="theme-color" content="#0f0f14" />
-
   <base href="/how-much-do-u-know-about-u-or-us-/">
 
-  <!-- Fonts i CSS globals -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css" />
-
   <style>
-    /* --- Estils del hub --- */
     body{font-family:"Poppins",system-ui,sans-serif;background:#0f1117;color:#e7ecf3;margin:0}
     .view{display:none;padding:20px;max-width:850px;margin:0 auto}
     .view.active{display:block}
-
-    /* Barra superior */
     .topbar{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:12px 18px;border-radius:14px;margin-bottom:22px}
     .brand{font-weight:600;font-size:18px;display:flex;align-items:center;gap:8px}
     .progress{display:flex;align-items:center;gap:8px}
-    .bar{width:140px;height:8px;background:#1f2330;border-radius:999px;overflow:hidden;position:relative}
+    .bar{width:160px;height:8px;background:#1f2330;border-radius:999px;overflow:hidden;position:relative}
     .fill{position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg,#7c87ff,#b388ff);border-radius:inherit;transition:width .35s ease}
     .score{font-weight:700;opacity:.9}
-
-    /* Targetes jocs */
     .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin:16px 0}
     .card h2{margin:0 0 6px;font-size:clamp(18px,2.2vw,22px)}
     .card p{margin:0 0 12px;color:rgba(255,255,255,.8)}
@@ -36,39 +28,32 @@
     .btn{display:inline-block;padding:8px 12px;border-radius:10px;text-decoration:none;color:#e7ecf3;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s,border-color .2s}
     .btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
     .btn.primary{background:#5aa9ff;border-color:#5aa9ff;color:#0b1020;font-weight:700}
-
-    /* Confetti */
     #confetti span{position:fixed;width:8px;height:8px;border-radius:2px}
   </style>
 </head>
 <body>
-  <noscript>
-    <div style="padding:16px;font-family:Poppins,system-ui">Aquest joc necessita JavaScript. Si us plau, activa’l 💛</div>
-  </noscript>
+  <noscript><div style="padding:16px;font-family:Poppins,system-ui">Aquest joc necessita JavaScript. Si us plau, activa’l 💛</div></noscript>
 
   <div id="app">
-
     <!-- 1) GATE -->
     <section id="gate" class="view active" aria-label="Porta d'entrada">
-      <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
-        <div class="card gate-card on-image">
-          <h1 class="title"><span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏</h1>
-          <p class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
+      <div class="card gate-card on-image" style="background:rgba(0,0,0,.2)">
+        <h1 class="title"><span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏</h1>
+        <p class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
 
-          <form id="loginForm" autocomplete="off" style="margin-top:8px;">
-            <label for="username">Usuària</label>
-            <input id="username" name="username" type="text" placeholder="laura" required />
-            <label for="password">Contrasenya</label>
-            <input id="password" name="password" type="password" placeholder="••••••" required />
-            <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-              <button type="submit" class="btn primary">Començar</button>
-              <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
-            </div>
-            <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
-          </form>
+        <form id="loginForm" autocomplete="off" style="margin-top:8px;">
+          <label for="username">Usuària</label>
+          <input id="username" name="username" type="text" placeholder="laura" required />
+          <label for="password">Contrasenya</label>
+          <input id="password" name="password" type="password" placeholder="••••••" required />
+          <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+            <button type="submit" class="btn primary">Començar</button>
+            <button type="button" id="btnShowRiddle" class="btn ghost">Veure pista</button>
+          </div>
+          <p id="loginMsg" class="msg" role="status" aria-live="polite"></p>
+        </form>
 
-          <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">🔄 Reinicia joc</button>
-        </div>
+        <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">🔄 Reinicia joc</button>
       </div>
     </section>
 
@@ -113,7 +98,7 @@
       </section>
     </section>
 
-    <!-- 3) PLAY -->
+    <!-- 3) PLAY (per reptes interns del hub) -->
     <section id="play" class="view" aria-label="Prova en curs">
       <div class="card play-card">
         <div class="row"><button id="btnBack" class="btn small">⟵ Tornar</button></div>
@@ -130,24 +115,20 @@
       <div class="final-wrap">
         <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
         <p id="finalSubheading" class="lead">Has superat les proves del meu cor. Ara prepara't…</p>
-
         <div class="final-card">
           <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
           <p id="finalBody">Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛</p>
         </div>
-
         <audio id="finalAudio" class="audio-ctrl" controls preload="none">
           <source src="assets/audio/final.mp3" type="audio/mpeg" />
         </audio>
-
         <button id="btnRestart" class="btn">Tornar a començar</button>
       </div>
       <div class="confetti" id="confetti" aria-hidden="true"></div>
     </section>
-
   </div>
 
   <!-- JS global (cache-buster per evitar versions cachejades) -->
-  <script src="js/app.js?v=hub6" defer></script>
+  <script src="js/app.js?v=hub7" defer></script>
 </body>
 </html>
