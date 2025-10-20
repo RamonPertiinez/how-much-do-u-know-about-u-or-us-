@@ -1,13 +1,12 @@
 // Joc 3 — Encerta els ulls (6 persones)
 (() => {
-  // ------- Preguntes -------
   const QUESTIONS = [
-    { image: "images/PERSONA_1.jpeg", options: ["Dani", "Laura", "Marina"], correctIndex: 0 },
-    { image: "images/PERSONA_2.jpeg", options: ["Laura", "Marta", "Ramon"], correctIndex: 0 },
-    { image: "images/PERSONA_3.jpeg", options: ["Marina", "Dani", "Laura"], correctIndex: 0 },
-    { image: "images/PERSONA_4.jpeg", options: ["Marta", "Ramon", "Laura"], correctIndex: 0 },
-    { image: "images/PERSONA_5.jpeg", options: ["Ramon", "Marina", "Dani"], correctIndex: 0 },
-    { image: "images/PERSONA_6.jpeg", options: ["Aneu", "Laura", "Dani"], correctIndex: 0 },
+    { image: "./images/PERSONA_1.jpeg", options: ["Dani", "Laura", "Marina"], correctIndex: 0 },
+    { image: "./images/PERSONA_2.jpeg", options: ["Laura", "Marta", "Ramon"], correctIndex: 0 },
+    { image: "./images/PERSONA_3.jpeg", options: ["Marina", "Dani", "Laura"], correctIndex: 0 },
+    { image: "./images/PERSONA_4.jpeg", options: ["Marta", "Ramon", "Laura"], correctIndex: 0 },
+    { image: "./images/PERSONA_5.jpeg", options: ["Ramon", "Marina", "Dani"], correctIndex: 0 },
+    { image: "./images/PERSONA_6.jpeg", options: ["Aneu", "Laura", "Dani"], correctIndex: 0 },
   ];
 
   const qs = (s, r=document) => r.querySelector(s);
@@ -81,7 +80,7 @@
     statusEl.className = "status ok";
     optionsBox.querySelectorAll("button").forEach(b=>b.disabled=true);
     nextBtn.style.display="none";
-    finishBtn.style.display="inline-block"; // “Tornar al menú”
+    finishBtn.style.display="inline-block";
   }
 
   nextBtn.addEventListener("click", next);
