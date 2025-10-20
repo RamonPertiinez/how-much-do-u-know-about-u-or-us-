@@ -10,42 +10,161 @@
 
   <base href="/how-much-do-u-know-about-u-or-us-/">
 
-  <!-- Fonts i CSS globals del teu projecte -->
+  <!-- Fonts i CSS globals -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css" />
 
   <style>
-    /* Estils mínims per a les targetes de jocs (coherent amb el teu look) */
-    .game-card {
+    /* --- Estils del hub --- */
+    body {
+      font-family: "Poppins", system-ui, sans-serif;
+      background: #0f1117;
+      color: #e7ecf3;
+      margin: 0;
+      padding: 0;
+    }
+
+    .view {
+      display: none;
+      padding: 20px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    /* --- Barra superior --- */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 18px;
+      border-radius: 14px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      font-weight: 600;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar {
+      width: 140px;
+      height: 8px;
+      background: #1f2330;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #7c87ff, #b388ff);
+      border-radius: inherit;
+      transition: width 0.35s ease;
+    }
+
+    .score {
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    /* --- Targetes de jocs --- */
+    .card {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 16px;
-      padding: 16px;
+      padding: 18px;
       margin: 16px 0;
     }
-    .game-card h2 { margin: 0 0 6px; font-size: clamp(18px, 2.2vw, 22px); }
-    .game-card .sub { color: rgba(255,255,255,0.7); margin: 0 0 12px; }
-    .game-card .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    .btn.linklike { text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
-    :focus-visible { outline:2px solid #22d3ee; outline-offset:2px; }
-    #riddleText { text-transform:none; }
+
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: clamp(18px, 2.2vw, 22px);
+    }
+
+    .card p {
+      margin: 0 0 12px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #e7ecf3;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .btn.primary {
+      background: #5aa9ff;
+      border-color: #5aa9ff;
+      color: #0b1020;
+      font-weight: 700;
+    }
+
+    .tags {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* Joc final i confetti */
+    #confetti span {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
   <noscript>
-    <div style="padding:16px;font-family:Poppins,system-ui">Aquest joc necessita JavaScript. Si us plau, activa’l 💛</div>
+    <div style="padding:16px;font-family:Poppins,system-ui">
+      Aquest joc necessita JavaScript. Si us plau, activa’l 💛
+    </div>
   </noscript>
 
   <div id="app">
 
-    <!-- 1) PANTALLA D’ENTRADA -->
+    <!-- 1️⃣ PANTALLA D’ENTRADA -->
     <section id="gate" class="view active" aria-label="Porta d'entrada">
       <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
-        <div class="card gate-card on-image" role="dialog" aria-labelledby="gateTitle" aria-describedby="gateDesc">
-          <h1 id="gateTitle" class="title">
-            <span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏
-          </h1>
-          <p id="gateDesc" class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
+        <div class="card gate-card on-image">
+          <h1 class="title"><span class="handwritten">TENS GANES DE SABER EL TEU REGAL?</span> 😏</h1>
+          <p class="subtitle">Per entrar has d'encertar la primera pista relacionada amb aquesta foto.</p>
 
           <form id="loginForm" autocomplete="off" style="margin-top:8px;">
             <label for="username">Usuària</label>
@@ -60,94 +179,62 @@
           </form>
 
           <button id="clearCache" class="btn ghost" style="margin:10px 0 0;">🔄 Reinicia joc</button>
-
-          <div id="riddleBox" class="riddle" style="display:none;">
-            <div id="riddleText" style="font-weight:600;">
-              <!-- (…el teu text del riddle… ) -->
-              <p>hola guapa 💛 Quines ganes tenia que arribés el teU dia, el teu aniversari, i fer-lo una mica especial encara que estIgui lluny i no ho celebrem en persoNa... per ara 😏<br>
-              bueno, qui sap... espera’t 30 segons i mira radera teu 😁 no segueixis llegint per ara.</p>
-              <p>ja has mirat raDera? què esperaves? jejejeje tan de booooo!!!! 🤭<br>
-              queden uns mesets però en res ja estaré per aquí molestant I fent-te abraçades jejeje 🤗</p>
-              <p>comencem amb això que estàs veient aquí... i et preguntarAs: què és això? com que contrasEnya? com que nom d’usuària? què he de fer? 🤔</p>
-              <p>t’ho explico molt senzillameNt 💬 això és un joc, una petita experiència per poder arribar a reSoldre el regal final 🎁<br>
-              un regal especial que he Volgut fer interactiu, perquè pensis una estonetA i així estiguis distreta uNa mica.<br>
-              ho pots anar Fent durant el dia, no cal que ho facis de cop ⏳<br>
-              fins i tot sEria una bona idea que jo estigués en tRucada, ves a sAber… ☎️</p>
-              <p>quan averiguis Quina és la contrasenya 🔐 podràs començar el joc.<br>
-              és molt simple: són diferents proves, i si arribes a Una puntuació de 8 encertadEs 🎯 podràS revelar el regal final 💌</p>
-              <p>comencem pel principi, però 😇<br>
-              quina és la contrasenya? fixa’T bé que hi ha mAjúscules en el text… Fins ara bé? però aquestes majúscules no tenen gaire sentit, nO? o sí...? 👀</p>
-              <p>molTa sort, guapa 💕 i esperO que no et costi gaire jejejejeje 😜</p>
-            </div>
-
-            <input id="riddleAnswer" type="text" placeholder="Escriu la teva resposta aquí" autocapitalize="off"
-              style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.15);color:var(--text)" />
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <button id="riddleSubmit" class="btn riddle-btn primary">Comprovar resposta</button>
-              <button id="riddleHint" class="btn riddle-btn ghost">Pista</button>
-            </div>
-            <p id="riddleMsg" class="hint-text" aria-live="polite"></p>
-          </div>
-
-          <div class="hint" aria-hidden="true" style="margin-top:12px;">
-            <img src="assets/icons/lock.svg" alt="" width="18" height="18" />
-            <span>La primera pista t'ajudarà a recordar el dia d'aquesta foto.</span>
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- 2) HUB (si el fas servir com a mapa general) -->
-   <section id="hub" class="view" aria-label="Mapa de proves">
-  <header class="topbar">
-    <div class="brand">
-      <button id="easterReset" class="btn small ghost" aria-label="Opcions ocultes">🎁</button>
-      <span id="gameTitle">Tens ganes de saber el teu regal?</span>
-    </div>
-    <div class="progress">
-      <div class="bar"><div class="fill" id="progressFill"></div></div>
-      <div class="score"><span id="scoreNum">0</span>/<span id="scoreGoal">8</span></div>
-    </div>
-  </header>
+    <!-- 2️⃣ HUB -->
+    <section id="hub" class="view" aria-label="Mapa de proves">
+      <header class="topbar">
+        <div class="brand">
+          <button id="easterReset" class="btn small ghost" aria-label="Opcions ocultes">🎁</button>
+          <span id="gameTitle">Tens ganes de saber el teu regal?</span>
+        </div>
+        <div class="progress">
+          <div class="bar"><div class="fill" id="progressFill"></div></div>
+          <div class="score"><span id="scoreNum">0</span>/<span id="scoreGoal">8</span></div>
+        </div>
+      </header>
 
-<!-- Joc 1 -->
-<section class="card">
-  <h2>🎵 Joc 1 — Endevina la cançó</h2>
-  <p>Escolta la pista i tria la cançó correcta. Hi ha 5 cançons en total.</p>
-  <div class="row">
-    <a class="btn primary" href="js/game1/index.html">▶️ Obrir Joc 1</a>
-    <a class="btn" href="js/game1/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
-  </div>
-  <div class="tags">Àudios</div>
-</section>
+      <!-- Joc 1 -->
+      <section class="card">
+        <h2>🎵 Joc 1 — Endevina la cançó</h2>
+        <p>Escolta la pista i tria la cançó correcta. Hi ha 5 cançons en total.</p>
+        <div class="row">
+          <a class="btn primary" href="js/game1/index.html">▶️ Obrir Joc 1</a>
+          <a class="btn" href="js/game1/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
+        </div>
+        <div class="tags">Àudios</div>
+      </section>
 
-<!-- Joc 2 -->
-<section class="card">
-  <h2>📸 Joc 2 — Una foto borrosa</h2>
-  <p>Mira un vídeo que s’enfoca a poc a poc i tria el lloc correcte d’un desplegable.</p>
-  <div class="row">
-    <a class="btn primary" href="js/game2/index.html">▶️ Obrir Joc 2</a>
-    <a class="btn" href="js/game2/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
-  </div>
-  <div class="tags">Vídeo (&lt; 25 MB)</div>
-</section>
+      <!-- Joc 2 -->
+      <section class="card">
+        <h2>📸 Joc 2 — Una foto borrosa</h2>
+        <p>Mira un vídeo que s’enfoca a poc a poc i tria el lloc correcte d’un desplegable.</p>
+        <div class="row">
+          <a class="btn primary" href="js/game2/index.html">▶️ Obrir Joc 2</a>
+          <a class="btn" href="js/game2/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
+        </div>
+        <div class="tags">Vídeo (&lt; 25 MB)</div>
+      </section>
 
-<!-- Joc 3 (NO dins d’un altre .card!) -->
-<section class="card">
-  <h2>👀 Joc 3 — Encerta els ulls</h2>
-  <p>Endevina a qui pertanyen els ulls triant entre 3 opcions. Hi ha 6 rondes en total.</p>
-  <div class="row">
-    <a class="btn primary" href="js/game3/index.html">▶️ Obrir Joc 3</a>
-    <a class="btn" href="js/game3/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
-  </div>
-  <div class="tags">Imatges</div>
-</section>
+      <!-- Joc 3 -->
+      <section class="card">
+        <h2>👀 Joc 3 — Encerta els ulls</h2>
+        <p>Endevina a qui pertanyen els ulls triant entre 3 opcions. Hi ha 6 rondes en total.</p>
+        <div class="row">
+          <a class="btn primary" href="js/game3/index.html">▶️ Obrir Joc 3</a>
+          <a class="btn" href="js/game3/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
+        </div>
+        <div class="tags">Imatges</div>
+      </section>
+    </section>
 
-    <!-- 3) PLAY -->
+    <!-- 3️⃣ PLAY -->
     <section id="play" class="view" aria-label="Prova en curs">
       <div class="card play-card">
         <div class="row"><button id="btnBack" class="btn small">⟵ Tornar</button></div>
-        <h2 id="challengeTitle" class="handSlot">Títol de la prova</h2>
+        <h2 id="challengeTitle">Títol de la prova</h2>
         <p id="challengeIntro" class="muted">Intro de la prova</p>
         <div id="challengeContent" class="content"></div>
         <div class="actions"><button id="btnSubmit" class="btn primary">Enviar</button></div>
@@ -155,8 +242,7 @@
       </div>
     </section>
 
-
-    <!-- 4) FINAL -->
+    <!-- 4️⃣ FINAL -->
     <section id="final" class="view" aria-label="Sorpresa final">
       <div class="final-wrap">
         <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
@@ -178,8 +264,7 @@
 
   </div>
 
-  <!-- JS global del teu projecte -->
-  <script src="js/app.js" defer></script>
-  <!-- 👇 IMPORTANT: JA NO carreguem js/game1-audio.js aquí, perquè el Joc 1 ara viu a js/game1/ -->
+  <!-- 🔌 JS global -->
+  <script src="js/app.js?v=hub5" defer></script>
 </body>
 </html>
