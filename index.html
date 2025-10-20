@@ -16,150 +16,39 @@
 
   <style>
     /* --- Estils del hub --- */
-    body {
-      font-family: "Poppins", system-ui, sans-serif;
-      background: #0f1117;
-      color: #e7ecf3;
-      margin: 0;
-      padding: 0;
-    }
+    body{font-family:"Poppins",system-ui,sans-serif;background:#0f1117;color:#e7ecf3;margin:0}
+    .view{display:none;padding:20px;max-width:850px;margin:0 auto}
+    .view.active{display:block}
 
-    .view {
-      display: none;
-      padding: 20px;
-      max-width: 850px;
-      margin: 0 auto;
-    }
+    /* Barra superior */
+    .topbar{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:12px 18px;border-radius:14px;margin-bottom:22px}
+    .brand{font-weight:600;font-size:18px;display:flex;align-items:center;gap:8px}
+    .progress{display:flex;align-items:center;gap:8px}
+    .bar{width:140px;height:8px;background:#1f2330;border-radius:999px;overflow:hidden;position:relative}
+    .fill{position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg,#7c87ff,#b388ff);border-radius:inherit;transition:width .35s ease}
+    .score{font-weight:700;opacity:.9}
 
-    .view.active {
-      display: block;
-    }
+    /* Targetes jocs */
+    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;margin:16px 0}
+    .card h2{margin:0 0 6px;font-size:clamp(18px,2.2vw,22px)}
+    .card p{margin:0 0 12px;color:rgba(255,255,255,.8)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{display:inline-block;padding:8px 12px;border-radius:10px;text-decoration:none;color:#e7ecf3;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s,border-color .2s}
+    .btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
+    .btn.primary{background:#5aa9ff;border-color:#5aa9ff;color:#0b1020;font-weight:700}
 
-    /* --- Barra superior --- */
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 18px;
-      border-radius: 14px;
-      margin-bottom: 22px;
-    }
-
-    .brand {
-      font-weight: 600;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .progress {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .bar {
-      width: 140px;
-      height: 8px;
-      background: #1f2330;
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .fill {
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, #7c87ff, #b388ff);
-      border-radius: inherit;
-      transition: width 0.35s ease;
-    }
-
-    .score {
-      font-weight: 700;
-      opacity: 0.9;
-    }
-
-    /* --- Targetes de jocs --- */
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 18px;
-      margin: 16px 0;
-    }
-
-    .card h2 {
-      margin: 0 0 6px;
-      font-size: clamp(18px, 2.2vw, 22px);
-    }
-
-    .card p {
-      margin: 0 0 12px;
-      color: rgba(255,255,255,0.8);
-    }
-
-    .row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 8px 12px;
-      border-radius: 10px;
-      text-decoration: none;
-      color: #e7ecf3;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      transition: background 0.2s, border-color 0.2s;
-    }
-
-    .btn:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.3);
-    }
-
-    .btn.primary {
-      background: #5aa9ff;
-      border-color: #5aa9ff;
-      color: #0b1020;
-      font-weight: 700;
-    }
-
-    .tags {
-      margin-top: 10px;
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
-    /* Joc final i confetti */
-    #confetti span {
-      position: fixed;
-      width: 8px;
-      height: 8px;
-      border-radius: 2px;
-    }
+    /* Confetti */
+    #confetti span{position:fixed;width:8px;height:8px;border-radius:2px}
   </style>
 </head>
 <body>
   <noscript>
-    <div style="padding:16px;font-family:Poppins,system-ui">
-      Aquest joc necessita JavaScript. Si us plau, activa’l 💛
-    </div>
+    <div style="padding:16px;font-family:Poppins,system-ui">Aquest joc necessita JavaScript. Si us plau, activa’l 💛</div>
   </noscript>
 
   <div id="app">
 
-    <!-- 1️⃣ PANTALLA D’ENTRADA -->
+    <!-- 1) GATE -->
     <section id="gate" class="view active" aria-label="Porta d'entrada">
       <div class="gate-bg" id="gateBg" style="background-image:url('assets/images/imatge_inicial.jpg')">
         <div class="card gate-card on-image">
@@ -183,7 +72,7 @@
       </div>
     </section>
 
-    <!-- 2️⃣ HUB -->
+    <!-- 2) HUB -->
     <section id="hub" class="view" aria-label="Mapa de proves">
       <header class="topbar">
         <div class="brand">
@@ -196,38 +85,35 @@
         </div>
       </header>
 
-     <!-- Joc 1 -->
-<section class="card">
-  <h2>🎵 Joc 1 — Endevina la cançó</h2>
-  <p>Escolta la pista i tria la cançó correcta. Hi ha 5 cançons en total.</p>
-  <div class="row">
-    <a class="btn primary" href="js/game1/index.html">▶️ Obrir Joc 1</a>
-    <a class="btn" href="js/game1/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
-  </div>
-</section>
+      <!-- Joc 1 -->
+      <section class="card">
+        <h2>🎵 Joc 1 — Endevina la cançó</h2>
+        <p>Escolta la pista i tria la cançó correcta. Hi ha 5 cançons en total.</p>
+        <div class="row">
+          <a class="btn primary" href="js/game1/index.html">▶️ Obrir Joc 1</a>
+        </div>
+      </section>
 
-<!-- Joc 2 -->
-<section class="card">
-  <h2>📸 Joc 2 — Una foto borrosa</h2>
-  <p>Mira un vídeo que s’enfoca a poc a poc i tria el lloc correcte d’un desplegable.</p>
-  <div class="row">
-    <a class="btn primary" href="js/game2/index.html">▶️ Obrir Joc 2</a>
-    <a class="btn" href="js/game2/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
-  </div>
-</section>
+      <!-- Joc 2 -->
+      <section class="card">
+        <h2>📸 Joc 2 — Una foto borrosa</h2>
+        <p>Mira un vídeo que s’enfoca a poc a poc i tria el lloc correcte d’un desplegable.</p>
+        <div class="row">
+          <a class="btn primary" href="js/game2/index.html">▶️ Obrir Joc 2</a>
+        </div>
+      </section>
 
-<!-- Joc 3 -->
-<section class="card">
-  <h2>👀 Joc 3 — Encerta els ulls</h2>
-  <p>Endevina a qui pertanyen els ulls triant entre 3 opcions. Hi ha 6 rondes en total.</p>
-  <div class="row">
-    <a class="btn primary" href="js/game3/index.html">▶️ Obrir Joc 3</a>
-    <a class="btn" href="js/game3/index.html" target="_blank" rel="noopener">Obrir en pestanya nova</a>
-  </div>
-</section>
+      <!-- Joc 3 -->
+      <section class="card">
+        <h2>👀 Joc 3 — Encerta els ulls</h2>
+        <p>Endevina a qui pertanyen els ulls triant entre 3 opcions. Hi ha 6 rondes en total.</p>
+        <div class="row">
+          <a class="btn primary" href="js/game3/index.html">▶️ Obrir Joc 3</a>
+        </div>
+      </section>
+    </section>
 
-
-    <!-- 3️⃣ PLAY -->
+    <!-- 3) PLAY -->
     <section id="play" class="view" aria-label="Prova en curs">
       <div class="card play-card">
         <div class="row"><button id="btnBack" class="btn small">⟵ Tornar</button></div>
@@ -239,7 +125,7 @@
       </div>
     </section>
 
-    <!-- 4️⃣ FINAL -->
+    <!-- 4) FINAL -->
     <section id="final" class="view" aria-label="Sorpresa final">
       <div class="final-wrap">
         <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
@@ -261,7 +147,7 @@
 
   </div>
 
-  <!-- 🔌 JS global -->
-  <script src="js/app.js?v=hub5" defer></script>
+  <!-- JS global (cache-buster per evitar versions cachejades) -->
+  <script src="js/app.js?v=hub6" defer></script>
 </body>
 </html>
