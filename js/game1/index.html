@@ -41,5 +41,21 @@
   </main>
 
   <script src="game1.js"></script>
+
+  <script>
+  // Opció A: si el teu joc 1 ja té un "finish", crida aquesta funció quan guanyi
+  window.markGame1Done = function(){
+    localStorage.setItem('game1_done','1');
+    location.href='../../index.html#hub';
+  };
+
+  // Opció B: si només vols un botó "Tornar al menú" que no marqui com fet:
+  // document.getElementById('btnBackToHub')?.addEventListener('click', ()=>location.href='../../index.html#hub');
+
+  // Si es recarrega aquesta pàgina, torna al hub
+  try { const n = performance.getEntriesByType?.('navigation')[0]; if (n && n.type==='reload') location.replace('../../index.html#hub'); } catch {}
+  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
+</script>
+
 </body>
 </html>
