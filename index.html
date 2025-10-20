@@ -11,6 +11,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css" />
+
   <style>
     body{font-family:"Poppins",system-ui,sans-serif;background:#0f1117;color:#e7ecf3;margin:0}
     .view{display:none;padding:20px;max-width:850px;margin:0 auto}
@@ -28,6 +29,7 @@
     .btn{display:inline-block;padding:8px 12px;border-radius:10px;text-decoration:none;color:#e7ecf3;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s,border-color .2s}
     .btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
     .btn.primary{background:#5aa9ff;border-color:#5aa9ff;color:#0b1020;font-weight:700}
+    .btn.reset{background:#ff6b6b;border-color:#ff6b6b;color:#0b1020;font-weight:700;margin-top:16px}
     #confetti span{position:fixed;width:8px;height:8px;border-radius:2px}
   </style>
 </head>
@@ -96,21 +98,16 @@
           <a class="btn primary" href="js/game3/index.html">▶️ Obrir Joc 3</a>
         </div>
       </section>
+
+      <!-- 🔁 Botó de reset global -->
+      <section class="card" style="text-align:center;">
+        <h2>🔁 Reiniciar tot el joc</h2>
+        <p>Si alguna cosa no funciona o vols començar de zero, pots reiniciar-ho tot.</p>
+        <button id="btnFullReset" class="btn reset">Reiniciar i tornar a l’inici</button>
+      </section>
     </section>
 
-    <!-- 3) PLAY (per reptes interns del hub) -->
-    <section id="play" class="view" aria-label="Prova en curs">
-      <div class="card play-card">
-        <div class="row"><button id="btnBack" class="btn small">⟵ Tornar</button></div>
-        <h2 id="challengeTitle">Títol de la prova</h2>
-        <p id="challengeIntro" class="muted">Intro de la prova</p>
-        <div id="challengeContent" class="content"></div>
-        <div class="actions"><button id="btnSubmit" class="btn primary">Enviar</button></div>
-        <p id="feedback" class="msg" role="alert" aria-live="assertive"></p>
-      </div>
-    </section>
-
-    <!-- 4) FINAL -->
+    <!-- 3) FINAL -->
     <section id="final" class="view" aria-label="Sorpresa final">
       <div class="final-wrap">
         <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
@@ -128,7 +125,23 @@
     </section>
   </div>
 
-  <!-- JS global (cache-buster per evitar versions cachejades) -->
-  <script src="js/app.js?v=hub7" defer></script>
+  <!-- JS global -->
+  <script src="js/app.js?v=hub8" defer></script>
+
+  <!-- Script del botó de reset -->
+  <script>
+    document.addEventListener("DOMContentLoaded",()=>{
+      const btn = document.getElementById("btnFullReset");
+      if(btn){
+        btn.addEventListener("click", ()=>{
+          if(confirm("Vols reiniciar TOT el joc i tornar a l’inici?")){
+            localStorage.clear();
+            location.href = "index.html";
+            setTimeout(()=>location.reload(),300);
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
