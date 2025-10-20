@@ -49,6 +49,17 @@
   </main>
 
   <script src="game2.js"></script>
+
+  <script>
+  window.markGame2Done = function(){
+    localStorage.setItem('game2_done','1');
+    location.href='../../index.html#hub';
+  };
+
+  try { const n = performance.getEntriesByType?.('navigation')[0]; if (n && n.type==='reload') location.replace('../../index.html#hub'); } catch {}
+  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
+</script>
+
 </body>
 </html>
 
