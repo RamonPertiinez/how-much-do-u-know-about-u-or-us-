@@ -57,5 +57,35 @@
   if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
 </script>
 
+<script>
+  (function hookGame1(){
+    // 1) Si el joc exposa callbacks (onWin / onFail)
+    if (window.GameAudioGuess && typeof window.GameAudioGuess === 'object') {
+      const origWin = window.GameAudioGuess.onWin;
+      window.GameAudioGuess.onWin = function(...args){
+        try { localStorage.setItem('game1_done','1'); } catch {}
+        if (typeof origWin === 'function') origWin.apply(this, args);
+        location.href = '../../index.html#hub';
+      };
+      return;
+    }
+    // 2) Si el joc dispara un event personalitzat
+    window.addEventListener('game1:finished', () => {
+      try { localStorage.setItem('game1_done','1'); } catch {}
+      location.href = '../../index.html#hub';
+    });
+    // 3) Reintent si encara no s'ha carregat el joc
+    setTimeout(hookGame1, 80);
+  })();
+
+  // Si es recarrega aquesta pàgina, torna al Hub
+  try {
+    const nav = performance.getEntriesByType?.('navigation')[0];
+    if (nav && nav.type === 'reload') location.replace('../../index.html#hub');
+  } catch {}
+  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
+</script>
+
+  
 </body>
 </html>
