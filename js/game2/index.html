@@ -89,6 +89,33 @@
   if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
 </script>
 
+  <script>
+  window.markGame2DoneAndReturn = function(){
+    try { localStorage.setItem('game2_done','1'); } catch {}
+    location.href = '../../index.html#done=game2';
+  };
+
+  (function hookGame2(){
+    // Si tens una API global del joc 2, intercepta-la aquí de forma semblant
+    if (window.GameTwo && typeof window.GameTwo === 'object' && typeof window.GameTwo.onWin === 'function') {
+      const prev = window.GameTwo.onWin;
+      window.GameTwo.onWin = function(){
+        try { localStorage.setItem('game2_done','1'); } catch {}
+        if (typeof prev === 'function') prev.apply(this, arguments);
+        location.href='../../index.html#done=game2';
+      };
+    } else {
+      setTimeout(hookGame2, 80);
+    }
+  })();
+
+  try {
+    const n = performance.getEntriesByType?.('navigation')[0];
+    if (n && n.type === 'reload') location.replace('../../index.html#hub');
+  } catch {}
+  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
+</script>
+
   
 </body>
 </html>
