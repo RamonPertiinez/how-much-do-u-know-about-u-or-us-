@@ -34,7 +34,7 @@
       options: ["Tandem", "Camila", "Sushi Poke"],
       correctIndex: 1,
     },
-        {
+    {
       file: "../../assets/audio/game1/track5.mp3",
       artist: "Txarango",
       options: ["La Dansa del Vestit", "Music de Carrer", "Som Perosnes"],
@@ -115,9 +115,10 @@
   });
 
   btnNext.addEventListener("click", () => {
-    // si és l'última pista → torna al menú
+    // si és l'última pista → marca DONE i torna al Hub
     if (i >= TRACKS.length - 1) {
-      window.location.href = "../../index.html";
+      try { localStorage.setItem("game1_done","1"); } catch {}
+      window.location.href = "../../index.html#done=game1";
       return;
     }
     i += 1;
@@ -132,4 +133,3 @@
   // INIT
   loadTrack();
 })();
-
