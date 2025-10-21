@@ -60,6 +60,36 @@
   if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
 </script>
 
+<script>
+  (function hookGame2(){
+    // 1) Si el joc exporta una API global
+    if (window.GameTwo && typeof window.GameTwo === 'object' && typeof window.GameTwo.onWin === 'function') {
+      const orig = window.GameTwo.onWin;
+      window.GameTwo.onWin = function(...args){
+        try { localStorage.setItem('game2_done','1'); } catch {}
+        if (typeof orig === 'function') orig.apply(this, args);
+        location.href = '../../index.html#hub';
+      };
+      return;
+    }
+    // 2) Event personalitzat
+    window.addEventListener('game2:finished', () => {
+      try { localStorage.setItem('game2_done','1'); } catch {}
+      location.href = '../../index.html#hub';
+    });
+    // 3) Reintent
+    setTimeout(hookGame2, 80);
+  })();
+
+  // Si es recarrega aquesta pàgina, torna al Hub
+  try {
+    const nav = performance.getEntriesByType?.('navigation')[0];
+    if (nav && nav.type === 'reload') location.replace('../../index.html#hub');
+  } catch {}
+  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
+</script>
+
+  
 </body>
 </html>
 
