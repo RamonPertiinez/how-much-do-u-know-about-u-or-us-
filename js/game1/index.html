@@ -86,6 +86,37 @@
   if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
 </script>
 
+  <script>
+  // Funció que pots cridar des del teu finish:
+  window.markGame1DoneAndReturn = function(){
+    try { localStorage.setItem('game1_done','1'); } catch {}
+    // redirigeix amb hash perquè el Hub també marqui si cal
+    location.href = '../../index.html#done=game1';
+  };
+
+  // Si el joc exposa una API onWin, la recobrim
+  (function hookGame1(){
+    if (window.GameAudioGuess && typeof window.GameAudioGuess === 'object') {
+      const prev = window.GameAudioGuess.onWin;
+      window.GameAudioGuess.onWin = function(){
+        try { localStorage.setItem('game1_done','1'); } catch {}
+        if (typeof prev === 'function') prev.apply(this, arguments);
+        location.href='../../index.html#done=game1';
+      };
+    } else {
+      // reintenta enganxar-te si el joc tarda a muntar-se
+      setTimeout(hookGame1, 80);
+    }
+  })();
+
+  // Reload segur → torna al Hub
+  try {
+    const n = performance.getEntriesByType?.('navigation')[0];
+    if (n && n.type === 'reload') location.replace('../../index.html#hub');
+  } catch {}
+  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
+</script>
+
   
 </body>
 </html>
