@@ -31,8 +31,9 @@
   // ------ Estat ------
   let remaining = START_SECONDS;
   let ticker = null;
+  let lastCorrect = false; // ✅ NOVETAT: per marcar el progrés
 
-  // ------ Utils (si no vols utils.js, deixa aquestes 3 funcions aquí) ------
+  // ------ Utils ------
   const z2  = n => n.toString().padStart(2, "0");
   const fmt = s => `${z2(Math.floor(s/60))}:${z2(s%60)}`;
   const setTime = s => { els.time.textContent = fmt(s); };
@@ -57,8 +58,30 @@
     enable(els.submit, !lock);
   };
 
+  const ensureBackButton = ()=>{
+    let back = document.getElementById("btnBackHub");
+    if (!back) {
+      back = document.createElement("button");
+      back.id = "btnBackHub";
+      back.className = "btn primary";
+      back.textContent = "Tornar al menú";
+      back.style.marginLeft = "8px";
+      els.after.appendChild(back);
+      back.addEventListener("click", ()=>{
+        try {
+          if (lastCorrect) localStorage.setItem("game2_done","1");
+        } catch {}
+        // si correcte -> #done=game2 perquè el Hub també marqui; si no, només #hub
+        window.location.href = lastCorrect
+          ? "../../index.html#done=game2"
+          : "../../index.html#hub";
+      });
+    }
+  };
+
   const showEnd = ()=>{
     els.after.classList.remove("hidden");
+    ensureBackButton(); // ✅ afegeix el botó "Tornar al menú"
     enable(els.start, false);
     enable(els.pause, false);
     lockAnswerUI(true);
@@ -69,6 +92,7 @@
     remaining = START_SECONDS;
     setTime(remaining);
     msg("");
+    lastCorrect = false;
     els.after.classList.add("hidden");
     enable(els.start, true);
     enable(els.pause, false);
@@ -88,6 +112,7 @@
         clearInterval(ticker); ticker = null;
         msg("⏰ Temps esgotat! Prova de nou.", "warn");
         els.clip.pause();
+        lastCorrect = false;
         showEnd();
       }
     }, 1000);
@@ -132,8 +157,10 @@
 
     if (val === CORRECT) {
       msg("✅ Correcte! Era l’Estany Negre de Cabanes.", "ok");
+      lastCorrect = true;           // ✅ marca correcte
     } else {
       msg(`❌ Incorrecte. La bona era: ${CORRECT}.`, "err");
+      lastCorrect = false;
     }
     showEnd();
   });
@@ -145,4 +172,3 @@
   fillOptions();
   lockAnswerUI(true);
 })();
-
