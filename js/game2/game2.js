@@ -169,10 +169,9 @@
     els.after.classList.add('hidden');
   }
 
-  // ⬇️ ABANS esborràvem el contingut; ara NOMÉS afegim botons
+  // Ara NOMÉS afegim botons (no esborrem res) — així no desapareix la targeta amb la imatge
   function showAfterButtons(buttons = []) {
     if (!els.after) return;
-    // NO esborrem innerHTML (així no perdem la imatge)
     buttons.forEach(({ text, onClick, id }) => {
       const b = document.createElement('button');
       b.className = 'btn';
@@ -184,26 +183,66 @@
     els.after.classList.remove('hidden');
   }
 
-  // ✨ Targeta amb la imatge i el text de la resposta correcta
+  // ====== Desplegable sota el VÍDEO amb la imatge de la resposta correcta ======
   function showCorrectReveal(L) {
-    if (!els.after || !L?.img) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'reveal-card';
+    if (!L?.img || !els.clip) return;
+
+    // Crear contenidor collapsible
+    const wrap = document.createElement('section');
+    wrap.className = 'reveal-collapsible';
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'reveal-toggle';
+    toggle.textContent = 'Veure la resposta correcta';
+
+    const body = document.createElement('div');
+    body.className = 'reveal-body';
+
+    const card = document.createElement('div');
+    card.className = 'reveal-card';
 
     const img = document.createElement('img');
     img.alt = 'Resposta correcta';
     img.loading = 'lazy';
-    img.src = `${L.img}?v=${Date.now()}`; // cache-bust
+    img.src = `${L.img}?v=${Date.now()}`;
+    img.onerror = () => {
+      // Traça mínima d’error
+      console.warn('No s\'ha pogut carregar la imatge:', img.src);
+    };
 
     const cap = document.createElement('div');
     cap.className = 'cap';
     cap.innerHTML = `<strong>Resposta correcta</strong><br>${L.correct}`;
 
-    wrap.appendChild(img);
-    wrap.appendChild(cap);
+    card.appendChild(img);
+    card.appendChild(cap);
+    body.appendChild(card);
+    wrap.appendChild(toggle);
+    wrap.appendChild(body);
 
-    els.after.classList.remove('hidden');
-    els.after.prepend(wrap);
+    // Inserim el desplegable JUST després del vídeo
+    const videoEl = els.clip;
+    videoEl.insertAdjacentElement('afterend', wrap);
+
+    // Comportament de desplegable amb animació
+    let open = false;
+    const setOpen = (v) => {
+      open = v;
+      wrap.classList.toggle('open', open);
+      if (open) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      } else {
+        body.style.maxHeight = '0px';
+      }
+    };
+    toggle.addEventListener('click', () => setOpen(!open));
+
+    // Obrim automàticament després de l'encert i fem scroll
+    setTimeout(() => {
+      setOpen(true);
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   }
 
   function loadLevel(i) {
@@ -213,6 +252,9 @@
     setTime(START_SECONDS);
     msg('');
     clearAfter();
+
+    // Eliminar possibles desplegables d’un nivell anterior
+    document.querySelectorAll('.reveal-collapsible').forEach(n => n.remove());
 
     const L = LEVELS[level];
     if (!L) return showFinal();
@@ -275,9 +317,9 @@
     if (correct) {
       msg('✅ Correcte!', 'ok');
 
-      // Mostra imatge + títol de la resposta bona (i DESPRÉS afegim botons, sense esborrar)
+      // 1) Inserim el desplegable sota el vídeo
       showCorrectReveal(L);
-
+      // 2) Llavors afegim botons (quedaran DESPRÉS del desplegable, obligant a baixar)
       const isLast = level >= LEVELS.length - 1;
       showAfterButtons([
         {
@@ -285,20 +327,26 @@
           id: 'btnNext',
           onClick: () => {
             clearAfter();
-            if (isLast) showFinal();
-            else loadLevel(level + 1);
+            loadLevel(isLast ? 0 : level + 1);
+            if (isLast) {
+              msg('🎉 Has completat tots els nivells del Joc 2!', 'ok');
+              showAfterButtons([
+                { text: 'Tornar als jocs', onClick: () => location.replace('../../index.html#hub') },
+                { text: 'Repetir Joc 2', onClick: () => loadLevel(0) }
+              ]);
+            }
           }
         },
         {
           text: 'Repetir aquest nivell',
-          onClick: () => loadLevel(level)
+          onClick: () => { clearAfter(); loadLevel(level); }
         }
       ]);
     } else {
       msg(`❌ Incorrecte. La bona era: ${L?.correct || '—'}.`, 'err');
       showAfterButtons([
-        { text: 'Torna-ho a provar', onClick: () => loadLevel(level) },
-        { text: 'Passar al següent', onClick: () => loadLevel(level + 1) }
+        { text: 'Torna-ho a provar', onClick: () => { clearAfter(); loadLevel(level); } },
+        { text: 'Passar al següent', onClick: () => { clearAfter(); loadLevel(level + 1); } }
       ]);
     }
 
@@ -313,6 +361,8 @@
       startTimer();
       msg('');
       clearAfter();
+      // Eliminar desplegable si es reprodueix de nou
+      document.querySelectorAll('.reveal-collapsible').forEach(n => n.remove());
     } catch {}
   });
 
