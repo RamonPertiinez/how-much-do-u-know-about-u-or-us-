@@ -39,7 +39,7 @@
         'Estany Negre de Cabanes' // ✅ correcta
       ],
       correct: 'Estany Negre de Cabanes',
-      img: '../../assets/images/game2/correctreveal.jpg'
+      img: '../assets/images/game2/correctreveal.jpg'
     },
 
     // Nivell 1: reveal2.mp4 — Indonèsia
