@@ -16,14 +16,33 @@
   };
 
   // --- Config ---
-  const START_SECONDS = 30; // temporitzador de referència (opcional)
+  const START_SECONDS = 30; // temporitzador (opcional)
   let remaining = START_SECONDS;
   let timerId = null;
 
-  // --- Nivells (afegeix i edita aquí) ---
-  // Rutes relatives des de js/game2/index.html → ../../assets/video/game2/...
+  // --- Nivells (rutes relatives des de js/game2/index.html → ../../assets/video/game2/...)
+  // També afegim la imatge de "reveal correcte" (rutes: ../../assets/images/game2/...)
   const LEVELS = [
-    // Nivell 1: reveal2.mp4 (amb les opcions que m'has passat)
+    // Nivell 0: reveal.mp4 — Estanys Pirineus (ja el tenies d'abans)
+    {
+      src: '../../assets/video/game2/reveal.mp4',
+      options: [
+        'Estany de Sant Maurici',
+        'Estany Llong',
+        'Estany de Cavallers',
+        'Estany de Subenuix',
+        'Estany Gento',
+        'Estany de Baborte',
+        'Estany de Certascan',
+        'Estany de Gerber',
+        'Estany de Mar',
+        'Estany Negre de Cabanes' // ✅ correcta
+      ],
+      correct: 'Estany Negre de Cabanes',
+      img: '../../assets/images/game2/correctreveal.jpg'
+    },
+
+    // Nivell 1: reveal2.mp4 — Indonèsia
     {
       src: '../../assets/video/game2/reveal2.mp4',
       options: [
@@ -34,35 +53,45 @@
         'Nucifera Kuta',
         'Korurua Dijiwa Ubud'
       ],
-      correct: 'Theodor at Labuan Bajo'
+      correct: 'Theodor at Labuan Bajo',
+      img: '../../assets/images/game2/correctreveal2.jpeg'
     },
 
-    // Nivell 2: reveal3.mp4 (POSA LES TEVES OPCIONS I LA CORRECTA)
+    // Nivell 2: reveal3.mp4 — Neu/Pirineus/Alps (segons la teva tria)
     {
       src: '../../assets/video/game2/reveal3.mp4',
-      options: ['La Masella', 'Espot', 'Banhèras de Luishon', 'La Molina'],
-      correct: 'Banhèras de Luishon'
+      options: ['La Masella', 'Espot', 'Banhèras de Luishon', 'La Molina'],
+      correct: 'Banhèras de Luishon',
+      img: '../../assets/images/game2/correctreveal3.jpeg'
     },
 
-    // Nivell 3: reveal4.mp4
+    // Nivell 3: reveal4.mp4 — Tenerife
     {
       src: '../../assets/video/game2/reveal4.mp4',
-      options: ['Mirador de Humboldt, La Orotava', 'Playa de Benijo, Anaga', 'Punta de Teno, Buenavista del Norte', 'Playa de los Guíos, Acantilado de los Gigantes'],
-      correct: 'Playa de los Guíos, Acantilado de los Gigantes'
+      options: [
+        'Mirador de Humboldt, La Orotava',
+        'Playa de Benijo, Anaga',
+        'Punta de Teno, Buenavista del Norte',
+        'Playa de los Guíos, Acantilado de los Gigantes'
+      ],
+      correct: 'Playa de los Guíos, Acantilado de los Gigantes',
+      img: '../../assets/images/game2/correctreveal4.jpeg'
     },
 
-    // Nivell 4: reveal5.mp4
+    // Nivell 4: reveal5.mp4 — Ciutat europea
     {
       src: '../../assets/video/game2/reveal5.mp4',
       options: ['Àmsterdam', 'Budapest', 'Andorra', 'Siurana'],
-      correct: 'Budapest'
+      correct: 'Budapest',
+      img: '../../assets/images/game2/correctreveal5.jpeg'
     },
 
-    // Nivell 5: reveal6.mp4
+    // Nivell 5: reveal6.mp4 — Estadi
     {
       src: '../../assets/video/game2/reveal6.mp4',
       options: ['Allianz Stadium', 'Municipal de les Comes', 'Camp Nou', 'Camp Municipal de Poboleda'],
-      correct: 'Allianz Stadium'
+      correct: 'Allianz Stadium',
+      img: '../../assets/images/game2/correctreveal6.jpeg'
     }
   ];
 
@@ -128,7 +157,7 @@
     if (!els.clip) return;
     els.clip.pause();
     els.clip.currentTime = 0;
-    // cache-bust per evitar que GitHub Pages/ navegador serveixi una versió antiga
+    // cache-bust per evitar que GitHub Pages/navegador serveixi una versió antiga
     const busted = `${src}?v=${Date.now()}`;
     els.clip.src = busted;
     els.clip.load();
@@ -152,6 +181,28 @@
       els.after.appendChild(b);
     });
     els.after.classList.remove('hidden');
+  }
+
+  // ✨ Targeta amb la imatge i el text de la resposta correcta
+  function showCorrectReveal(L) {
+    if (!els.after || !L?.img) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'reveal-card';
+
+    const img = document.createElement('img');
+    img.alt = 'Resposta correcta';
+    img.loading = 'lazy';
+    img.src = `${L.img}?v=${Date.now()}`; // cache-bust
+
+    const cap = document.createElement('div');
+    cap.className = 'cap';
+    cap.innerHTML = `<strong>Resposta correcta</strong><br>${L.correct}`;
+
+    wrap.appendChild(img);
+    wrap.appendChild(cap);
+
+    els.after.classList.remove('hidden');
+    els.after.prepend(wrap);
   }
 
   function loadLevel(i) {
@@ -222,6 +273,9 @@
 
     if (correct) {
       msg('✅ Correcte!', 'ok');
+
+      // Mostra imatge + títol de la resposta bona
+      showCorrectReveal(L);
 
       const isLast = level >= LEVELS.length - 1;
       showAfterButtons([
