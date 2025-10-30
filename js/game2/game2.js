@@ -1,174 +1,266 @@
 (() => {
-  // ------ Config ------
-  const CORRECT = "Estany Negre de Cabanes";
-  const OPTIONS = [
-    "Estany de Sant Maurici",
-    "Estany Llong",
-    "Estany de Cavallers",
-    "Estany de Subenuix",
-    "Estany Gento",
-    "Estany de Baborte",
-    "Estany de Certascan",
-    "Estany de Gerber",
-    "Estany de Mar",
-    "Estany Negre de Cabanes" // ✅ correcte
-  ];
-  const START_SECONDS = 30;
+  // ====== Joc 2 multi-nivell: "Endevina la foto borrosa" ======
+  // Requereix a l'HTML aquests IDs: clip, btnStart, btnPause, time, guess, btnSubmit, feedback, after, btnReplay
 
-  // ------ Elements ------
+  // --- Elements ---
   const els = {
-    clip: document.getElementById("clip"),
-    start: document.getElementById("btnStart"),
-    pause: document.getElementById("btnPause"),
-    time: document.getElementById("time"),
-    guess: document.getElementById("guess"),
-    submit: document.getElementById("btnSubmit"),
-    feedback: document.getElementById("feedback"),
-    after: document.getElementById("after"),
-    replay: document.getElementById("btnReplay"),
+    clip: document.getElementById('clip'),
+    btnStart: document.getElementById('btnStart'),
+    btnPause: document.getElementById('btnPause'),
+    time: document.getElementById('time'),
+    guess: document.getElementById('guess'),
+    btnSubmit: document.getElementById('btnSubmit'),
+    feedback: document.getElementById('feedback'),
+    after: document.getElementById('after'),
+    btnReplay: document.getElementById('btnReplay'),
   };
 
-  // ------ Estat ------
+  // --- Config ---
+  const START_SECONDS = 30; // temporitzador de referència (opcional)
   let remaining = START_SECONDS;
-  let ticker = null;
-  let lastCorrect = false; // ✅ NOVETAT: per marcar el progrés
+  let timerId = null;
 
-  // ------ Utils ------
-  const z2  = n => n.toString().padStart(2, "0");
-  const fmt = s => `${z2(Math.floor(s/60))}:${z2(s%60)}`;
-  const setTime = s => { els.time.textContent = fmt(s); };
+  // --- Nivells (afegeix i edita aquí) ---
+  // Rutes relatives des de js/game2/index.html → ../../assets/video/game2/...
+  const LEVELS = [
+    // Nivell 1: reveal2.mp4 (amb les opcions que m'has passat)
+    {
+      src: '../../assets/video/game2/reveal2.mp4',
+      options: [
+        'SURFARIS INN on poppies 2',
+        'Theodor at Labuan Bajo', // ✅ correcta
+        'Amel House',
+        'NeNa Eat & Sleep Kuta',
+        'Nucifera Kuta',
+        'Korurua Dijiwa Ubud'
+      ],
+      correct: 'Theodor at Labuan Bajo'
+    },
 
-  const enable = (el, on=true)=>{ el.disabled = !on; };
-  const msg = (t, cls="")=>{
-    els.feedback.className = `feedback ${cls}`;
-    els.feedback.textContent = t;
-  };
+    // Nivell 2: reveal3.mp4 (POSA LES TEVES OPCIONS I LA CORRECTA)
+    {
+      src: '../../assets/video/game2/reveal3.mp4',
+      options: ['La Masella', 'Espot', 'Banhèras de Luishon', 'La Molina'],
+      correct: 'Banhèras de Luishon'
+    },
 
-  const fillOptions = () => {
-    const shuffled = OPTIONS.slice().sort(()=>Math.random()-0.5);
-    for (const name of shuffled) {
-      const opt = document.createElement("option");
-      opt.value = name; opt.textContent = name;
-      els.guess.appendChild(opt);
+    // Nivell 3: reveal4.mp4
+    {
+      src: '../../assets/video/game2/reveal4.mp4',
+      options: ['Mirador de Humboldt, La Orotava', 'Playa de Benijo, Anaga', 'Punta de Teno, Buenavista del Norte', 'Playa de los Guíos, Acantilado de los Gigantes'],
+      correct: 'Playa de los Guíos, Acantilado de los Gigantes'
+    },
+
+    // Nivell 4: reveal5.mp4
+    {
+      src: '../../assets/video/game2/reveal5.mp4',
+      options: ['Àmsterdam', 'Budapest', 'Andorra', 'Siurana'],
+      correct: 'Budapest'
+    },
+
+    // Nivell 5: reveal6.mp4
+    {
+      src: '../../assets/video/game2/reveal6.mp4',
+      options: ['Allianz Stadium', 'Municipal de les Comes', 'Camp Nou', 'Camp Municipal de Poboleda'],
+      correct: 'Allianz Stadium'
     }
-  };
+  ];
 
-  const lockAnswerUI = (lock=true)=>{
-    enable(els.guess, !lock);
-    enable(els.submit, !lock);
-  };
+  let level = 0;
+  let answered = false;
 
-  const ensureBackButton = ()=>{
-    let back = document.getElementById("btnBackHub");
-    if (!back) {
-      back = document.createElement("button");
-      back.id = "btnBackHub";
-      back.className = "btn primary";
-      back.textContent = "Tornar al menú";
-      back.style.marginLeft = "8px";
-      els.after.appendChild(back);
-      back.addEventListener("click", ()=>{
-        try {
-          if (lastCorrect) localStorage.setItem("game2_done","1");
-        } catch {}
-        // si correcte -> #done=game2 perquè el Hub també marqui; si no, només #hub
-        window.location.href = lastCorrect
-          ? "../../index.html#done=game2"
-          : "../../index.html#hub";
-      });
-    }
-  };
+  // --- Utils ---
+  function fmt(s) {
+    s = Math.max(0, Math.floor(s));
+    const mm = String(Math.floor(s / 60)).padStart(2, '0');
+    const ss = String(s % 60).padStart(2, '0');
+    return `${mm}:${ss}`;
+  }
 
-  const showEnd = ()=>{
-    els.after.classList.remove("hidden");
-    ensureBackButton(); // ✅ afegeix el botó "Tornar al menú"
-    enable(els.start, false);
-    enable(els.pause, false);
-    lockAnswerUI(true);
-  };
+  function setTime(s) {
+    remaining = s;
+    if (els.time) els.time.textContent = fmt(remaining);
+  }
 
-  const resetAll = ()=>{
-    clearInterval(ticker); ticker = null;
-    remaining = START_SECONDS;
-    setTime(remaining);
-    msg("");
-    lastCorrect = false;
-    els.after.classList.add("hidden");
-    enable(els.start, true);
-    enable(els.pause, false);
-    els.clip.pause();
-    els.clip.currentTime = 0;
-    els.guess.innerHTML = '<option value="" selected disabled>Selecciona un estany del Pirineu català…</option>';
-    fillOptions();
-    lockAnswerUI(true);
-  };
+  function stopTimer() {
+    clearInterval(timerId);
+    timerId = null;
+  }
 
-  const startTimer = ()=>{
-    if (ticker) return;
-    ticker = setInterval(()=>{
+  function startTimer() {
+    stopTimer();
+    timerId = setInterval(() => {
       remaining -= 1;
       setTime(remaining);
-      if (remaining <= 0) {
-        clearInterval(ticker); ticker = null;
-        msg("⏰ Temps esgotat! Prova de nou.", "warn");
-        els.clip.pause();
-        lastCorrect = false;
-        showEnd();
-      }
+      if (remaining <= 0) stopTimer();
     }, 1000);
-  };
+  }
 
-  const pauseTimer = ()=>{
-    clearInterval(ticker); ticker = null;
-  };
+  function msg(text, cls = '') {
+    if (!els.feedback) return;
+    els.feedback.textContent = text;
+    els.feedback.className = `feedback ${cls}`.trim();
+  }
 
-  // ------ Events ------
-  els.start.addEventListener("click", async ()=>{
-    try { await els.clip.play(); } catch(e) {}
+  function lockAnswerUI(lock) {
+    if (!els.guess || !els.btnSubmit) return;
+    els.guess.disabled = !!lock;
+    els.btnSubmit.disabled = !!lock;
+  }
+
+  function fillOptions(opts) {
+    if (!els.guess) return;
+    els.guess.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '— Tria una opció —';
+    els.guess.appendChild(placeholder);
+
+    opts.forEach(o => {
+      const op = document.createElement('option');
+      op.value = o;
+      op.textContent = o;
+      els.guess.appendChild(op);
+    });
+  }
+
+  function setVideo(src) {
+    if (!els.clip) return;
+    els.clip.pause();
+    els.clip.currentTime = 0;
+    // cache-bust per evitar que GitHub Pages/ navegador serveixi una versió antiga
+    const busted = `${src}?v=${Date.now()}`;
+    els.clip.src = busted;
+    els.clip.load();
+  }
+
+  function clearAfter() {
+    if (!els.after) return;
+    els.after.innerHTML = '';
+    els.after.classList.add('hidden');
+  }
+
+  function showAfterButtons(buttons = []) {
+    if (!els.after) return;
+    els.after.innerHTML = '';
+    buttons.forEach(({ text, onClick, id }) => {
+      const b = document.createElement('button');
+      b.className = 'btn';
+      b.textContent = text;
+      if (id) b.id = id;
+      b.addEventListener('click', onClick);
+      els.after.appendChild(b);
+    });
+    els.after.classList.remove('hidden');
+  }
+
+  function loadLevel(i) {
+    level = i;
+    answered = false;
+    stopTimer();
+    setTime(START_SECONDS);
+    msg('');
+    clearAfter();
+
+    const L = LEVELS[level];
+    if (!L) return showFinal();
+
+    setVideo(L.src);
+    fillOptions(L.options);
+    lockAnswerUI(false);
+
+    if (els.btnStart) els.btnStart.disabled = false;
+    if (els.btnPause) els.btnPause.disabled = true;
+  }
+
+  function showFinal() {
+    msg('🎉 Has completat tots els nivells del Joc 2!', 'ok');
+    showAfterButtons([
+      { text: 'Tornar als jocs', onClick: () => location.replace('../../index.html#hub') },
+      { text: 'Repetir Joc 2', onClick: () => loadLevel(0) }
+    ]);
+    lockAnswerUI(true);
+  }
+
+  // --- Events ---
+  els.btnStart?.addEventListener('click', () => {
+    els.clip?.play();
     startTimer();
-    enable(els.start, false);
-    enable(els.pause, true);
+    if (els.btnStart) els.btnStart.disabled = true;
+    if (els.btnPause) els.btnPause.disabled = false;
     lockAnswerUI(false);
   });
 
-  els.pause.addEventListener("click", ()=>{
-    if (els.clip.paused) return;
-    els.clip.pause();
-    pauseTimer();
-    enable(els.pause, false);
-    enable(els.start, true);
+  els.btnPause?.addEventListener('click', () => {
+    els.clip?.pause();
+    stopTimer();
+    if (els.btnStart) els.btnStart.disabled = false;
+    if (els.btnPause) els.btnPause.disabled = true;
   });
 
-  els.clip.addEventListener("play", ()=>{
-    if (!ticker) startTimer();
-    enable(els.start, false);
-    enable(els.pause, true);
-    lockAnswerUI(false);
+  els.clip?.addEventListener('ended', () => {
+    stopTimer();
+    if (els.btnStart) els.btnStart.disabled = false;
+    if (els.btnPause) els.btnPause.disabled = true;
   });
 
-  els.clip.addEventListener("pause", ()=>{ pauseTimer(); });
+  els.btnSubmit?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (answered) return;
 
-  els.submit.addEventListener("click", ()=>{
-    const val = els.guess.value;
-    if (!val) { msg("Tria una opció.", "warn"); return; }
-
-    pauseTimer();
-    els.clip.pause();
-
-    if (val === CORRECT) {
-      msg("✅ Correcte! Era l’Estany Negre de Cabanes.", "ok");
-      lastCorrect = true;           // ✅ marca correcte
-    } else {
-      msg(`❌ Incorrecte. La bona era: ${CORRECT}.`, "err");
-      lastCorrect = false;
+    const choice = (els.guess?.value || '').trim();
+    if (!choice) {
+      msg('Tria una opció abans d’enviar.', 'warn');
+      return;
     }
-    showEnd();
+
+    answered = true;
+    stopTimer();
+
+    const L = LEVELS[level];
+    const correct = L && choice === L.correct;
+
+    if (correct) {
+      msg('✅ Correcte!', 'ok');
+
+      const isLast = level >= LEVELS.length - 1;
+      showAfterButtons([
+        {
+          text: isLast ? 'Acabar' : 'Següent',
+          id: 'btnNext',
+          onClick: () => {
+            clearAfter();
+            if (isLast) showFinal();
+            else loadLevel(level + 1);
+          }
+        },
+        {
+          text: 'Repetir aquest nivell',
+          onClick: () => loadLevel(level)
+        }
+      ]);
+    } else {
+      msg(`❌ Incorrecte. La bona era: ${L?.correct || '—'}.`, 'err');
+      showAfterButtons([
+        { text: 'Torna-ho a provar', onClick: () => loadLevel(level) },
+        { text: 'Passar al següent', onClick: () => loadLevel(level + 1) }
+      ]);
+    }
+
+    lockAnswerUI(true);
   });
 
-  els.replay?.addEventListener("click", resetAll);
+  els.btnReplay?.addEventListener('click', () => {
+    try {
+      els.clip.currentTime = 0;
+      els.clip.play();
+      setTime(START_SECONDS);
+      startTimer();
+      msg('');
+      clearAfter();
+    } catch {}
+  });
 
-  // ------ Init ------
-  setTime(remaining);
-  fillOptions();
-  lockAnswerUI(true);
+  // --- Init ---
+  loadLevel(0);
 })();
