@@ -23,7 +23,7 @@
   // --- Nivells (rutes relatives des de js/game2/index.html → ../../assets/video/game2/...)
   // També afegim la imatge de "reveal correcte" (rutes: ../../assets/images/game2/...)
   const LEVELS = [
-    // Nivell 0: reveal.mp4 — Estanys Pirineus (ja el tenies d'abans)
+    // Nivell 0: reveal.mp4 — Estanys Pirineus
     {
       src: '../../assets/video/game2/reveal.mp4',
       options: [
@@ -57,7 +57,7 @@
       img: '../../assets/images/game2/correctreveal2.jpeg'
     },
 
-    // Nivell 2: reveal3.mp4 — Neu/Pirineus/Alps (segons la teva tria)
+    // Nivell 2: reveal3.mp4 — neu
     {
       src: '../../assets/video/game2/reveal3.mp4',
       options: ['La Masella', 'Espot', 'Banhèras de Luishon', 'La Molina'],
@@ -78,7 +78,7 @@
       img: '../../assets/images/game2/correctreveal4.jpeg'
     },
 
-    // Nivell 4: reveal5.mp4 — Ciutat europea
+    // Nivell 4: reveal5.mp4 — ciutat europea
     {
       src: '../../assets/video/game2/reveal5.mp4',
       options: ['Àmsterdam', 'Budapest', 'Andorra', 'Siurana'],
@@ -86,7 +86,7 @@
       img: '../../assets/images/game2/correctreveal5.jpeg'
     },
 
-    // Nivell 5: reveal6.mp4 — Estadi
+    // Nivell 5: reveal6.mp4 — estadi
     {
       src: '../../assets/video/game2/reveal6.mp4',
       options: ['Allianz Stadium', 'Municipal de les Comes', 'Camp Nou', 'Camp Municipal de Poboleda'],
@@ -169,9 +169,10 @@
     els.after.classList.add('hidden');
   }
 
+  // ⬇️ ABANS esborràvem el contingut; ara NOMÉS afegim botons
   function showAfterButtons(buttons = []) {
     if (!els.after) return;
-    els.after.innerHTML = '';
+    // NO esborrem innerHTML (així no perdem la imatge)
     buttons.forEach(({ text, onClick, id }) => {
       const b = document.createElement('button');
       b.className = 'btn';
@@ -274,7 +275,7 @@
     if (correct) {
       msg('✅ Correcte!', 'ok');
 
-      // Mostra imatge + títol de la resposta bona
+      // Mostra imatge + títol de la resposta bona (i DESPRÉS afegim botons, sense esborrar)
       showCorrectReveal(L);
 
       const isLast = level >= LEVELS.length - 1;
