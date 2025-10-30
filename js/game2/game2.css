@@ -82,3 +82,55 @@ button[disabled] { opacity:.5; cursor:not-allowed; }
   padding-top:4px;
 }
 .reveal-card .cap strong{ color:var(--ok); }
+
+/* --- Desplegable sota el vídeo --- */
+.reveal-collapsible{
+  background: var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin:12px 0;
+  overflow:hidden;
+}
+
+.reveal-toggle{
+  width:100%;
+  text-align:left;
+  padding:12px 14px;
+  background:transparent;
+  color:var(--fg);
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.reveal-toggle::after{
+  content:'▾';
+  float:right;
+  transition: transform .25s ease;
+}
+
+.reveal-collapsible.open .reveal-toggle::after{
+  transform: rotate(180deg);
+}
+
+.reveal-body{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .35s ease;
+  padding:0 14px;
+}
+
+.reveal-collapsible.open .reveal-body{
+  /* max-height es posa via JS a l'alçada real; aquest és un fallback */
+  max-height: 1200px;
+  padding-bottom:12px;
+}
+
+/* Targeta dins del desplegable (pot conviure amb la .reveal-card genèrica) */
+.reveal-body .reveal-card{
+  margin-top:8px;
+}
+
+.reveal-body .reveal-card img{
+  max-width:min(480px, 90%);
+}
