@@ -1,1 +1,43 @@
+/* 🎯 Ajust general per a les imatges del joc 3 */
+#eyesImg {
+  display:block;
+  max-width: min(480px, 95%);
+  max-height: 45vh;        /* límit vertical: 45% de l’alçada de la pantalla */
+  object-fit: contain;      /* manté proporció sense tallar */
+  margin: 0 auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.15);
+  background:#0d0f14;
+}
+
+#answerCard {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  margin:14px auto;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.03);
+  max-width:min(520px, 95%);
+}
+
+#answerCard img {
+  display:block;
+  width:100%;
+  max-height:55vh;          /* la foto de resposta mai supera mitja pantalla */
+  object-fit:contain;        /* es veu sencera, sense tallar */
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0d0f14;
+}
+
+#answerCard div {
+  margin-top:8px;
+  font-weight:700;
+  color:#e7ecf3;
+  opacity:0.9;
+  text-align:center;
+}
 
