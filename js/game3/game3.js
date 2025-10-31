@@ -7,11 +7,11 @@
     { image: "./images/PERSONA_4.jpeg", options: ["Marta", "M.Àngels", "Remei"], correctIndex: 0 },
     { image: "./images/PERSONA_5.jpeg", options: ["Ramon", "Òscar", "Aleix"], correctIndex: 0 },
     { image: "./images/PERSONA_6.jpeg", options: ["Aneu", "Elna", "Biel"], correctIndex: 0 },
-    { image: "./images/PERSONA_7.jpg", options: ["Gemma", "Cèlia", "Mònica"], correctIndex: 0 },
-    { image: "./images/PERSONA_8.jpg", options: ["Júlia", "Ester", "Pauli"], correctIndex: 0 },
-    { image: "./images/PERSONA_9.jpg", options: ["Jana", "Anna.B", "Marcet"], correctIndex: 0 },
-    { image: "./images/PERSONA_10.jpg", options: ["Elena", "Queralt", "Marina"], correctIndex: 0 },
-    { image: "./images/PERSONA_11.jpg", options: ["Laura", "Mireia", "Maria"], correctIndex: 0 },
+    { image: "./images/PERSONA_7.jpeg", options: ["Gemma", "Cèlia", "Mònica"], correctIndex: 0 },
+    { image: "./images/PERSONA_8.jpeg", options: ["Júlia", "Ester", "Pauli"], correctIndex: 0 },
+    { image: "./images/PERSONA_9.jpeg", options: ["Jana", "Anna.B", "Marcet"], correctIndex: 0 },
+    { image: "./images/PERSONA_10.jpeg", options: ["Elena", "Queralt", "Marina"], correctIndex: 0 },
+    { image: "./images/PERSONA_11.jpeg", options: ["Laura", "Mireia", "Maria"], correctIndex: 0 },
   ];
 
   // 📸 Fotos de resposta (stills completes) — mateix ordre que les rondes 1..6
