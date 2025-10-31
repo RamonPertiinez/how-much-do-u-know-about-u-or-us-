@@ -49,6 +49,21 @@
   const nextBtn = qs("#btnNext");
   const finishBtn = qs("#btnFinish");
 
+  // ⬇️ NOMÉS estils de la imatge dels ulls (per evitar desbordaments/cropping)
+  function applyEyesImgStyles(el){
+    if(!el) return;
+    el.style.display      = "block";
+    el.style.width        = "100%";
+    el.style.maxWidth     = "820px";      // ample màxim del contenidor d’ulls
+    el.style.height       = "auto";
+    el.style.maxHeight    = "46vh";       // límit vertical a pantalla
+    el.style.objectFit    = "contain";    // manté proporció, no talla
+    el.style.margin       = "0 auto";
+    el.style.borderRadius = "14px";
+    el.style.border       = "1px solid rgba(255,255,255,.15)";
+    el.style.background   = "#0d0f14";    // fons neutre per a buits
+  }
+
   // 🔎 elimina la targeta de resposta si existeix
   function clearAnswerCard(){
     const old = qs("#answerCard");
@@ -77,10 +92,10 @@
     pic.style.borderRadius = "10px";
     pic.style.border = "1px solid rgba(255,255,255,.12)";
     pic.loading = "lazy";
-    // 👉 Ajust perquè sempre es vegin senceres:
-    pic.style.maxHeight = "55vh";     // límit vertical
-    pic.style.objectFit = "contain";  // manté proporció sense tallar
-    pic.style.background = "#0d0f14"; // fons discret per a fotos amb transparència
+    // 👉 que sempre es vegin senceres:
+    pic.style.maxHeight = "55vh";
+    pic.style.objectFit = "contain";
+    pic.style.background = "#0d0f14";
 
     const cap = document.createElement("div");
     cap.textContent = `És ${correctName}`;
@@ -101,7 +116,10 @@
     const q = state.questions[state.i];
     roundNum.textContent = `Ronda ${state.i+1}`;
     scoreEl.textContent = state.score;
+
     img.src = q.image;
+    applyEyesImgStyles(img);    // ⬅️ AQUI: apliquem l’estil perquè es vegi bé
+
     statusEl.className = "status"; statusEl.textContent = "";
     nextBtn.disabled = true;
     state.answered = false;
