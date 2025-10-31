@@ -9,6 +9,17 @@
     { image: "./images/PERSONA_6.jpeg", options: ["Aneu", "Laura", "Dani"], correctIndex: 0 },
   ];
 
+  // 📸 Fotos de resposta (stills completes) — mateix ordre que les rondes 1..6
+  // Ruta coherent amb les PERSONA_X: ./images/...
+  const ANSWER_IMAGES = [
+    "./images/RESPOSTA_1_DANI.jpeg",
+    "./images/RESPOSTA_2_LAURA.jpeg",
+    "./images/RESPOSTA_3_MARINA.jpeg",
+    "./images/RESPOSTA_4_MARTA.jpeg",
+    "./images/RESPOSTA_5_RAMON.jpeg",
+    "./images/RESPOSTA_6_ANEU.jpeg",
+  ];
+
   const qs = (s, r=document) => r.querySelector(s);
   const preload = (arr)=>arr.forEach(src=>{ const i=new Image(); i.src=src; });
 
@@ -29,6 +40,50 @@
   const nextBtn = qs("#btnNext");
   const finishBtn = qs("#btnFinish");
 
+  // 🔎 elimina la targeta de resposta si existeix
+  function clearAnswerCard(){
+    const old = qs("#answerCard");
+    if (old) old.remove();
+  }
+
+  // ✨ mostra la foto + nom de la resposta correcta sota la imatge dels ulls
+  function showAnswerPhoto(roundIndex, correctName){
+    clearAnswerCard();
+
+    const card = document.createElement("div");
+    card.id = "answerCard";
+    card.style.marginTop = "12px";
+    card.style.padding = "12px";
+    card.style.border = "1px solid rgba(255,255,255,.15)";
+    card.style.borderRadius = "12px";
+    card.style.background = "rgba(255,255,255,.04)";
+
+    const pic = document.createElement("img");
+    pic.src = ANSWER_IMAGES[roundIndex] + "?v=" + Date.now(); // cache-bust
+    pic.alt = "Resposta correcta";
+    pic.style.display = "block";
+    pic.style.maxWidth = "420px";
+    pic.style.width = "100%";
+    pic.style.height = "auto";
+    pic.style.borderRadius = "10px";
+    pic.style.border = "1px solid rgba(255,255,255,.12)";
+    pic.loading = "lazy";
+
+    const cap = document.createElement("div");
+    cap.textContent = `És ${correctName}`;
+    cap.style.marginTop = "8px";
+    cap.style.fontWeight = "700";
+    cap.style.opacity = "0.9";
+
+    card.appendChild(pic);
+    card.appendChild(cap);
+
+    // Inserim just DESPRÉS de la imatge principal dels ulls
+    img.insertAdjacentElement("afterend", card);
+    // Scroll suau cap a la targeta
+    setTimeout(()=> card.scrollIntoView({behavior:"smooth", block:"start"}), 50);
+  }
+
   function paint(){
     const q = state.questions[state.i];
     roundNum.textContent = `Ronda ${state.i+1}`;
@@ -36,8 +91,10 @@
     img.src = q.image;
     statusEl.className = "status"; statusEl.textContent = "";
     nextBtn.disabled = true;
-    optionsBox.innerHTML = "";
+    state.answered = false;
+    clearAnswerCard();
 
+    optionsBox.innerHTML = "";
     q.options.forEach((label, idx)=>{
       const b=document.createElement("button");
       b.textContent = label;
@@ -59,6 +116,11 @@
       btn.style.borderColor = "#39d98a";
       all.forEach(b=>b.disabled=true);
       state.answered = true; nextBtn.disabled = false;
+
+      // 🎉 mostra la foto de la resposta correcta
+      const correctName = q.options[q.correctIndex];
+      showAnswerPhoto(state.i, correctName);
+
     } else {
       statusEl.textContent = "Ups! 😅 Torna-ho a intentar."; statusEl.className="status err";
       btn.style.borderColor = "#ff6b6b";
@@ -68,7 +130,7 @@
   function next(){
     if (!state.answered) return;
     if (state.i < state.questions.length-1){
-      state.i++; state.answered=false; paint();
+      state.i++; paint();
     } else {
       finish();
     }
@@ -81,10 +143,14 @@
     optionsBox.querySelectorAll("button").forEach(b=>b.disabled=true);
     nextBtn.style.display="none";
     finishBtn.style.display="inline-block";
+    try { localStorage.setItem('hmky.g3', 'done'); } catch {}
   }
 
   nextBtn.addEventListener("click", next);
 
-  preload(state.questions.map(q=>q.image));
+  // Precarrega tant ulls com respostes
+  preload(QUESTIONS.map(q=>q.image));
+  preload(ANSWER_IMAGES);
+
   paint();
 })();
