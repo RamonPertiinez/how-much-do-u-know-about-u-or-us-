@@ -1,12 +1,17 @@
 // Joc 3 — Encerta els ulls (6 persones)
 (() => {
   const QUESTIONS = [
-    { image: "./images/PERSONA_1.jpeg", options: ["Dani", "Laura", "Marina"], correctIndex: 0 },
-    { image: "./images/PERSONA_2.jpeg", options: ["Laura", "Marta", "Ramon"], correctIndex: 0 },
-    { image: "./images/PERSONA_3.jpeg", options: ["Marina", "Dani", "Laura"], correctIndex: 0 },
-    { image: "./images/PERSONA_4.jpeg", options: ["Marta", "Ramon", "Laura"], correctIndex: 0 },
-    { image: "./images/PERSONA_5.jpeg", options: ["Ramon", "Marina", "Dani"], correctIndex: 0 },
-    { image: "./images/PERSONA_6.jpeg", options: ["Aneu", "Laura", "Dani"], correctIndex: 0 },
+    { image: "./images/PERSONA_1.jpeg", options: ["Dani", "Guillem", "Aleix"], correctIndex: 0 },
+    { image: "./images/PERSONA_2.jpeg", options: ["Laura", "Mireia", "Maria"], correctIndex: 0 },
+    { image: "./images/PERSONA_3.jpeg", options: ["Marina", "Mariona", "Gemma"], correctIndex: 0 },
+    { image: "./images/PERSONA_4.jpeg", options: ["Marta", "M.Àngels", "Remei"], correctIndex: 0 },
+    { image: "./images/PERSONA_5.jpeg", options: ["Ramon", "Òscar", "Aleix"], correctIndex: 0 },
+    { image: "./images/PERSONA_6.jpeg", options: ["Aneu", "Elna", "Biel"], correctIndex: 0 },
+    { image: "./images/PERSONA_7.jpeg", options: ["Gemma", "Cèlia", "Mònica"], correctIndex: 0 },
+    { image: "./images/PERSONA_8.jpeg", options: ["Júlia", "Ester", "Pauli"], correctIndex: 0 },
+    { image: "./images/PERSONA_9.jpeg", options: ["Jana", "Anna.B", "Marcet"], correctIndex: 0 },
+    { image: "./images/PERSONA_10.jpeg", options: ["Elena", "Queralt", "Marina"], correctIndex: 0 },
+    { image: "./images/PERSONA_11.jpeg", options: ["Laura", "Mireia", "Maria"], correctIndex: 0 },
   ];
 
   // 📸 Fotos de resposta (stills completes) — mateix ordre que les rondes 1..6
@@ -18,6 +23,11 @@
     "./images/RESPOSTA_4_MARTA.jpeg",
     "./images/RESPOSTA_5_RAMON.jpeg",
     "./images/RESPOSTA_6_ANEU.jpeg",
+    "./images/RESPOSTA_7_GEMMA.jpg",
+    "./images/RESPOSTA_8_JULIA.jpg",
+    "./images/RESPOSTA_9_JANA.jpg",
+    "./images/RESPOSTA_10_ELENA.jpg",
+    "./images/RESPOSTA_11_LAURA.jpg",
   ];
 
   const qs = (s, r=document) => r.querySelector(s);
