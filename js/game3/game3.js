@@ -14,8 +14,7 @@
     { image: "./images/PERSONA_11.jpeg", options: ["Laura", "Mireia", "Maria"], correctIndex: 0 },
   ];
 
-  // 📸 Fotos de resposta (stills completes) — mateix ordre que les rondes 1..6
-  // Ruta coherent amb les PERSONA_X: ./images/...
+  // 📸 Fotos de resposta (stills completes) — mateix ordre que les rondes
   const ANSWER_IMAGES = [
     "./images/RESPOSTA_1_DANI.jpeg",
     "./images/RESPOSTA_2_LAURA.jpeg",
@@ -56,40 +55,44 @@
     if (old) old.remove();
   }
 
-   // ✨ mostra la foto + nom de la resposta correcta sota la imatge dels ulls
+  // ✨ mostra la foto + nom de la resposta correcta sota la imatge dels ulls
   function showAnswerPhoto(roundIndex, correctName){
     clearAnswerCard();
 
     const card = document.createElement("div");
     card.id = "answerCard";
-    card.style.margin = "14px auto";
+    card.style.marginTop = "12px";
     card.style.padding = "12px";
     card.style.border = "1px solid rgba(255,255,255,.15)";
     card.style.borderRadius = "12px";
     card.style.background = "rgba(255,255,255,.04)";
-    card.style.maxWidth = "760px";
 
     const pic = document.createElement("img");
     pic.src = ANSWER_IMAGES[roundIndex] + "?v=" + Date.now(); // cache-bust
     pic.alt = "Resposta correcta";
+    pic.style.display = "block";
+    pic.style.maxWidth = "420px";
+    pic.style.width = "100%";
+    pic.style.height = "auto";
+    pic.style.borderRadius = "10px";
+    pic.style.border = "1px solid rgba(255,255,255,.12)";
     pic.loading = "lazy";
-
-    // ⭐ límit vertical més gran per la resposta
-    applyResponsiveImageStyles(pic, 60);
+    // 👉 Ajust perquè sempre es vegin senceres:
+    pic.style.maxHeight = "55vh";     // límit vertical
+    pic.style.objectFit = "contain";  // manté proporció sense tallar
+    pic.style.background = "#0d0f14"; // fons discret per a fotos amb transparència
 
     const cap = document.createElement("div");
     cap.textContent = `És ${correctName}`;
     cap.style.marginTop = "8px";
     cap.style.fontWeight = "700";
     cap.style.opacity = "0.9";
-    cap.style.textAlign = "center";
 
     card.appendChild(pic);
     card.appendChild(cap);
 
     // Inserim just DESPRÉS de la imatge principal dels ulls
     img.insertAdjacentElement("afterend", card);
-
     // Scroll suau cap a la targeta
     setTimeout(()=> card.scrollIntoView({behavior:"smooth", block:"start"}), 50);
   }
@@ -98,10 +101,7 @@
     const q = state.questions[state.i];
     roundNum.textContent = `Ronda ${state.i+1}`;
     scoreEl.textContent = state.score;
-
-    img.src = q.image + "?v=" + Date.now(); // evitem cache dura
-    applyResponsiveImageStyles(img, 45);     // ⭐ aplica límit 45vh als ulls
-
+    img.src = q.image;
     statusEl.className = "status"; statusEl.textContent = "";
     nextBtn.disabled = true;
     state.answered = false;
@@ -130,6 +130,7 @@
       all.forEach(b=>b.disabled=true);
       state.answered = true; nextBtn.disabled = false;
 
+      // 🎉 mostra la foto de la resposta correcta
       const correctName = q.options[q.correctIndex];
       showAnswerPhoto(state.i, correctName);
 
