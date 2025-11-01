@@ -37,8 +37,74 @@
     {
       file: "../../assets/audio/game1/track5.mp3",
       artist: "Txarango",
-      options: ["La Dansa del Vestit", "Music de Carrer", "Som Perosnes"],
+      options: ["La Dansa del Vestit", "Music de Carrer", "Som Persones"],
       correctIndex: 2,
+    },
+    {
+      file: "../../assets/audio/game1/track6.mp3",
+      artist: "Miki Núñez",
+      options: ["Dime Que No Duele", "La Venda", "Celébrate"],
+      correctIndex: 2,
+    },
+    {
+      file: "../../assets/audio/game1/track7.mp3",
+      artist: "Stay Homas",
+      options: ["No Vull Baixar", "Here2Play", "La Platja"],
+      correctIndex: 0,
+    },
+    {
+      file: "../../assets/audio/game1/track8.mp3",
+      artist: "31 FAM",
+      options: ["Sincero", "Valentina", "Nens Del Barri"],
+      correctIndex: 1,
+    },
+    {
+      file: "../../assets/audio/game1/track9.mp3",
+      artist: "Els Amics de les Arts",
+      options: ["Louisiana O Els Camps de Cotó", "No Ho Entens", "Citant Mercè Rodoreda"],
+      correctIndex: 1,
+    },
+    {
+      file: "../../assets/audio/game1/track10.mp3",
+      artist: "Nil Moliner",
+      options: ["Soldadito de Hierro", "Som Ocells", "Tu cuerpo en braille"],
+      correctIndex: 0,
+    },
+    {
+      file: "../../assets/audio/game1/track11.mp3",
+      artist: "Joan Dausà",
+      options: ["Ho Tenim Tot", "La Gran Eufòria", "Reis del Món"],
+      correctIndex: 0,
+    },
+    {
+      file: "../../assets/audio/game1/track12.mp3",
+      artist: "Els Catarres",
+      options: ["Diamants", "Fins que arribi l'alba", "En Peu de Guerra"],
+      correctIndex: 2,
+    },
+    {
+      file: "../../assets/audio/game1/track13.mp3",
+      artist: "Al·lèrgiques al pol·len",
+      options: ["Que sí, que no", "Anestèsia total", "Bombolles"],
+      correctIndex: 2,
+    },
+    {
+      file: "../../assets/audio/game1/track14.mp3",
+      artist: "Sopa de Cabra",
+      options: ["Seguirem Somiant", "Si Et Va Bé", "El Far del Sud"],
+      correctIndex: 1,
+    },
+    {
+      file: "../../assets/audio/game1/track15.mp3",
+      artist: "La Fúmiga",
+      options: ["La Ferida", "Espremedors", "Primera Conjugació"],
+      correctIndex: 1,
+    },
+    {
+      file: "../../assets/audio/game1/track16.mp3",
+      artist: "Els Pets",
+      options: ["Estúpidament Feliç", "Vespre", "Pantalons curts i genolls pelats"],
+      correctIndex: 0,
     },
   ];
 
