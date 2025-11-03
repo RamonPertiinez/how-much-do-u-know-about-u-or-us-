@@ -31,6 +31,15 @@
     .btn.primary{background:#5aa9ff;border-color:#5aa9ff;color:#0b1020;font-weight:700}
     .btn.reset{background:#ff6b6b;border-color:#ff6b6b;color:#0b1020;font-weight:700;margin-top:16px}
     #confetti span{position:fixed;width:8px;height:8px;border-radius:2px}
+
+    /* ✅ Permet clicar dins la targeta de la portada */
+    .gate-bg{ position: relative; }
+    .gate-bg::before{ pointer-events: none !important; }  /* l’overlay no intercepta clics */
+    .gate-card{ position: relative; z-index: 2; }          /* la targeta queda per sobre */
+
+    /* per si en algun estil hi havia cap restricció: */
+    .gate-card.on-image, .gate-card.on-image * { pointer-events: auto; }
+
   </style>
 </head>
 <body>
@@ -132,7 +141,7 @@
       <!-- Joc 3 -->
       <section class="card">
         <h2>👀 Joc 3 — Encerta els ulls</h2>
-        <p>Endevina a qui pertanyen els ulls triant entre 3 opcions. Hi ha 6 rondes en total.</p>
+        <p>Endevina a qui pertanyen els ulls triant entre 3 opcions. Hi ha 11 rondes en total.</p>
         <div class="row">
           <a class="btn primary" href="./js/game3/index.html">▶️ Obrir Joc 3</a>
         </div>
