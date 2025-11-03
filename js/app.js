@@ -11,18 +11,23 @@
     gameTitle: qs("#gameTitle"), confetti: qs("#confetti"),
     btnShowRiddle: qs("#btnShowRiddle"), riddleBox: qs("#riddleBox"),
     riddleAnswer: qs("#riddleAnswer"), riddleSubmit: qs("#riddleSubmit"), riddleHint: qs("#riddleHint"),
-    riddleMsg: qs("#riddleMsg"), clearCache: qs("#clearCache")
+    riddleMsg: qs("#riddleMsg"), clearCache: qs("#clearCache"),
+    finalAudio: qs("#finalAudio"),
   };
 
-  const state = { score: 0 };
+  const state = { score: 0, finalShown: false };
   const CONFIG = {
     title: "Tens ganes de saber el teu regal? 😏",
     goal: 3,
     auth: { username: "laura", password: "23062025" },
-    gateRiddle: { hint: "Llegeix només les majúscules…", accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"], onCorrect: "revealPassword" }
+    gateRiddle: {
+      hint: "Llegeix només les majúscules…",
+      accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"],
+      onCorrect: "revealPassword"
+    }
   };
 
-  // Llegeix els flags guardats per cada joc
+  // ── helpers de jocs externs
   const readExternalFlags = () => ({
     game1_done: localStorage.getItem("game1_done") === "1",
     game2_done: localStorage.getItem("game2_done") === "1",
@@ -30,11 +35,11 @@
   });
   const externalPoints = () => Object.values(readExternalFlags()).filter(Boolean).length;
 
-  // ✅ Accepta tant #done=gameX com ?done=gameX i marca localStorage
+  // Accepta tant #done=gameX com ?done=gameX
   function applyDoneFromReturn() {
     const url = new URL(location.href);
-    const doneSearch = (url.searchParams.get("done") || "").toLowerCase(); // query
-    const m = (location.hash || "").match(/done=(game[123])/i);             // hash
+    const doneSearch = (url.searchParams.get("done") || "").toLowerCase();
+    const m = (location.hash || "").match(/done=(game[123])/i);
     const doneHash = (m && m[1] ? m[1] : "").toLowerCase();
 
     let touched = false;
@@ -45,7 +50,6 @@
     if (token === "game3") { localStorage.setItem("game3_done","1"); touched = true; }
 
     if (touched) {
-      // Neteja query i hash i deixa #hub perquè un refresh no torni a marcar
       try {
         url.searchParams.delete("done");
         history.replaceState(null, "", url.pathname + "#hub");
@@ -55,8 +59,53 @@
     }
   }
 
-  // Swap
+  // ── vista
   const swap = (v)=>{ Object.values(VIEWS).forEach(el=>el?.classList.remove("active")); v?.classList.add("active"); };
+
+  // ── confetti simple
+  function burstConfetti() {
+    if (!els.confetti) return;
+    els.confetti.innerHTML = "";
+    const N = 120;
+    for (let i=0;i<N;i++){
+      const s = document.createElement("span");
+      const x = Math.random()*100;           // vw
+      const y = -10 - Math.random()*20;      // start above
+      const d = 4000 + Math.random()*2000;   // duration
+      const sz = 6 + Math.random()*8;        // px
+      s.style.left = x + "vw";
+      s.style.top = y + "vh";
+      s.style.width = sz + "px";
+      s.style.height = sz + "px";
+      s.style.background = `hsl(${Math.random()*360},85%,60%)`;
+      s.style.position = "fixed";
+      s.style.borderRadius = "2px";
+      s.style.pointerEvents = "none";
+      s.style.transform = `rotate(${Math.random()*360}deg)`;
+      s.style.transition = `transform ${d}ms linear, top ${d}ms linear, opacity 600ms ease ${d-600}ms`;
+      els.confetti.appendChild(s);
+      // start fall next frame
+      requestAnimationFrame(()=>{
+        s.style.top = (100+Math.random()*10) + "vh";
+        s.style.transform = `translateY(0) rotate(${720+Math.random()*720}deg)`;
+        setTimeout(()=>{ s.style.opacity = "0"; }, d-600);
+        setTimeout(()=>{ s.remove(); }, d+800);
+      });
+    }
+  }
+
+  // ── final
+  function goFinal() {
+    if (state.finalShown || localStorage.getItem("hmky.finalShown")==="1") {
+      swap(VIEWS.final); // per si recarregues
+      return;
+    }
+    state.finalShown = true;
+    localStorage.setItem("hmky.finalShown","1");
+    swap(VIEWS.final);
+    try { els.finalAudio?.play?.(); } catch {}
+    burstConfetti();
+  }
 
   document.addEventListener("DOMContentLoaded", init);
 
@@ -68,6 +117,7 @@
     // Botó reset de la pantalla d’entrada
     els.clearCache?.addEventListener("click", ()=>{
       localStorage.clear();
+      state.finalShown = false;
       location.href="./index.html";
       setTimeout(()=>location.reload(),150);
     });
@@ -120,11 +170,12 @@
     // Final - reinici total
     els.btnRestart?.addEventListener("click", ()=>{
       localStorage.clear();
+      state.finalShown = false;
       location.href="./index.html";
       setTimeout(()=>location.reload(),150);
     });
 
-    updateProgress();
+    updateProgress(); // primer càlcul
   }
 
   function updateProgress(){
@@ -133,5 +184,10 @@
     const pct = Math.max(0, Math.min(100, (totalScore/goal)*100));
     els.progressFill && (els.progressFill.style.width = pct + "%");
     els.scoreNum && (els.scoreNum.textContent = String(totalScore));
+
+    // 👉 Quan arribes (o superes) el goal, obre la pantalla final
+    if (totalScore >= goal) {
+      goFinal();
+    }
   }
 })();
