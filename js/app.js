@@ -22,24 +22,36 @@
     gateRiddle: { hint: "Llegeix només les majúscules…", accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"], onCorrect: "revealPassword" }
   };
 
-  // ---- NOVETAT 1: llegir flags dels jocs externs ----
+  // Llegeix els flags guardats per cada joc
   const readExternalFlags = () => ({
-    g1: localStorage.getItem("game1_done") === "1",
-    g2: localStorage.getItem("game2_done") === "1",
-    g3: localStorage.getItem("game3_done") === "1",
+    game1_done: localStorage.getItem("game1_done") === "1",
+    game2_done: localStorage.getItem("game2_done") === "1",
+    game3_done: localStorage.getItem("game3_done") === "1",
   });
   const externalPoints = () => Object.values(readExternalFlags()).filter(Boolean).length;
 
-  // ---- NOVETAT 2: acceptar "done=gameX" al hash en tornar dels jocs ----
-  function applyDoneFromHash() {
-    const h = (location.hash || "").toLowerCase();
+  // ✅ Accepta tant #done=gameX com ?done=gameX i marca localStorage
+  function applyDoneFromReturn() {
+    const url = new URL(location.href);
+    const doneSearch = (url.searchParams.get("done") || "").toLowerCase(); // query
+    const m = (location.hash || "").match(/done=(game[123])/i);             // hash
+    const doneHash = (m && m[1] ? m[1] : "").toLowerCase();
+
     let touched = false;
-    if (h.includes("done=game1")) { localStorage.setItem("game1_done","1"); touched = true; }
-    if (h.includes("done=game2")) { localStorage.setItem("game2_done","1"); touched = true; }
-    if (h.includes("done=game3")) { localStorage.setItem("game3_done","1"); touched = true; }
+    const token = doneSearch || doneHash; // "game1" | "game2" | "game3" | ""
+
+    if (token === "game1") { localStorage.setItem("game1_done","1"); touched = true; }
+    if (token === "game2") { localStorage.setItem("game2_done","1"); touched = true; }
+    if (token === "game3") { localStorage.setItem("game3_done","1"); touched = true; }
+
     if (touched) {
-      // neteja el hash a #hub perquè no torni a marcar si refresques
-      try { history.replaceState(null,"", "#hub"); } catch { location.hash = "#hub"; }
+      // Neteja query i hash i deixa #hub perquè un refresh no torni a marcar
+      try {
+        url.searchParams.delete("done");
+        history.replaceState(null, "", url.pathname + "#hub");
+      } catch {
+        location.hash = "#hub";
+      }
     }
   }
 
@@ -54,9 +66,13 @@
     els.scoreGoal && (els.scoreGoal.textContent = CONFIG.goal);
 
     // Botó reset de la pantalla d’entrada
-    els.clearCache?.addEventListener("click", ()=>{ localStorage.clear(); location.href="./index.html"; setTimeout(()=>location.reload(),150); });
+    els.clearCache?.addEventListener("click", ()=>{
+      localStorage.clear();
+      location.href="./index.html";
+      setTimeout(()=>location.reload(),150);
+    });
 
-    // Riddle (opcional)
+    // Riddle
     els.btnShowRiddle?.addEventListener("click", ()=>{
       if (!els.riddleBox) return;
       const hidden = getComputedStyle(els.riddleBox).display === "none";
@@ -82,7 +98,7 @@
       if (u === norm(CONFIG.auth.username) && p === CONFIG.auth.password) {
         els.loginMsg && (els.loginMsg.textContent="Benvinguda 💛", els.loginMsg.className="msg ok");
         localStorage.setItem("hmky.hubUnlocked","1");
-        setTimeout(()=>{ swap(VIEWS.hub); applyDoneFromHash(); updateProgress(); }, 200);
+        setTimeout(()=>{ swap(VIEWS.hub); applyDoneFromReturn(); updateProgress(); }, 200);
       } else {
         els.loginMsg && (els.loginMsg.textContent="Ups! Credencials incorrectes", els.loginMsg.className="msg err");
       }
@@ -91,18 +107,22 @@
     // Si ja estava desbloquejat (refresh/retorn dels jocs), entra al hub
     if (localStorage.getItem("hmky.hubUnlocked") === "1") {
       swap(VIEWS.hub);
-      applyDoneFromHash();     // <<< LLEGIM EL HASH ARA TAMBÉ
+      applyDoneFromReturn();
       updateProgress();
     }
 
     // Recalcular barra quan tornes al tab/hub
-    const refresh = ()=>{ applyDoneFromHash(); updateProgress(); };
+    const refresh = ()=>{ applyDoneFromReturn(); updateProgress(); };
     window.addEventListener("visibilitychange", ()=>{ if (document.visibilityState === "visible") refresh(); });
     window.addEventListener("focus", refresh);
     window.addEventListener("hashchange", refresh);
 
     // Final - reinici total
-    els.btnRestart?.addEventListener("click", ()=>{ localStorage.clear(); location.href="./index.html"; setTimeout(()=>location.reload(),150); });
+    els.btnRestart?.addEventListener("click", ()=>{
+      localStorage.clear();
+      location.href="./index.html";
+      setTimeout(()=>location.reload(),150);
+    });
 
     updateProgress();
   }
