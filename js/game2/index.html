@@ -5,118 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Joc 2 — On es va fer la foto?</title>
 
+  <!-- Estils globals i específics del joc -->
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="game2.css">
+
+  <!-- Info per SEO/bots (igualment noindex per ser un joc privat) -->
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#0f0f14" />
+  <meta name="description" content="Joc 2: endevina el lloc correcte mentre el vídeo es desenfoca." />
 </head>
 <body>
+  <!-- ──────────────────────────────────────────────────────────────
+       CAPÇALERA
+  ─────────────────────────────────────────────────────────────── -->
   <header class="wrap">
-    <a class="back" href="../../index.html">← Tornar</a>
+    <nav class="crumbs" aria-label="Navegació secundària">
+      <a class="back" href="../../index.html#hub" title="Torna al menú">← Tornar</a>
+    </nav>
+
     <h1>Joc 2 · On es va fer la foto?</h1>
     <p class="intro">
       Prem <strong>Començar</strong>: el vídeo començarà i s’activarà un <strong>comptador</strong>.
       Tria el lloc correcte al desplegable. Només n’hi ha <strong>1 de correcte</strong>.
+      Pots pausar, repetir i passar de nivell si t’enganxes 😉
     </p>
   </header>
 
+  <!-- ──────────────────────────────────────────────────────────────
+       CONTINGUT PRINCIPAL
+  ─────────────────────────────────────────────────────────────── -->
   <main class="wrap">
-    <section class="player">
-      <video id="clip" preload="metadata" playsinline>
-        <source src="../../assets/video/game2/reveal.mp4" type="video/mp4">
-        El teu navegador no pot reproduir el vídeo.
-      </video>
+    <!-- Reproductor i controls -->
+    <section class="player" aria-label="Reproductor del vídeo">
+      <figure class="video-frame">
+        <video id="clip" preload="metadata" playsinline>
+          <source src="../../assets/video/game2/reveal.mp4" type="video/mp4">
+          El teu navegador no pot reproduir el vídeo.
+        </video>
+        <figcaption class="sr-only">Vídeo que es va aclarint per revelar el lloc</figcaption>
+      </figure>
 
-      <div class="controls">
-        <button id="btnStart">▶︎ Començar</button>
-        <button id="btnPause" disabled>⏸️ Pausa</button>
-        <div class="timer">
+      <div class="controls" role="group" aria-label="Controls del vídeo">
+        <button id="btnStart" class="btn">▶︎ Començar</button>
+        <button id="btnPause" class="btn" disabled>⏸️ Pausa</button>
+        <div class="timer" aria-live="polite">
           Temps: <span id="time">00:30</span>
         </div>
       </div>
     </section>
 
-    <section class="quiz">
+    <!-- Pregunta / resposta -->
+    <section class="quiz" aria-label="Pregunta del nivell">
       <label for="guess"><strong>On es va fer la foto?</strong></label>
       <select id="guess" disabled>
-        <option value="" selected disabled>Selecciona un estany del Pirineu català…</option>
+        <option value="" selected disabled>— Tria una opció —</option>
       </select>
-      <button id="btnSubmit" disabled>Respondre</button>
-      <p id="feedback" class="feedback"></p>
-      <div id="after" class="after hidden">
-        <a class="btn" href="../../index.html">Tornar al menú</a>
-        <button id="btnReplay" class="btn">Tornar a jugar</button>
+
+      <div class="actions">
+        <button id="btnSubmit" class="btn" disabled>Respondre</button>
       </div>
+
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+
+      <!-- Aquí s’injecten botons finals i/o de nivell -->
+      <div id="after" class="after hidden"></div>
+
+      <!-- Panell d’ajuda opcional (plegable) -->
+      <details class="help">
+        <summary>Ajuda</summary>
+        <ul>
+          <li>Pots pausar el vídeo en qualsevol moment.</li>
+          <li>Si t’equivoques, pots tornar a intentar-ho o passar al següent nivell.</li>
+          <li>Quan acabis tots els nivells, apareixerà un botó per tornar al menú i sumar el punt del Joc 2.</li>
+        </ul>
+      </details>
     </section>
   </main>
 
+  <!-- ──────────────────────────────────────────────────────────────
+       PEU / INFO TÈCNICA
+  ─────────────────────────────────────────────────────────────── -->
+  <footer class="wrap footnotes">
+    <p class="muted">
+      Si no es reprodueix el vídeo, comprova la connexió o refresca amb <kbd>Ctrl/Cmd + Shift + R</kbd>.
+    </p>
+  </footer>
+
+  <!-- ──────────────────────────────────────────────────────────────
+       SCRIPTS
+  ─────────────────────────────────────────────────────────────── -->
+
+  <!-- JS del joc -->
   <script src="game2.js"></script>
 
+  <!-- Guàrdies i utilitats (no trepitgen el game2.js) -->
   <script>
-  window.markGame2Done = function(){
-    localStorage.setItem('game2_done','1');
-    location.href='../../index.html#hub';
-  };
+  (function bootstrapGuards(){
+    try {
+      // Si algú entra aquí directament sense passar pel Gate, torna al Hub
+      if (!localStorage.getItem('hmky.hubUnlocked')) {
+        location.replace('../../index.html#hub');
+      }
+    } catch {}
 
-  try { const n = performance.getEntriesByType?.('navigation')[0]; if (n && n.type==='reload') location.replace('../../index.html#hub'); } catch {}
-  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
-</script>
-
-<script>
-  (function hookGame2(){
-    // 1) Si el joc exporta una API global
-    if (window.GameTwo && typeof window.GameTwo === 'object' && typeof window.GameTwo.onWin === 'function') {
-      const orig = window.GameTwo.onWin;
-      window.GameTwo.onWin = function(...args){
-        try { localStorage.setItem('game2_done','1'); } catch {}
-        if (typeof orig === 'function') orig.apply(this, args);
-        location.href = '../../index.html#hub';
-      };
-      return;
-    }
-    // 2) Event personalitzat
-    window.addEventListener('game2:finished', () => {
+    // API global opcional per si alguna vegada la vols cridar des del DOM:
+    // <button onclick="markGame2DoneAndReturn()">...</button>
+    window.markGame2DoneAndReturn = function(){
       try { localStorage.setItem('game2_done','1'); } catch {}
-      location.href = '../../index.html#hub';
+      // Tornem amb hash que el Hub entén (i que el nostre app.js processa)
+      location.href = '../../index.html#done=game2';
+    };
+
+    // Escolta un event personalitzat per compatibilitat futura
+    window.addEventListener('game2:finished', () => {
+      window.markGame2DoneAndReturn();
     });
-    // 3) Reintent
-    setTimeout(hookGame2, 80);
+
+    // Evita que un "reload" es quedi aquí: retorna al Hub
+    try {
+      const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type === 'reload') location.replace('../../index.html#hub');
+    } catch {}
   })();
-
-  // Si es recarrega aquesta pàgina, torna al Hub
-  try {
-    const nav = performance.getEntriesByType?.('navigation')[0];
-    if (nav && nav.type === 'reload') location.replace('../../index.html#hub');
-  } catch {}
-  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
-</script>
-
-  <script>
-  window.markGame2DoneAndReturn = function(){
-    try { localStorage.setItem('game2_done','1'); } catch {}
-    location.href = '../../index.html#done=game2';
-  };
-
-  (function hookGame2(){
-    // Si tens una API global del joc 2, intercepta-la aquí de forma semblant
-    if (window.GameTwo && typeof window.GameTwo === 'object' && typeof window.GameTwo.onWin === 'function') {
-      const prev = window.GameTwo.onWin;
-      window.GameTwo.onWin = function(){
-        try { localStorage.setItem('game2_done','1'); } catch {}
-        if (typeof prev === 'function') prev.apply(this, arguments);
-        location.href='../../index.html#done=game2';
-      };
-    } else {
-      setTimeout(hookGame2, 80);
-    }
-  })();
-
-  try {
-    const n = performance.getEntriesByType?.('navigation')[0];
-    if (n && n.type === 'reload') location.replace('../../index.html#hub');
-  } catch {}
-  if (!localStorage.getItem('hmky.hubUnlocked')) location.replace('../../index.html#hub');
-</script>
-
-  
+  </script>
 </body>
 </html>
-

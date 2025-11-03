@@ -1,6 +1,6 @@
 (() => {
   // ====== Joc 2 multi-nivell: "Endevina la foto borrosa" ======
-  // Requereix a l'HTML aquests IDs: clip, btnStart, btnPause, time, guess, btnSubmit, feedback, after, btnReplay
+  // Requereix a l'HTML aquests IDs: clip, btnStart, btnPause, time, guess, btnSubmit, feedback, after
 
   // --- Elements ---
   const els = {
@@ -12,84 +12,58 @@
     btnSubmit: document.getElementById('btnSubmit'),
     feedback: document.getElementById('feedback'),
     after: document.getElementById('after'),
-    btnReplay: document.getElementById('btnReplay'),
   };
 
   // --- Config ---
-  const START_SECONDS = 30; // temporitzador (opcional)
+  const START_SECONDS = 30;
   let remaining = START_SECONDS;
   let timerId = null;
 
-  // --- Nivells (rutes relatives des de js/game2/index.html → ../../assets/video/game2/...)
-  // També afegim la imatge de "reveal correcte" (rutes: ../../assets/images/game2/...)
+  // Llista de nivells
   const LEVELS = [
-    // Nivell 0: reveal.mp4 — Estanys Pirineus
     {
       src: '../../assets/video/game2/reveal.mp4',
       options: [
-        'Estany de Sant Maurici',
-        'Estany Llong',
-        'Estany de Cavallers',
-        'Estany de Subenuix',
-        'Estany Gento',
-        'Estany de Baborte',
-        'Estany de Certascan',
-        'Estany de Gerber',
-        'Estany de Mar',
-        'Estany Negre de Cabanes' // ✅ correcta
+        'Estany de Sant Maurici','Estany Llong','Estany de Cavallers','Estany de Subenuix',
+        'Estany Gento','Estany de Baborte','Estany de Certascan','Estany de Gerber',
+        'Estany de Mar','Estany Negre de Cabanes'
       ],
       correct: 'Estany Negre de Cabanes',
       img: '../../assets/images/game2/correctreveal.jpg'
     },
-
-    // Nivell 1: reveal2.mp4 — Indonèsia
     {
       src: '../../assets/video/game2/reveal2.mp4',
       options: [
-        'SURFARIS INN on poppies 2',
-        'Theodor at Labuan Bajo', // ✅ correcta
-        'Amel House',
-        'NeNa Eat & Sleep Kuta',
-        'Nucifera Kuta',
-        'Korurua Dijiwa Ubud'
+        'SURFARIS INN on poppies 2','Theodor at Labuan Bajo','Amel House',
+        'NeNa Eat & Sleep Kuta','Nucifera Kuta','Korurua Dijiwa Ubud'
       ],
       correct: 'Theodor at Labuan Bajo',
       img: '../../assets/images/game2/correctreveal2.jpeg'
     },
-
-    // Nivell 2: reveal3.mp4 — neu
     {
       src: '../../assets/video/game2/reveal3.mp4',
-      options: ['La Masella', 'Espot', 'Banhèras de Luishon', 'La Molina'],
+      options: ['La Masella','Espot','Banhèras de Luishon','La Molina'],
       correct: 'Banhèras de Luishon',
       img: '../../assets/images/game2/correctreveal3.jpeg'
     },
-
-    // Nivell 3: reveal4.mp4 — Tenerife
     {
       src: '../../assets/video/game2/reveal4.mp4',
       options: [
-        'Mirador de Humboldt, La Orotava',
-        'Playa de Benijo, Anaga',
-        'Punta de Teno, Buenavista del Norte',
-        'Playa de los Guíos, Acantilado de los Gigantes'
+        'Mirador de Humboldt, La Orotava','Playa de Benijo, Anaga',
+        'Punta de Teno, Buenavista del Norte','Playa de los Guíos, Acantilado de los Gigantes'
       ],
       correct: 'Playa de los Guíos, Acantilado de los Gigantes',
       img: '../../assets/images/game2/correctreveal4.jpeg'
     },
-
-    // Nivell 4: reveal5.mp4 — ciutat europea
     {
       src: '../../assets/video/game2/reveal5.mp4',
-      options: ['Àmsterdam', 'Budapest', 'Andorra', 'Siurana'],
+      options: ['Àmsterdam','Budapest','Andorra','Siurana'],
       correct: 'Budapest',
       img: '../../assets/images/game2/correctreveal5.jpeg'
     },
-
-    // Nivell 5: reveal6.mp4 — estadi
     {
       src: '../../assets/video/game2/reveal6.mp4',
-      options: ['Allianz Stadium', 'Municipal de les Comes', 'Camp Nou', 'Camp Municipal de Poboleda'],
+      options: ['Allianz Stadium','Municipal de les Comes','Camp Nou','Camp Municipal de Poboleda'],
       correct: 'Allianz Stadium',
       img: '../../assets/images/game2/correctreveal6.jpeg'
     }
@@ -99,24 +73,16 @@
   let answered = false;
 
   // --- Utils ---
-  function fmt(s) {
+  const fmt = s => {
     s = Math.max(0, Math.floor(s));
-    const mm = String(Math.floor(s / 60)).padStart(2, '0');
-    const ss = String(s % 60).padStart(2, '0');
+    const mm = String(Math.floor(s/60)).padStart(2,'0');
+    const ss = String(s%60).padStart(2,'0');
     return `${mm}:${ss}`;
-  }
+  };
 
-  function setTime(s) {
-    remaining = s;
-    if (els.time) els.time.textContent = fmt(remaining);
-  }
-
-  function stopTimer() {
-    clearInterval(timerId);
-    timerId = null;
-  }
-
-  function startTimer() {
+  function setTime(s){ remaining = s; if (els.time) els.time.textContent = fmt(remaining); }
+  function stopTimer(){ clearInterval(timerId); timerId = null; }
+  function startTimer(){
     stopTimer();
     timerId = setInterval(() => {
       remaining -= 1;
@@ -125,69 +91,48 @@
     }, 1000);
   }
 
-  function msg(text, cls = '') {
+  function msg(text, cls = ''){
     if (!els.feedback) return;
     els.feedback.textContent = text;
     els.feedback.className = `feedback ${cls}`.trim();
   }
 
-  function lockAnswerUI(lock) {
+  function lockAnswerUI(lock){
     if (!els.guess || !els.btnSubmit) return;
     els.guess.disabled = !!lock;
     els.btnSubmit.disabled = !!lock;
   }
 
-  function fillOptions(opts) {
+  function fillOptions(opts){
     if (!els.guess) return;
     els.guess.innerHTML = '';
-    const placeholder = document.createElement('option');
-    placeholder.value = '';
-    placeholder.textContent = '— Tria una opció —';
-    els.guess.appendChild(placeholder);
-
+    const ph = document.createElement('option');
+    ph.value = ''; ph.textContent = '— Tria una opció —';
+    els.guess.appendChild(ph);
     opts.forEach(o => {
       const op = document.createElement('option');
-      op.value = o;
-      op.textContent = o;
+      op.value = o; op.textContent = o;
       els.guess.appendChild(op);
     });
   }
 
-  function setVideo(src) {
+  function setVideo(src){
     if (!els.clip) return;
-    els.clip.pause();
-    els.clip.currentTime = 0;
-    // cache-bust per evitar que GitHub Pages/navegador serveixi una versió antiga
-    const busted = `${src}?v=${Date.now()}`;
-    els.clip.src = busted;
+    els.clip.pause(); els.clip.currentTime = 0;
+    els.clip.src = `${src}?v=${Date.now()}`; // cache-bust
     els.clip.load();
   }
 
-  function clearAfter() {
+  function clearAfter(){
     if (!els.after) return;
     els.after.innerHTML = '';
     els.after.classList.add('hidden');
   }
 
-  // Ara NOMÉS afegim botons (no esborrem res) — així no desapareix la targeta amb la imatge
-  function showAfterButtons(buttons = []) {
-    if (!els.after) return;
-    buttons.forEach(({ text, onClick, id }) => {
-      const b = document.createElement('button');
-      b.className = 'btn';
-      b.textContent = text;
-      if (id) b.id = id;
-      b.addEventListener('click', onClick);
-      els.after.appendChild(b);
-    });
-    els.after.classList.remove('hidden');
-  }
-
-  // ====== Desplegable sota el VÍDEO amb la imatge de la resposta correcta ======
-  function showCorrectReveal(L) {
+  // Collapsible amb la imatge correcta
+  function showCorrectReveal(L){
     if (!L?.img || !els.clip) return;
 
-    // Crear contenidor collapsible
     const wrap = document.createElement('section');
     wrap.className = 'reveal-collapsible';
 
@@ -206,58 +151,35 @@
     img.alt = 'Resposta correcta';
     img.loading = 'lazy';
     img.src = `${L.img}?v=${Date.now()}`;
-    img.onerror = () => {
-      // Traça mínima d’error
-      console.warn('No s\'ha pogut carregar la imatge:', img.src);
-    };
 
     const cap = document.createElement('div');
     cap.className = 'cap';
     cap.innerHTML = `<strong>Resposta correcta</strong><br>${L.correct}`;
 
-    card.appendChild(img);
-    card.appendChild(cap);
+    card.appendChild(img); card.appendChild(cap);
     body.appendChild(card);
-    wrap.appendChild(toggle);
-    wrap.appendChild(body);
+    wrap.appendChild(toggle); wrap.appendChild(body);
 
-    // Inserim el desplegable JUST després del vídeo
-    const videoEl = els.clip;
-    videoEl.insertAdjacentElement('afterend', wrap);
+    els.clip.insertAdjacentElement('afterend', wrap);
 
-    // Comportament de desplegable amb animació
     let open = false;
     const setOpen = (v) => {
       open = v;
       wrap.classList.toggle('open', open);
-      if (open) {
-        body.style.maxHeight = body.scrollHeight + 'px';
-      } else {
-        body.style.maxHeight = '0px';
-      }
+      body.style.maxHeight = open ? (body.scrollHeight + 'px') : '0px';
     };
     toggle.addEventListener('click', () => setOpen(!open));
-
-    // Obrim automàticament després de l'encert i fem scroll
-    setTimeout(() => {
-      setOpen(true);
-      wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
+    setTimeout(() => { setOpen(true); wrap.scrollIntoView({ behavior:'smooth', block:'start' }); }, 50);
   }
 
-  function loadLevel(i) {
-    level = i;
-    answered = false;
-    stopTimer();
-    setTime(START_SECONDS);
-    msg('');
-    clearAfter();
-
-    // Eliminar possibles desplegables d’un nivell anterior
+  function loadLevel(i){
+    level = i; answered = false;
+    stopTimer(); setTime(START_SECONDS);
+    msg(''); clearAfter();
     document.querySelectorAll('.reveal-collapsible').forEach(n => n.remove());
 
     const L = LEVELS[level];
-    if (!L) return showFinal();
+    if (!L) { showFinal(); return; }
 
     setVideo(L.src);
     fillOptions(L.options);
@@ -267,27 +189,40 @@
     if (els.btnPause) els.btnPause.disabled = true;
   }
 
-  function showFinal() {
+  // ✅ Marca el joc com fet i prepara els botons de sortida
+  function showFinal(){
+    try { localStorage.setItem('game2_done','1'); } catch {}
     msg('🎉 Has completat tots els nivells del Joc 2!', 'ok');
-    showAfterButtons([
-      { text: 'Tornar als jocs', onClick: () => location.replace('../../index.html#hub') },
-      { text: 'Repetir Joc 2', onClick: () => loadLevel(0) }
-    ]);
+
+    // Botó que torna al Hub amb hash que el Hub entén
+    const exitBtn = document.createElement('a');
+    exitBtn.className = 'btn';
+    exitBtn.textContent = 'Tornar als jocs';
+    exitBtn.href = '../../index.html#done=game2';
+
+    const replayBtn = document.createElement('button');
+    replayBtn.className = 'btn';
+    replayBtn.textContent = 'Repetir Joc 2';
+    replayBtn.addEventListener('click', () => loadLevel(0));
+
+    els.after.innerHTML = '';
+    els.after.appendChild(exitBtn);
+    els.after.appendChild(replayBtn);
+    els.after.classList.remove('hidden');
+
     lockAnswerUI(true);
   }
 
   // --- Events ---
   els.btnStart?.addEventListener('click', () => {
-    els.clip?.play();
-    startTimer();
+    els.clip?.play(); startTimer();
     if (els.btnStart) els.btnStart.disabled = true;
     if (els.btnPause) els.btnPause.disabled = false;
     lockAnswerUI(false);
   });
 
   els.btnPause?.addEventListener('click', () => {
-    els.clip?.pause();
-    stopTimer();
+    els.clip?.pause(); stopTimer();
     if (els.btnStart) els.btnStart.disabled = false;
     if (els.btnPause) els.btnPause.disabled = true;
   });
@@ -303,67 +238,58 @@
     if (answered) return;
 
     const choice = (els.guess?.value || '').trim();
-    if (!choice) {
-      msg('Tria una opció abans d’enviar.', 'warn');
-      return;
-    }
+    if (!choice) { msg('Tria una opció abans d’enviar.', 'warn'); return; }
 
-    answered = true;
-    stopTimer();
+    answered = true; stopTimer();
 
     const L = LEVELS[level];
     const correct = L && choice === L.correct;
 
     if (correct) {
       msg('✅ Correcte!', 'ok');
-
-      // 1) Inserim el desplegable sota el vídeo
       showCorrectReveal(L);
-      // 2) Llavors afegim botons (quedaran DESPRÉS del desplegable, obligant a baixar)
+
       const isLast = level >= LEVELS.length - 1;
-      showAfterButtons([
-        {
-          text: isLast ? 'Acabar' : 'Següent',
-          id: 'btnNext',
-          onClick: () => {
-            clearAfter();
-            loadLevel(isLast ? 0 : level + 1);
-            if (isLast) {
-              msg('🎉 Has completat tots els nivells del Joc 2!', 'ok');
-              showAfterButtons([
-                { text: 'Tornar als jocs', onClick: () => location.replace('../../index.html#hub') },
-                { text: 'Repetir Joc 2', onClick: () => loadLevel(0) }
-              ]);
-            }
-          }
-        },
-        {
-          text: 'Repetir aquest nivell',
-          onClick: () => { clearAfter(); loadLevel(level); }
-        }
-      ]);
+
+      if (isLast) {
+        // Últim nivell → marquem i oferim sortida
+        showFinal();
+      } else {
+        // Nivell intermedi → botons següent / repetir
+        els.after.innerHTML = '';
+        const next = document.createElement('button');
+        next.className = 'btn';
+        next.textContent = 'Següent';
+        next.addEventListener('click', () => { clearAfter(); loadLevel(level + 1); });
+
+        const rep = document.createElement('button');
+        rep.className = 'btn';
+        rep.textContent = 'Repetir aquest nivell';
+        rep.addEventListener('click', () => { clearAfter(); loadLevel(level); });
+
+        els.after.appendChild(next);
+        els.after.appendChild(rep);
+        els.after.classList.remove('hidden');
+      }
     } else {
       msg(`❌ Incorrecte. La bona era: ${L?.correct || '—'}.`, 'err');
-      showAfterButtons([
-        { text: 'Torna-ho a provar', onClick: () => { clearAfter(); loadLevel(level); } },
-        { text: 'Passar al següent', onClick: () => { clearAfter(); loadLevel(level + 1); } }
-      ]);
+      els.after.innerHTML = '';
+      const retry = document.createElement('button');
+      retry.className = 'btn';
+      retry.textContent = 'Torna-ho a provar';
+      retry.addEventListener('click', () => { clearAfter(); loadLevel(level); });
+
+      const pass = document.createElement('button');
+      pass.className = 'btn';
+      pass.textContent = 'Passar al següent';
+      pass.addEventListener('click', () => { clearAfter(); loadLevel(level + 1); });
+
+      els.after.appendChild(retry);
+      els.after.appendChild(pass);
+      els.after.classList.remove('hidden');
     }
 
     lockAnswerUI(true);
-  });
-
-  els.btnReplay?.addEventListener('click', () => {
-    try {
-      els.clip.currentTime = 0;
-      els.clip.play();
-      setTime(START_SECONDS);
-      startTimer();
-      msg('');
-      clearAfter();
-      // Eliminar desplegable si es reprodueix de nou
-      document.querySelectorAll('.reveal-collapsible').forEach(n => n.remove());
-    } catch {}
   });
 
   // --- Init ---
