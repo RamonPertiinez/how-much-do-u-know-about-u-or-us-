@@ -17,7 +17,7 @@
   const state = { score: 0 };
   const CONFIG = {
     title: "Tens ganes de saber el teu regal? 😏",
-    goal: 8,
+    goal: 3,
     auth: { username: "laura", password: "23062025" },
     gateRiddle: { hint: "Llegeix només les majúscules…", accept: ["23062025","23/06/2025","23-06-2025","23 de juny del 2025"], onCorrect: "revealPassword" }
   };
@@ -108,7 +108,7 @@
   }
 
   function updateProgress(){
-    const goal = CONFIG.goal || 8;
+    const goal = CONFIG.goal || 3;
     const totalScore = state.score + externalPoints();
     const pct = Math.max(0, Math.min(100, (totalScore/goal)*100));
     els.progressFill && (els.progressFill.style.width = pct + "%");
