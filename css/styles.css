@@ -125,3 +125,67 @@ input{
   margin:0 .08em; font-weight:800;
 }
 .hint-text{ color: var(--muted); font-size:0.95rem; margin-top:8px; }
+
+/* ----- FINAL look & feel ----- */
+#final { padding-bottom: 64px; }
+.final-wrap { text-align:center; max-width:900px; margin:0 auto; }
+.final-hero { margin: 10px auto 16px; }
+.final-hero img{
+  width:min(820px, 96%);
+  height:auto;
+  border-radius:18px;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  animation: fadeInUp .9s ease both;
+}
+.final-card{
+  display:inline-block;
+  margin:18px auto 10px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  padding:16px 22px;
+  max-width:780px;
+}
+.final-card h2{ margin:6px 0 6px; }
+.final-card p{ margin:0; opacity:.95; }
+
+.final-actions{ margin-top:16px; }
+
+/* Titular amb pop */
+.final-pop{ animation:popIn .5s ease both; }
+
+/* Brillantor suau */
+.glow-in{ box-shadow:0 0 0 rgba(255,255,255,0); animation:glowIn 1.6s ease both .4s; }
+
+/* Confetti (contenidor ja al DOM) */
+#confetti span{
+  position:fixed; width:8px; height:8px; border-radius:2px; pointer-events:none;
+}
+
+/* Espurnes flotants */
+.sparkles{ position:fixed; inset:0; pointer-events:none; }
+.sparkle{
+  position:fixed; width:10px; height:10px; border-radius:50%;
+  filter: blur(0.5px); opacity:.85; pointer-events:none;
+  animation: floatUp linear forwards;
+}
+
+/* ----- Animacions ----- */
+@keyframes fadeInUp{
+  from{ opacity:0; transform: translate3d(0,24px,0) scale(.98); }
+  to{ opacity:1; transform: translate3d(0,0,0) scale(1); }
+}
+@keyframes popIn{
+  0%{ transform:scale(.85); opacity:0 }
+  60%{ transform:scale(1.04); opacity:1 }
+  100%{ transform:scale(1) }
+}
+@keyframes glowIn{
+  0%{ box-shadow:0 0 0 rgba(255,255,255,0) }
+  100%{ box-shadow:0 10px 60px rgba(255,255,255,.06) }
+}
+@keyframes floatUp{
+  from{ transform:translateY(20vh); opacity:.0 }
+  15%{ opacity:.9 }
+  to{ transform:translateY(-110vh); opacity:0 }
+}

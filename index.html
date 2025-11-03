@@ -149,23 +149,45 @@
       </section>
     </section>
 
-    <!-- 3) FINAL -->
-    <section id="final" class="view" aria-label="Sorpresa final">
-      <div class="final-wrap">
-        <h1 id="finalHeading">🎉 Sorpresa desbloquejada!</h1>
-        <p id="finalSubheading" class="lead">Has superat les proves del meu cor. Ara prepara't…</p>
-        <div class="final-card">
-          <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
-          <p id="finalBody">Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛</p>
-        </div>
-        <audio id="finalAudio" class="audio-ctrl" controls preload="none">
-          <source src="./assets/audio/final.mp3" type="audio/mpeg" />
-        </audio>
-        <button id="btnRestart" class="btn">Tornar a començar</button>
-      </div>
-      <div class="confetti" id="confetti" aria-hidden="true"></div>
-    </section>
+<!-- 3) FINAL -->
+<section id="final" class="view" aria-label="Sorpresa final">
+  <div class="final-wrap">
+    <h1 id="finalHeading" class="final-pop">🎉 Sorpresa desbloquejada!</h1>
+    <p id="finalSubheading" class="lead">Has superat TOTES les proves!! 😊 Ara prepara’t…</p>
+
+    <figure class="final-hero">
+      <!-- ⚠️ Si el fitxer té espais, millor encodejar-los amb %20 o renombrar-lo -->
+      <img
+        id="finalImage"
+        src="./assets/images/Ramon%20i%20Laura%20la%20dama%20i%20el%20vagabund.png"
+        alt="Il·lustració sopar a Roma"
+        loading="eager"
+      />
+      <figcaption class="sr-only">Dues persones compartint un espagueti, estil clàssic Disney.</figcaption>
+    </figure>
+
+    <div class="final-card glow-in">
+      <h2 id="finalTitle"><span class="handwritten">UNA NIT ELEGANT A ROMA</span> 🇮🇹</h2>
+      <p id="finalBody">
+        Al gener, porta la teva roba més elegant. Tinc reservat un lloc especial per sopar junts. 💛
+      </p>
+    </div>
+
+    <!-- Àudio final: autoplay des del JS quan s’arriba a 3/3 -->
+    <audio id="finalAudio" class="audio-ctrl" controls preload="auto">
+      <source src="./assets/audio/Manel%20-%20Aniversari.mp3" type="audio/mpeg" />
+    </audio>
+
+    <div class="final-actions">
+      <button id="btnRestart" class="btn">Tornar a començar</button>
+    </div>
   </div>
+
+  <!-- Efectes visuals -->
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <div class="sparkles" id="sparkles" aria-hidden="true"></div>
+</section>
+
 
   <!-- JS global (RUTA CORRECTA) -->
   <script src="./js/app.js?v=3games" defer></script>

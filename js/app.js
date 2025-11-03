@@ -95,17 +95,88 @@
   }
 
   // ── final
-  function goFinal() {
-    if (state.finalShown || localStorage.getItem("hmky.finalShown")==="1") {
-      swap(VIEWS.final); // per si recarregues
-      return;
-    }
-    state.finalShown = true;
-    localStorage.setItem("hmky.finalShown","1");
+function goFinal() {
+  if (state.finalShown || localStorage.getItem("hmky.finalShown")==="1") {
     swap(VIEWS.final);
     try { els.finalAudio?.play?.(); } catch {}
-    burstConfetti();
+    return;
   }
+
+  state.finalShown = true;
+  localStorage.setItem("hmky.finalShown","1");
+  swap(VIEWS.final);
+
+  // --- Assegura la pista correcta i autoplay ---
+  try {
+    if (els.finalAudio) {
+      // força la font per si s’ha quedat la vella
+      const src = "./assets/audio/Manel%20-%20Aniversari.mp3";
+      const cur = els.finalAudio.querySelector("source");
+      if (cur) cur.src = src; else {
+        const s = document.createElement("source");
+        s.src = src; s.type = "audio/mpeg";
+        els.finalAudio.appendChild(s);
+      }
+      els.finalAudio.load();
+      // Autoplay: alguns navegadors el bloquegen si no hi ha interacció prèvia
+      const p = els.finalAudio.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(()=>{ /* si falla, queda el botó de play visible */ });
+      }
+    }
+  } catch {}
+
+// Confetti (mateixa versió que et vaig passar)
+function burstConfetti() {
+  if (!els.confetti) return;
+  els.confetti.innerHTML = "";
+  const N = 140;
+  for (let i=0;i<N;i++){
+    const s = document.createElement("span");
+    const x = Math.random()*100;
+    const y = -10 - Math.random()*20;
+    const d = 3600 + Math.random()*2400;
+    const sz = 6 + Math.random()*9;
+    s.style.left = x + "vw";
+    s.style.top = y + "vh";
+    s.style.width = sz + "px";
+    s.style.height = sz + "px";
+    s.style.background = `hsl(${Math.random()*360},85%,60%)`;
+    els.confetti.appendChild(s);
+    requestAnimationFrame(()=>{
+      s.style.transition = `transform ${d}ms linear, top ${d}ms linear, opacity 600ms ease ${d-600}ms`;
+      s.style.top = (100+Math.random()*10) + "vh";
+      s.style.transform = `translateY(0) rotate(${720+Math.random()*720}deg)`;
+      setTimeout(()=>{ s.style.opacity = "0"; }, d-600);
+      setTimeout(()=>{ s.remove(); }, d+800);
+    });
+  }
+}
+
+// Espurnes flotants (hearts/stars subtils)
+function spawnSparkles(count=32){
+  const host = document.getElementById("sparkles");
+  if (!host) return;
+  host.innerHTML = "";
+  const palette = ["#ffd166","#fca5a5","#93c5fd","#a7f3d0","#f5d0fe","#fde68a"];
+  for (let i=0;i<count;i++){
+    const sp = document.createElement("div");
+    sp.className = "sparkle";
+    const size = 6 + Math.random()*10;
+    sp.style.left = (5 + Math.random()*90) + "vw";
+    sp.style.bottom = (-5 + Math.random()*15) + "vh";
+    sp.style.width = sp.style.height = size + "px";
+    sp.style.background = palette[(Math.random()*palette.length)|0];
+    sp.style.borderRadius = Math.random() < 0.4 ? "50%" : "2px"; // cercle o diamant
+    const dur = 3500 + Math.random()*3000;
+    sp.style.animationDuration = dur + "ms";
+    sp.style.boxShadow = `0 0 ${Math.round(size/1.5)}px rgba(255,255,255,.55)`;
+    host.appendChild(sp);
+    setTimeout(()=> sp.remove(), dur+200);
+  }
+}
+
+}
 
   document.addEventListener("DOMContentLoaded", init);
 
@@ -190,4 +261,6 @@
       goFinal();
     }
   }
+
+
 })();
